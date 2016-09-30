@@ -3,7 +3,7 @@
     <div class="left_col scroll-view">
 
         <div class="navbar nav_title" style="border: 0;">
-            <a href="{{url('/')}}" target="_blank" class="site_title"><i class="fa fa-paw"></i> <span>NRI<strong>STORIES</strong></span></a>
+            <a href="{{url('/')}}" target="_blank" class="site_title"><i class="fa fa-pie-chart"></i> <span style="font-size: 12px">PROMOTION<strong>ANALYSIS</strong></span></a>
         </div>
         <div class="clearfix"></div>
 

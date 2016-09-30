@@ -4,8 +4,10 @@
 
 @section('main')
 <div class="row login">
+    <h1>PROMOTION<strong>ANALYSIS</strong></h1>
+    <br>
     <div class="col-md-2 col-md-offset-5">
-        <h1>NRI<strong>STORIES</strong></h1>
+        
         {{ Form::open(array('action' => 'UsersController@login')) }}
         <div class="form-group">
             <input type="text" name="username" class="form-control" placeholder="Usernam">
