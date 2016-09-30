@@ -14,3 +14,14 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('test', 'TestController@test');
+Route::any('admin', 'UsersController@login');
+Route::get('admin/logout', 'UsersController@logout');
+Route::get('admin/profile', 'UsersController@profile');
+
+
+Route::group([ 'prefix' => 'admin'], function() {
+    Route::resource('users', 'UsersController');
+});
+

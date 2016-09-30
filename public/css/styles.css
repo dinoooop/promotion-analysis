@@ -1,0 +1,48 @@
+img{
+    max-width: 100%;
+}
+.login {
+    margin-top: 15%;
+}
+
+.login input {
+    height: 50px;
+    border-radius: 3px;
+}
+
+.login {
+
+    text-align: center;
+}
+
+.error {
+    color: #f00;
+}
+
+.row-delete {
+    cursor: pointer;
+}
+
+.checkbox label input, .radio label input {
+    margin-top: 2px;
+}
+
+
+i.field_remove {
+    margin-top: 9px;
+    cursor: pointer;
+}
+
+.form-group label {
+    font-size: 14px;
+    color: #2A3F54;
+}
+
+.location_map img{
+    width: 100%;
+}
+
+
+td.action {
+    width: 120px;
+}

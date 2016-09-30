@@ -1,0 +1,47 @@
+.upload_new {
+    border: 2px dotted #66afe9;
+    min-height: 200px;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+}
+
+.upload_new p {
+    position: absolute;
+    top: 48%;
+    left: 44%;
+}
+
+input.post-file {    
+    opacity: 0;
+}
+
+.post-progress {
+    padding-top: 20px;
+    text-align: center
+}
+.post-progress .progress { 
+    position:relative; 
+    width:100%; 
+    border: 1px solid #ddd; 
+    border-radius: 1px; 
+    height:5px;
+    
+}
+.post-progress .bar { 
+    background-color: #28a4c9; 
+    width:0%; 
+    height: inherit;
+    border-radius: 1px; 
+}
+.post-progress .percent { 
+    
+}
+
+.post-progress {
+    display: none;
+}
+
+.upload-file-preview img {
+    width: 100%;
+}
