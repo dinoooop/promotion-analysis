@@ -78,6 +78,18 @@ return [
             'schema' => 'public',
             'sslmode' => 'prefer',
         ],
+        'redshift' => [
+            'driver' => 'pgsql',
+            'host' => env('DB_HOST_RED', 'localhost'),
+            'port' => env('DB_PORT_RED', '5432'),
+            'database' => env('DB_DATABASE_RED', 'forge'),
+            'username' => env('DB_USERNAME_RED', 'forge'),
+            'password' => env('DB_PASSWORD_RED', ''),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'schema' => 'public',
+            'sslmode' => 'prefer',
+        ],
 
     ],
 
