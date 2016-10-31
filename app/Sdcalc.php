@@ -24,18 +24,19 @@ class Sdcalc {
         $psql_date = $calendar->input($promo_start_date, $promo_end_date);
         //$sql = Block::prepare_psql($material_id, $psql_date);
         $sql = Block::sample_psql();
-
-        $records = DB::connection('redshift')->select($sql)->get()->toArray();
+        DB::setFetchMode(PDO::FETCH_ASSOC);
+        $records = DB::connection('redshift')->select($sql);
+        
         echo '<pre>', print_r($records), '</pre>';
-        
-        
+
+
         $this->csv_write($records);
     }
 
     function csv_write($records) {
         $header[] = Block::get_headers();
         $list = array_merge($header, $records);
-        
+
 
         $csv = storage_path('app/sample_1.csv');
 
