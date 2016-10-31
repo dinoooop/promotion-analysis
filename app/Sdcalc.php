@@ -25,7 +25,7 @@ class Sdcalc {
         //$sql = Block::prepare_psql($material_id, $psql_date);
         $sql = Block::sample_psql();
 
-        $records = DB::connection('redshift')->select($sql)->toArray();
+        $records = DB::connection('redshift')->select($sql)->get()->toArray();
         echo '<pre>', print_r($records), '</pre>';
         
         
