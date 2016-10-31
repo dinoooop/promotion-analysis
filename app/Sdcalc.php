@@ -4,6 +4,7 @@ namespace App;
 
 use App\Calendar;
 use App\Block;
+use Illuminate\Support\Facades\DB;
 
 class Sdcalc {
 
