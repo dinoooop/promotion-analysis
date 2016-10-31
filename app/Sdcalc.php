@@ -25,11 +25,11 @@ class Sdcalc {
         //$sql = Block::prepare_psql($material_id, $psql_date);
         $sql = Block::sample_psql();
 
-        $records = DB::connection('redshift')->select($sql);
+        $records = DB::connection('redshift')->select($sql)->toArray();
         echo '<pre>', print_r($records), '</pre>';
-        exit();
         
-        //$this->csv_write($records);
+        
+        $this->csv_write($records);
     }
 
     function csv_write($records) {
