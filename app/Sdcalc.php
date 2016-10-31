@@ -20,7 +20,7 @@ class Sdcalc {
         //$header[] = Block::get_headers();
         //$list = array_merge($header, $records);
         
-        $csv = storage_path('app/sample_01.csv');
+        $csv = storage_path('app/sample_02.csv');
 
         $fp = fopen($csv, 'a+');
 

@@ -227,7 +227,7 @@ ON ms.item_id = moc.item_id
 AND ms.retailer_country_id = moc.retailer_country_id
 AND ms.date_day = moc.date_day
 WHERE
-m.material_id = {$material_id}
+m.material_id = '{$material_id}'
 AND ms.date_day BETWEEN '{$psql_date['start_date']}' AND '{$psql_date['end_date']}'";
 
         return $sql;
