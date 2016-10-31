@@ -25,7 +25,7 @@ class Sdcalc {
         //$sql = Block::prepare_psql($material_id, $psql_date);
         $sql = Block::sample_psql();
 
-        $records = DB::connection('pgsql')->select($sql);
+        $records = DB::connection('redshift')->select($sql);
         
         $this->csv_write($records);
     }
