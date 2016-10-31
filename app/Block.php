@@ -236,6 +236,7 @@ AND ms.date_day BETWEEN '{$psql_date['start_date']}' AND '{$psql_date['end_date'
     
     public static function sample_psql() {
         $sql = 'SELECT * FROM nwl_pcm.sap_material_additional LIMIT 2';
+        //$sql = 'SELECT * FROM users LIMIT 2';
         return $sql;
         
     }
