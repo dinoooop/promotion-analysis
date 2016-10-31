@@ -26,8 +26,10 @@ class Sdcalc {
         $sql = Block::sample_psql();
 
         $records = DB::connection('redshift')->select($sql);
+        echo '<pre>', print_r($records), '</pre>';
+        exit();
         
-        $this->csv_write($records);
+        //$this->csv_write($records);
     }
 
     function csv_write($records) {
