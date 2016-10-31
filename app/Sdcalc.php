@@ -6,6 +6,8 @@ use App\Calendar;
 use App\Block;
 use Illuminate\Support\Facades\DB;
 
+
+
 class Sdcalc {
 
     function input() {
@@ -24,7 +26,7 @@ class Sdcalc {
         $psql_date = $calendar->input($promo_start_date, $promo_end_date);
         //$sql = Block::prepare_psql($material_id, $psql_date);
         $sql = Block::sample_psql();
-        DB::setFetchMode(PDO::FETCH_ASSOC);
+        DB::setFetchMode(\PDO::FETCH_ASSOC);
         $records = DB::connection('redshift')->select($sql);
         
         echo '<pre>', print_r($records), '</pre>';
