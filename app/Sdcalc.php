@@ -13,8 +13,8 @@ class Sdcalc {
     function input() {
 
         $input = [
-            'start_date' => '2016-09-21',
-            'end_date' => '2016-10-12',
+            'start_date' => '2016-09-08',
+            'end_date' => '2016-09-22',
             'material_id' => '1927322'
         ];
 
@@ -24,16 +24,12 @@ class Sdcalc {
 
         $calendar = new Calendar();
         $psql_date = $calendar->input($promo_start_date, $promo_end_date);
-        //$sql = Block::prepare_psql($material_id, $psql_date);
-        $sql = Block::sample_psql();
+        $sql = Block::prepare_psql($material_id, $psql_date);
+        //$sql = Block::sample_psql();
         Config::set('database.fetch', \PDO::FETCH_ASSOC);
         $records = DB::connection('redshift')->select($sql);
         
         
-        
-        echo '<pre>', print_r($records), '</pre>';
-
-
         $this->csv_write($records);
     }
 
