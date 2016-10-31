@@ -7,20 +7,49 @@ use App\Block;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
 
-
 class Sdcalc {
 
     function input() {
+        $rec = $this->read_csv();
+        foreach ($rec as $key => $value) {
+            $this->loop($value);
+        }
+    }
 
-        $input = [
-            'start_date' => '2016-09-08',
-            'end_date' => '2016-09-22',
-            'material_id' => '1927322'
-        ];
+    function csv_write($list) {
+        //$header[] = Block::get_headers();
+        //$list = array_merge($header, $records);
+        
+        $csv = storage_path('app/sample_01.csv');
 
-        $promo_start_date = $input['start_date'];
-        $promo_end_date = $input['end_date'];
-        $material_id = $input['material_id'];
+        $fp = fopen($csv, 'a+');
+
+        foreach ($list as $fields) {
+            fputcsv($fp, $fields);
+        }
+
+        fclose($fp);
+    }
+
+    function read_csv() {
+        
+        $csv = storage_path('app/input_01.csv');
+        
+        if (($handle = fopen($csv, "r")) !== FALSE) {
+            while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+//                $num = count($data);
+                $row[] = $data;
+            }
+            fclose($handle);
+        }
+        
+        return $row;
+    }
+    
+    function loop($input) {
+        $promo_start_date = $input[0];
+        $promo_end_date = $input[1];
+        $material_id = $input[2];
 
         $calendar = new Calendar();
         $psql_date = $calendar->input($promo_start_date, $promo_end_date);
@@ -28,25 +57,8 @@ class Sdcalc {
         //$sql = Block::sample_psql();
         Config::set('database.fetch', \PDO::FETCH_ASSOC);
         $records = DB::connection('redshift')->select($sql);
-        
-        
+
         $this->csv_write($records);
-    }
-
-    function csv_write($records) {
-        $header[] = Block::get_headers();
-        $list = array_merge($header, $records);
-
-
-        $csv = storage_path('app/sample_1.csv');
-
-        $fp = fopen($csv, 'w');
-
-        foreach ($list as $fields) {
-            fputcsv($fp, $fields);
-        }
-
-        fclose($fp);
     }
 
 }
