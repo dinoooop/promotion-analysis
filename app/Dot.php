@@ -80,7 +80,7 @@ class Dot {
 
         return json_encode($new_array);
     }
-    
+
     /**
      * 
      * Convert a single class object into array
@@ -92,12 +92,24 @@ class Dot {
         foreach ($record as $key => $value) {
             $result[$key] = $value;
         }
-        
+
         return $result;
     }
-    
+
     public static function enable() {
         echo '<pre>', print_r(Stock::get('roles')), '</pre>';
+    }
+
+    public static function validate_date($date) {
+
+        $wrong = '1970-01-01';
+        $date = date('Y-m-d', strtotime($date));
+
+        if ($date == $wrong) {
+            return false;
+        }
+        
+        return true;
     }
 
 }

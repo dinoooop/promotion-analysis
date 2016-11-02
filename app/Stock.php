@@ -8,12 +8,12 @@ class Stock {
 
         switch ($key) {
             case 'roles':
-                
+
                 $system_roles = self::get('system_roles');
                 $result = array();
                 foreach ($system_roles as $key => $value) {
                     // remove public from the list
-                    if($key == 'public'){
+                    if ($key == 'public') {
                         continue;
                     }
                     $result[$key] = $value['name'];
@@ -86,6 +86,63 @@ class Stock {
 
 
         return false;
+    }
+
+    public static function psql_dayily_pos($material_id, $start_date, $end_date) {
+
+        $sql = "SELECT
+m.item_id,
+m.material_id,
+m.material_description,
+m.x_plant_matl_status,
+m.sub_segment,
+m.brand,
+m.product_platform,
+m.business_team,
+m.product_family,
+m.product_line,
+ms.date_day,
+ms.pos_sales,
+ms.pos_units,
+moc.ordered_amount,
+moc.ordered_units,
+ms.pos_shipped_cogs
+FROM nwl_pos.metric_sales AS ms
+INNER JOIN nwl_pos.dim_material AS m 
+ON ms.item_id = m.item_id 
+AND ms.retailer_country_id = m.retailer_country_id
+INNER JOIN nwl_pos.metric_online_channel AS moc 
+ON ms.item_id = moc.item_id 
+AND ms.retailer_country_id = moc.retailer_country_id
+AND ms.date_day = moc.date_day
+WHERE
+m.material_id = '{$material_id}'
+AND ms.date_day BETWEEN '{$start_date}' AND '{$end_date}'";
+
+        return $sql;
+    }
+
+    public static function sample_input() {
+
+        return [
+            'promotions_name' => 'Prime Day, 7/12/16',
+            'promotion_type' => 'Best Deal',
+            'start_date' => '12/07/2016',
+            'end_date'=> '12/07/2016',
+            'retailer_id' => 'B01ABQBYSO',
+            'material_id' => '1954840',
+            'promo_description' => '',
+            'item_name' => '',
+            'investment_d' => '$42.84',
+            'forecasted_units' => '1800',
+            'forecasted_d' => '',
+            'customer_name' => 'Amazon',
+            'level_of_promotion' => 'SKU Level',
+            'discount_price_d' => '',
+            'discount_p' => '',
+            'comments' => '',
+            'status' => 'Approved'
+        ];
     }
 
 }

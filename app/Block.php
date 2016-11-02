@@ -177,7 +177,7 @@ class Block {
             'forecast_qty',
             'fcst_investment',
             'discount',
-            'amount',
+            'discount_amount',
         ];
     }
 
@@ -201,37 +201,7 @@ class Block {
         ];
     }
 
-    public static function prepare_psql($material_id, $psql_date) {
-        $sql = "SELECT
-m.material_id,
-m.material_description,
-m.x_plant_matl_status,
-m.sub_segment,
-m.brand,
-m.product_platform,
-m.business_team,
-m.product_family,
-m.product_line,
-ms.date_day,
-ms.pos_sales,
-ms.pos_units,
-moc.ordered_amount,
-moc.ordered_units,
-ms.pos_shipped_cogs
-FROM nwl_pos.metric_sales AS ms
-INNER JOIN nwl_pos.dim_material AS m 
-ON ms.item_id = m.item_id 
-AND ms.retailer_country_id = m.retailer_country_id
-INNER JOIN nwl_pos.metric_online_channel AS moc 
-ON ms.item_id = moc.item_id 
-AND ms.retailer_country_id = moc.retailer_country_id
-AND ms.date_day = moc.date_day
-WHERE
-m.material_id = '{$material_id}'
-AND ms.date_day BETWEEN '{$psql_date['start_date']}' AND '{$psql_date['end_date']}'";
-
-        return $sql;
-    }
+    
     
     
     public static function sample_psql() {

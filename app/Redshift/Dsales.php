@@ -2,11 +2,7 @@
 
 namespace App;
 
-
-use Illuminate\Database\Eloquent\Model;
-use App\Merge;
-
-class Sdcalc extends Model {
+class Dsales extends Eloquent {
 
     protected $table = 'promo_date';
     protected $guarded = array('id');
