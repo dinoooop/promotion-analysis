@@ -28,8 +28,8 @@ class Dsales extends Model {
 
     function generate() {
         $item_id = 65413983;
-        $start = '2016-10-01';
-        $end = '2016-10-31';
+        $start = '2016-01-01';
+        $end = '2016-12-31';
         $sql = "SELECT * FROM nwl_pos.metric_sales WHERE item_id = '{$item_id}' AND date_day BETWEEN '{$start}' AND '{$end}'";
 
         Config::set('database.fetch', \PDO::FETCH_ASSOC);
