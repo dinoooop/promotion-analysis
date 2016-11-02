@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Config;
 class Dmaterial extends Model {
 
     protected $table = 'redshift_dim_material';
+    public $timestamps = false;
     protected $fillable = [
         'insert_pid',
         'insert_ts',
