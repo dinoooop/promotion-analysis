@@ -90,21 +90,49 @@ class Printm {
 -	update_pid
 -	update_ts
 -	insert_key
--	item_id
+-	item_id 
 -	retailer_country_id 
 -	date_day 
--	channel_attribute_id 
--	pos_sales 
--	pos_units 
--	pos_shipped_cogs 
--	retailer_list_price';
+-	channel_attribute_id
+-	unfilled_ordered_units
+-	pre_order_sales_price
+-	pre_order_amount
+-	pre_order_sales_rank
+-	pre_order_units
+-	pre_order_quantity_rank
+-	orders
+-	ordered_sales_rank
+-	ordered_units
+-	ordered_amount
+-	ordered_units_rank
+-	shipped_sales_rank
+-	shipped_units_rank
+-	cat_average_selling_price
+-	cat_perorder_sales_rank
+-	cat_perorder_units_rank
+-	cat_ordered_sales_rank
+-	cat_ordered_units_rank
+-	cat_shipped_sales_rank
+-	cat_shipped_units_rank
+-	subcat_perorder_sales_rank
+-	subcat_perorder_units_rank
+-	subcat_ordered_sales_rank
+-	subcat_ordered_units_rank
+-	subcat_shipped_sales_rank
+-	subcat_shipped_units_rank
+-	avg_customer_review
+-	conversion_percentile
+-	customer_reviews
+-	page_view_index
+-	page_view_rank
+-	unique_visitor_index ';
         $ex_str = explode('-', $str);
         
         echo '[';
         foreach ($ex_str as $key => $value) {
             $value = trim($value);
-            //echo '$table->string(\'' . $value . '\');<br>';
-            echo '\'' . $value . '\',<br>';
+            echo '$table->string(\'' . $value . '\');<br>';
+            //echo '\'' . $value . '\',<br>';
         }
         echo ']';
     }

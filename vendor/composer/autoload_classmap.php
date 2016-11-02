@@ -529,6 +529,7 @@ return array(
     'SebastianBergmann\\RecursionContext\\InvalidArgumentException' => $vendorDir . '/sebastian/recursion-context/src/InvalidArgumentException.php',
     'SebastianBergmann\\ResourceOperations\\ResourceOperations' => $vendorDir . '/sebastian/resource-operations/src/ResourceOperations.php',
     'SebastianBergmann\\Version' => $vendorDir . '/sebastian/version/src/Version.php',
+    'TableMetricOnlineChannel' => $baseDir . '/database/migrations/2016_11_02_130905_table_metric_online_channel.php',
     'TableMetricSales' => $baseDir . '/database/migrations/2016_11_02_122744_table_metric_sales.php',
     'TablePromoDate' => $baseDir . '/database/migrations/2016_11_02_072158_table_promo_date.php',
     'TablePromoInput' => $baseDir . '/database/migrations/2016_11_01_075606_table_promo_input.php',

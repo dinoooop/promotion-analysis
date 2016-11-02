@@ -11,6 +11,7 @@ use App\Calendar;
 use App\Printm;
 use App\Redshift\Dmaterial;
 use App\Redshift\Dsales;
+use App\Redshift\Dchannel;
 use Illuminate\Support\Facades\DB;
 
 class TestController extends BaseController {
@@ -22,17 +23,19 @@ class TestController extends BaseController {
         $this->printm = new Printm;
         $this->dmaterial = new Dmaterial;
         $this->dsales = new Dsales;
+        $this->dchannel = new Dchannel;
     }
     
     function test() {
         //$this->calendar->get_quarter('2017-10-07');
         //$this->dmaterial->generate();
-        $this->dsales->generate();
-        exit();
+        $this->dchannel->generate();
+        
     }
     
     function local_test() {
-        $this->printm->print_drop_table_psql();
+        
+        $this->printm->print_array();
     }
     
 
