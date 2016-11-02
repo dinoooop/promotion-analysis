@@ -24,9 +24,12 @@ class TestController extends BaseController {
     
     function test() {
         //$this->calendar->get_quarter('2017-10-07');
-        //$this->dmaterial->generate();
-        $this->printm->print_drop_table_psql();
+        $this->dmaterial->generate();
         exit();
+    }
+    
+    function local_test($param) {
+        $this->printm->print_drop_table_psql();
     }
     
 
