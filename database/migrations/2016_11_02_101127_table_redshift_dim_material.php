@@ -13,6 +13,7 @@ class TableRedshiftDimMaterial extends Migration {
      */
     public function up() {
         Schema::create('redshift_dim_material', function (Blueprint $table) {
+            $table->bigIncrements('id');
             $table->string('insert_pid');
             $table->string('insert_ts');
             $table->string('update_pid');

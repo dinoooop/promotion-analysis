@@ -10,6 +10,7 @@ class Dmaterial extends Model {
 
     protected $table = 'redshift_dim_material';
     public $timestamps = false;
+    protected $guarded = array('id');
     protected $fillable = [
         'insert_pid',
         'insert_ts',
