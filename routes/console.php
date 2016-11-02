@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Inspiring;
+use App\Redshift\Dchannel;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +17,10 @@ use Illuminate\Foundation\Inspiring;
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->describe('Display an inspiring quote');
+
+
+Artisan::command('redshiftimport', function () {
+    $this->comment("Starting redshift data import ...");
+    $dchannel = new Dchannel;
+    $dchannel->generate();
+})->describe('Importing redshift data');

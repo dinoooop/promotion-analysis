@@ -37,6 +37,6 @@ class FooCommand extends Command
      */
     public function handle()
     {
-        //
+        echo 'test';
     }
 }

@@ -68,11 +68,16 @@ class Dchannel extends Model {
         $records = DB::connection('redshift')->select($sql);
         //$records = $this->sample_data();
 
+        echo "\n total record is \n" . count($records);
+        
         foreach ($records as $key => $value) {
+            echo '-';
             self::create($value);
         }
+        
+        echo "completed... \n";
 
-        echo '<br> total record is ' . count($records);
+        
     }
 
 }
