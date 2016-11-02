@@ -12,7 +12,7 @@ class TableRedshiftDimMaterial extends Migration {
      * @return void
      */
     public function up() {
-        Schema::create('redshift_dim_material', function (Blueprint $table) {
+        Schema::create('nwl_pos.dim_material', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('insert_pid');
             $table->string('insert_ts');
@@ -45,7 +45,7 @@ class TableRedshiftDimMaterial extends Migration {
      * @return void
      */
     public function down() {
-        Schema::drop('redshift_dim_material');
+        Schema::drop('nwl_pos.dim_material');
     }
 
 }

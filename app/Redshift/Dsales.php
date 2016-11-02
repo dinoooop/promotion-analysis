@@ -4,7 +4,7 @@ namespace App;
 
 class Dsales extends Eloquent {
 
-    protected $table = 'promo_date';
+    protected $table = 'metric_sales';
     protected $guarded = array('id');
     protected $fillable = [
         'item_id',

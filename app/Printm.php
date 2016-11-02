@@ -24,6 +24,25 @@ class Printm {
             echo $sat . '<br>';
         }
     }
+    
+    function print_drop_table_psql() {
+        $table_using = [
+            'migrations',
+            'password_resets',
+            'promo_date',
+            'promo_input',
+            'promo_items',
+            'redshift_dim_material',
+            'users',
+        ];
+        
+        $psql = '';
+        foreach ($table_using as $key => $value) {
+            $psql .=  "DROP TABLE IF EXISTS {$value};";
+        }
+        
+        echo $psql;
+    }
 
     /**
      * Create sample redshift dim_metric_sale

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Config;
 
 class Dmaterial extends Model {
 
-    protected $table = 'redshift_dim_material';
+    protected $table = 'nwl_pos.dim_material';
     public $timestamps = false;
     protected $guarded = array('id');
     protected $fillable = [
