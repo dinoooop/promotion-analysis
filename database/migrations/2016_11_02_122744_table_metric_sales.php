@@ -12,7 +12,7 @@ class TableMetricSales extends Migration {
      * @return void
      */
     public function up() {
-        Schema::create('nwl_pos.dim_material', function (Blueprint $table) {
+        Schema::create('nwl_pos.metric_sales', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('insert_pid');
             $table->string('insert_ts');
@@ -36,7 +36,7 @@ class TableMetricSales extends Migration {
      * @return void
      */
     public function down() {
-        Schema::drop('nwl_pos.dim_material');
+        Schema::drop('nwl_pos.metric_sales');
     }
 
 }

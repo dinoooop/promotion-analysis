@@ -34,6 +34,8 @@ class Printm {
             'promo_items',
             'redshift_dim_material',
             'users',
+            'nwl_pos.metric_sales',
+            'nwl_pos.dim_material',
         ];
         
         $psql = '';
