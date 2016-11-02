@@ -10,6 +10,7 @@ use App\RawData;
 use App\Calendar;
 use App\Printm;
 use App\Redshift\Dmaterial;
+use App\Redshift\Dsales;
 use Illuminate\Support\Facades\DB;
 
 class TestController extends BaseController {
@@ -20,16 +21,18 @@ class TestController extends BaseController {
         $this->calendar = new Calendar;
         $this->printm = new Printm;
         $this->dmaterial = new Dmaterial;
+        $this->dsales = new Dsales;
     }
     
     function test() {
         //$this->calendar->get_quarter('2017-10-07');
-        $this->dmaterial->generate();
+        //$this->dmaterial->generate();
+        $this->dsales->generate();
         exit();
     }
     
-    function local_test($param) {
-        $this->printm->print_drop_table_psql();
+    function local_test() {
+        $this->printm->print_array();
     }
     
 

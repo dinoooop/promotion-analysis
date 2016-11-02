@@ -1,31 +1,46 @@
 <?php
 
-namespace App;
+namespace App\Redshift;
 
-class Dsales extends Eloquent {
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Config;
 
-    protected $table = 'metric_sales';
+class Dsales extends Model {
+
+    protected $table = 'nwl_pos.metric_sales';
+    public $timestamps = false;
     protected $guarded = array('id');
-    protected $fillable = [
+    protected $fillable = ['insert_pid',
+        'insert_ts',
+        'update_pid',
+        'update_ts',
+        'insert_key',
         'item_id',
-        'week',
-        'quarter',
-        'date',
+        'retailer_country_id',
+        'date_day',
+        'channel_attribute_id',
         'pos_sales',
-        'pos_qty',
-        'ordered_amount',
-        'ordered_units',
-        'pos_shipped_cog_sold',
-        'ordered_cogs',
+        'pos_units',
+        'pos_shipped_cogs',
+        'retailer_list_price',
     ];
 
-    function calc($find, $input) {
+    function generate() {
+        $item_id = 65413983;
+        $start = '2016-10-01';
+        $end = '2016-10-31';
+        $sql = "SELECT * FROM nwl_pos.metric_sales WHERE item_id = '{$item_id}' AND date_day BETWEEN '{$start}' AND '{$end}'";
 
-        switch ($find) {
-            case 'ordered_cogs':
-                return ($input['pos_shipped_cog_sold'] / $input['pos_qty']) * $input['ordered_units'];
-                break;
+        Config::set('database.fetch', \PDO::FETCH_ASSOC);
+        $records = DB::connection('redshift')->select($sql);
+        //$records = $this->sample_data();
+
+        foreach ($records as $key => $value) {
+            self::create($value);
         }
     }
+
+    
 
 }

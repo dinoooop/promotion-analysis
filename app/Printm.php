@@ -87,30 +87,22 @@ class Printm {
 -	insert_ts
 -	update_pid
 -	update_ts
+-	insert_key
 -	item_id
--	retailer_country_id
--	material_id     
--	material_description        
--	description1       
--	brand   
--	sub_brand 
--	division  
--	segment   
--	sub_segment   
--	business_team
--	product_family  
--	product_line
--	product_platform
--	retailer_sku
--	retailer_upc
--	x_plant_matl_status
--	x_plant_valid_from';
+-	retailer_country_id 
+-	date_day 
+-	channel_attribute_id 
+-	pos_sales 
+-	pos_units 
+-	pos_shipped_cogs 
+-	retailer_list_price';
         $ex_str = explode('-', $str);
         
         echo '[';
         foreach ($ex_str as $key => $value) {
             $value = trim($value);
-            echo '$table->string(\'' . $value . '\');<br>';
+            //echo '$table->string(\'' . $value . '\');<br>';
+            echo '\'' . $value . '\',<br>';
         }
         echo ']';
     }

@@ -16,6 +16,7 @@ Route::get('/', function () {
 });
 
 Route::get('test', 'TestController@test');
+Route::get('local-test', 'TestController@local_test');
 Route::any('admin', 'UsersController@login');
 Route::get('admin/logout', 'UsersController@logout');
 Route::get('admin/profile', 'UsersController@profile');
