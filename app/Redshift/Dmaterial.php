@@ -37,6 +37,7 @@ class Dmaterial extends Model {
     function generate() {
         $material_id = 1954840;
         $sql = "SELECT * FROM nwl_pos.metric_sales WHERE material_id = '{$material_id}' LIMIT 1";
+        echo $sql;
         
         Config::set('database.fetch', \PDO::FETCH_ASSOC);
         $records = DB::connection('redshift')->select($sql);

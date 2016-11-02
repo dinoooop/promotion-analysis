@@ -9,6 +9,7 @@ use App\Merge;
 use App\RawData;
 use App\Calendar;
 use App\Printm;
+use App\Redshift\Dmaterial;
 use Illuminate\Support\Facades\DB;
 
 class TestController extends BaseController {
@@ -18,11 +19,12 @@ class TestController extends BaseController {
         $this->rawdata = new RawData;
         $this->calendar = new Calendar;
         $this->printm = new Printm;
+        $this->dmaterial = new Dmaterial;
     }
     
     function test() {
         //$this->calendar->get_quarter('2017-10-07');
-        $this->printm->print_array();
+        $this->dmaterial->generate();
         exit();
     }
     
