@@ -39,6 +39,8 @@ class Dsales extends Model {
         foreach ($records as $key => $value) {
             self::create($value);
         }
+        
+        echo '<br> total record is ' . count($records);
     }
 
     
