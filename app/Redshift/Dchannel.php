@@ -57,27 +57,38 @@ class Dchannel extends Model {
 
     function generate() {
 
+        Config::set('database.fetch', \PDO::FETCH_ASSOC);
+
         $country_id = 3301;
         $start = '2016-01-01';
         $end = '2016-12-31';
 
-
-        $sql = "SELECT * FROM nwl_pos.metric_online_channel WHERE retailer_country_id = {$country_id} AND date_day BETWEEN '{$start}' AND '{$end}'";
-
-        Config::set('database.fetch', \PDO::FETCH_ASSOC);
-        $records = DB::connection('redshift')->select($sql);
-        //$records = $this->sample_data();
-
-        echo "\n total record is \n" . count($records);
+        $page_num = 1;
+        $limit = 100;
         
-        foreach ($records as $key => $value) {
-            echo '-';
-            self::create($value);
+        
+        $sql = "SELECT COUNT(*) FROM nwl_pos.metric_online_channel WHERE retailer_country_id = {$country_id} AND date_day BETWEEN '{$start}' AND '{$end}'";
+        $estimated_records = DB::connection('redshift')->select($sql);
+        $estimated_records = $estimated_records[0]['count'];
+        $loop_count = floor($estimated_records / $limit) - 1;
+        
+        echo "\n Estimated record count is " . $loop_count . "\n";
+
+        for ($i = 0; $i <= $loop_count; $i++) {
+            
+            $offset = ($page_num - 1) * $limit;
+            $sql = "SELECT * FROM nwl_pos.metric_online_channel WHERE retailer_country_id = {$country_id} AND date_day BETWEEN '{$start}' AND '{$end}' ORDER BY date_day LIMIT {$limit} OFFSET {$offset}";
+            $records = DB::connection('redshift')->select($sql);
+            
+            foreach ($records as $key => $value) {
+                echo "{$value['date_day']} \n";
+                self::create($value);
+            }
+            
+            $page_num++;
         }
-        
-        echo "completed... \n";
 
-        
+        echo "completed... \n";
     }
 
 }
