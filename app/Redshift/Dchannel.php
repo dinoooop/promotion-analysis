@@ -64,7 +64,7 @@ class Dchannel extends Model {
         $end = '2016-12-31';
 
         $page_num = 1;
-        $limit = 100;
+        $limit = 10000;
         
         
         $sql = "SELECT COUNT(*) FROM nwl_pos.metric_online_channel WHERE retailer_country_id = {$country_id} AND date_day BETWEEN '{$start}' AND '{$end}'";
@@ -72,16 +72,18 @@ class Dchannel extends Model {
         $estimated_records = $estimated_records[0]['count'];
         $loop_count = floor($estimated_records / $limit) - 1;
         
-        echo "\n Estimated record count is " . $loop_count . "\n";
+        echo "\n Estimated record count is " . $estimated_records . "\n";
+        echo "Estimated loop count is " . $loop_count . "\n";
 
         for ($i = 0; $i <= $loop_count; $i++) {
+            echo "{$page_num} \t";
             
             $offset = ($page_num - 1) * $limit;
             $sql = "SELECT * FROM nwl_pos.metric_online_channel WHERE retailer_country_id = {$country_id} AND date_day BETWEEN '{$start}' AND '{$end}' ORDER BY date_day LIMIT {$limit} OFFSET {$offset}";
             $records = DB::connection('redshift')->select($sql);
             
             foreach ($records as $key => $value) {
-                echo "{$value['date_day']} \n";
+                
                 self::create($value);
             }
             
