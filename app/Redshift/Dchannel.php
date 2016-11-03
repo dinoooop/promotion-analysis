@@ -66,7 +66,6 @@ class Dchannel extends Model {
         $page_num = 1;
         $limit = 10000;
         
-        
         $sql = "SELECT COUNT(*) FROM nwl_pos.metric_online_channel WHERE retailer_country_id = {$country_id} AND date_day BETWEEN '{$start}' AND '{$end}'";
         $estimated_records = DB::connection('redshift')->select($sql);
         $estimated_records = $estimated_records[0]['count'];

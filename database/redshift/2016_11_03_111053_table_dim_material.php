@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class TableRedshiftDimMaterial extends Migration {
+class TableDimMaterial extends Migration {
 
     /**
      * Run the migrations.
@@ -15,11 +15,11 @@ class TableRedshiftDimMaterial extends Migration {
         Schema::create('nwl_pos.dim_material', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('insert_pid');
-            $table->string('insert_ts');
+            $table->dateTime('insert_ts');
             $table->string('update_pid');
-            $table->string('update_ts');
-            $table->string('item_id');
-            $table->string('retailer_country_id');
+            $table->dateTime('update_ts');
+            $table->integer('item_id');
+            $table->integer('retailer_country_id');
             $table->string('material_id');
             $table->string('material_description');
             $table->string('description1');

@@ -37,17 +37,19 @@ class Dmaterial extends Model {
     ];
 
     function generate() {
+        
+        Config::set('database.fetch', \PDO::FETCH_ASSOC);
+        
         $material_id = 1954840;
         $sql = "SELECT * FROM nwl_pos.dim_material WHERE material_id = '{$material_id}' LIMIT 1";
-        echo $sql;
-
-        Config::set('database.fetch', \PDO::FETCH_ASSOC);
+        
         $records = DB::connection('redshift')->select($sql);
-        //$records = $this->sample_data();
-
+        
         foreach ($records as $key => $value) {
             self::create($value);
         }
+        
+        echo "\n completed";
     }
 
     function sample_data() {

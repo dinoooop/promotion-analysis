@@ -32,10 +32,10 @@ class Printm {
             'promo_date',
             'promo_input',
             'promo_items',
-            'redshift_dim_material',
             'users',
             'nwl_pos.metric_sales',
             'nwl_pos.dim_material',
+            'nwl_pos.metric_online_channel',
         ];
         
         $psql = '';

@@ -2,7 +2,12 @@
 
 namespace App;
 
-class Swcalc extends Eloquent {
+use Illuminate\Database\Eloquent\Model;
+use App\Sdcalc;
+use App\Redshift\Dsales;
+use Illuminate\Support\Facades\Log;
+
+class Swcalc extends Model {
 
     protected $table = 'promo_week';
     protected $guarded = array('id');
@@ -20,5 +25,13 @@ class Swcalc extends Eloquent {
         'normalized_ordered_units',
         'normalized_ordered_cogs',
     ];
+
+    function calc() {
+        $test = Dsales::select()
+                ->where('item_id', 65413983)
+                ->sum('pos_sales');
+        echo '<pre>', print_r($test), '</pre>';
+        exit();
+    }
 
 }

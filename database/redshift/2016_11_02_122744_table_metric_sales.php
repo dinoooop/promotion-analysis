@@ -15,18 +15,19 @@ class TableMetricSales extends Migration {
         Schema::create('nwl_pos.metric_sales', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('insert_pid');
-            $table->string('insert_ts');
+            $table->dateTime('insert_ts');
             $table->string('update_pid');
-            $table->string('update_ts');
+            $table->dateTime('update_ts');
             $table->string('insert_key');
-            $table->string('item_id');
-            $table->string('retailer_country_id');
-            $table->string('date_day');
-            $table->string('channel_attribute_id');
-            $table->string('pos_sales');
-            $table->string('pos_units');
-            $table->string('pos_shipped_cogs');
-            $table->string('retailer_list_price');
+            $table->integer('item_id');
+            $table->integer('retailer_country_id');
+            $table->date('date_day');
+            $table->integer('channel_attribute_id');
+            $table->float('pos_sales', 10, 2);
+            $table->integer('pos_units');
+            $table->float('pos_shipped_cog_sold', 10, 2);
+            $table->float('retailer_list_price', 10, 2);
+            
         });
     }
 

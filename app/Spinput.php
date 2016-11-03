@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Dot;
 use App\Merge;
 
 class Spinput extends Model {
@@ -30,13 +31,12 @@ class Spinput extends Model {
     ];
 
     private $merge;
-    private $calendar;
+    public $data;
 
-    function set_input($input) {
+    function set_vars($input) {
 
         $this->merge = new Merge;
-        $this->calendar = new Calendar;
-        $this->input = $this->sanitize($input);
+        $this->data = $this->sanitize($input);
 
 
         $this->validate = $this->validate();
@@ -44,39 +44,20 @@ class Spinput extends Model {
         if (!$this->validate) {
             return false;
         }
-
-        //self::create($this->input);
-
-        $this->start_date = $this->input['start_date'];
-        $this->end_date = $this->input['end_date'];
         
-        $this->set_psql_where_id();
-        $this->set_psql_where_date();
-        $this->psql_daily = Stock::psql_dayily_pos($this->where_id, $this->where_date);
+        $this->is_single_day_promo = ($this->data['start_date'] == $this->data['end_date']);
+        
+        self::create($this->data);
+        
     }
-
-    function set_psql_where_id() {
-        if (isset($this->input['material_id']) && $this->input['material_id'] != '') {
-            $this->material_id = $this->input['material_id'];
-            $this->where_id = "m.material_id = '{$this->material_id}'";
-        } elseif (isset($this->input['retailer_id']) && $this->input['retailer_id'] != '') {
-            $this->retailer_id = $this->input['retailer_id'];
-            $this->where_id = " m.retailer_id = '{$this->retailer_id}' ";
-        }
-    }
-
-    function set_psql_where_date() {
-        $this->quarter = $this->calendar->get_quarter($this->start_date);
-        $this->where_date =  " BETWEEN '{$this->quarter['start']}' AND '{$this->quarter['end']}' ";
-    }
-
+    
     function validate() {
 
-        if (!Dot::validate_date($this->input['start_date']) || !Dot::validate_date($this->input['end_date'])) {
+        if (!Dot::validate_date($this->data['start_date']) || !Dot::validate_date($this->data['end_date'])) {
             return false;
         }
 
-        if ($this->input['start_date'] > $this->input['end_date']) {
+        if ($this->data['start_date'] >= $this->data['end_date']) {
             return false;
         }
         return true;
@@ -103,5 +84,8 @@ class Spinput extends Model {
             'status' => $input['status'],
         ];
     }
+    
+   
+    
 
 }

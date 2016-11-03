@@ -6,6 +6,7 @@ use App\Calendar;
 use App\Block;
 use App\Stock;
 use App\Sdcalc;
+use App\Smaterial;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
 
@@ -13,68 +14,44 @@ class RawData {
     
     private $calendar;
     private $sdcalc;
+    private $smaterial;
 
 
     public function __construct() {
         $this->calendar = new Calendar;
-        $this->sdcalc = new Sdcalc;
+        
         
         
     }
 
-    function input_test() {
+    function process() {
+        
+        Config::set('database.fetch', \PDO::FETCH_ASSOC);
         //$rec = $this->read_csv();
         $input = Stock::sample_input();
         
         $this->input = new Spinput;
-        $this->input->set_input($input);
+        $this->sdcalc = new Sdcalc;
+        $this->smaterial = new Smaterial;
         
+        
+        $this->input->set_vars($input);
         
         if (!$this->input->validate) {
+            Log::info('The given input is not valid');
             return false;
         }
         
+        $this->sdcalc->set_vars($this->input->data);
+        
+        $this->smaterial->create_record($this->sdcalc->record_one);
+        $this->sdcalc->save_records($this->sdcalc->records);
+        
+//        $this->swcalc->set_vars($this->sdcalc->data);
+//        $this->swcalc->save_records();
         
         
-        Config::set('database.fetch', \PDO::FETCH_ASSOC);
-        $record = DB::connection('redshift')->select($this->input->psql_daily);
         
-        // CREATE MATERIAL
-        $row = [    
-            'item_id' => $record['item_id'],
-            'material_id' => $record['material_id'],
-            'retailer_id' => $record['retailer_id'],
-            'material_description' => $record['material_description'],
-            'x_plant_material_status' => $record['x_plant_material_status'],
-            'segment' => $record['segment'],
-            'brand' => $record['brand'],
-            'prod_platform' => $record['prod_platform'],
-            'prod_category' => $record['prod_category'],
-            'prod_fam' => $record['prod_fam'],
-            'prod_line' => $record['prod_line'],
-            'retailer' => $record['retailer'],
-        ];
-
-        Smaterial::create($row);
-        
-        // CREAT DAILY POS
-        $row = [    
-            'item_id' => $record['item_id'],
-            'week' => $this->calendar->get_week_sat($record['date']),
-            'quarter' => $this->input->quarter['quarter'],
-            'date' => date('Y-m-d', strtotime($record['date'])),
-            'pos_sales' => $record['pos_sales'],
-            'pos_qty' => $record['pos_qty'],
-            'ordered_amount' => $record['ordered_amount'],
-            'ordered_units' => $record['ordered_units'],
-            'pos_shipped_cog_sold' => $record['pos_shipped_cog_sold'],
-            'ordered_cogs' => $this->sdcalc->calc('ordered_cogs', $record),
-        ];
-        
-        Sdcalc::create($row);
-        
-        
-        //$this->csv_write($records);
     }
 
     function csv_write($list) {
@@ -105,15 +82,5 @@ class RawData {
 
         return $row;
     }
-
-    function loop($input) {
-
-
-        
-    }
-    
-    
-    
-    
 
 }

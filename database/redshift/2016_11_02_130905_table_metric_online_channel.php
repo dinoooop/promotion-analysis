@@ -15,14 +15,14 @@ class TableMetricOnlineChannel extends Migration {
         Schema::create('nwl_pos.metric_online_channel', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('insert_pid');
-            $table->string('insert_ts');
+            $table->dateTime('insert_ts');
             $table->string('update_pid');
-            $table->string('update_ts');
+            $table->dateTime('update_ts');
             $table->string('insert_key');
-            $table->string('item_id');
-            $table->string('retailer_country_id');
-            $table->string('date_day');
-            $table->string('channel_attribute_id');
+            $table->integer('item_id');
+            $table->integer('retailer_country_id');
+            $table->date('date_day');
+            $table->integer('channel_attribute_id');
             $table->string('unfilled_ordered_units');
             $table->string('pre_order_sales_price');
             $table->string('pre_order_amount');
@@ -31,8 +31,8 @@ class TableMetricOnlineChannel extends Migration {
             $table->string('pre_order_quantity_rank');
             $table->string('orders');
             $table->string('ordered_sales_rank');
-            $table->string('ordered_units');
-            $table->string('ordered_amount');
+            $table->integer('ordered_units');
+            $table->float('ordered_amount', 10, 2);
             $table->string('ordered_units_rank');
             $table->string('shipped_sales_rank');
             $table->string('shipped_units_rank');

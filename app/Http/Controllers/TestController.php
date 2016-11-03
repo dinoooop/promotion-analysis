@@ -35,7 +35,9 @@ class TestController extends BaseController {
     
     function local_test() {
         
-        $this->printm->print_array();
+        $this->printm->print_drop_table_psql();
+        
+        
     }
     
 
