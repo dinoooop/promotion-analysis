@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Config;
 class Dsales extends Model {
 
     protected $table = 'nwl_pos.metric_sales';
-    protected $connection = 'redshift';
+    //protected $connection = 'redshift';
     public $timestamps = false;
     protected $guarded = array('id');
     protected $fillable = ['insert_pid',
