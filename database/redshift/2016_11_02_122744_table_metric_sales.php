@@ -25,7 +25,7 @@ class TableMetricSales extends Migration {
             $table->integer('channel_attribute_id');
             $table->float('pos_sales', 10, 2);
             $table->integer('pos_units');
-            $table->float('pos_shipped_cog_sold', 10, 2);
+            $table->float('pos_shipped_cogs', 10, 2);
             $table->float('retailer_list_price', 10, 2);
             
         });

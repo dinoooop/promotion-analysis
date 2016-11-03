@@ -12,7 +12,8 @@ class Dsales extends Model {
     //protected $connection = 'redshift';
     public $timestamps = false;
     protected $guarded = array('id');
-    protected $fillable = ['insert_pid',
+    protected $fillable = [
+        'insert_pid',
         'insert_ts',
         'update_pid',
         'update_ts',
