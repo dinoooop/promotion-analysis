@@ -16,7 +16,14 @@ class Merge {
     }
     
     
-    
+    function create_sum_select_raw($array){
+        $str = [];
+        foreach ($array as $key => $value) {
+            $str[]= "sum({$value}) as {$value}";
+        }
+        
+        return implode(', ', $str);
+    }
     
 
 }

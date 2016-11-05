@@ -14,9 +14,7 @@ class TablePromoItems extends Migration {
     public function up() {
         Schema::create('promo_items', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('item_id');
-            $table->string('material_id');
-            $table->string('retailer_id');
+            $table->integer('promo_id');
             $table->text('material_description');
             $table->string('x_plant_material_status');
             $table->string('segment');
@@ -25,7 +23,6 @@ class TablePromoItems extends Migration {
             $table->string('prod_category');
             $table->string('prod_fam');
             $table->string('prod_line');
-            $table->string('retailer');
         });
     }
 

@@ -87,10 +87,9 @@ class Stock {
 
         return false;
     }
-    
-    
+
     public static function psql_weekly_pos() {
-        
+
         $sql = "SELECT
 m.item_id,
 m.material_id,
@@ -113,14 +112,13 @@ m.material_id = '{$material_id}'
 AND ms.date_day BETWEEN '{$start_date}' AND '{$end_date}'";
 
         return $sql;
-        
     }
 
     public static function psql_dayily_pos($where_id, $where_date) {
 
         $sql = "SELECT
-m.item_id,
 m.material_id,
+m.retailer_sku AS retailer_id,
 m.material_description,
 m.x_plant_matl_status,
 m.sub_segment,
@@ -138,15 +136,15 @@ ms.pos_shipped_cogs
 FROM nwl_pos.metric_sales AS ms
 INNER JOIN nwl_pos.dim_material AS m 
 ON ms.item_id = m.item_id 
-AND ms.retailer_country_id = m.retailer_country_id
 INNER JOIN nwl_pos.metric_online_channel AS moc 
 ON ms.item_id = moc.item_id 
 AND ms.retailer_country_id = moc.retailer_country_id
 AND ms.date_day = moc.date_day
-WHERE {$where_id} AND {$where_date}";
+WHERE {$where_id} AND ms.date_day {$where_date}";
 
         return $sql;
     }
+
     public static function psql_dayily_pos_bkp01($material_id, $start_date, $end_date) {
 
         $sql = "SELECT
@@ -180,7 +178,7 @@ AND ms.date_day BETWEEN '{$start_date}' AND '{$end_date}'";
 
         return $sql;
     }
-    
+
     public static function functionName() {
         $sql = "Select * FROM nwl_pos.dim_material WHERE material_id = '{$where_id}'";
     }
@@ -190,8 +188,8 @@ AND ms.date_day BETWEEN '{$start_date}' AND '{$end_date}'";
         return [
             'promotions_name' => 'Prime Day, 7/12/16',
             'promotion_type' => 'Best Deal',
-            'start_date' => '12/07/2016',
-            'end_date'=> '12/07/2016',
+            'start_date' => '07/12/2016',// July 12
+            'end_date' => '07/12/2016',// July 12
             'retailer_id' => 'B01ABQBYSO',
             'material_id' => '1954840',
             'promo_description' => '',

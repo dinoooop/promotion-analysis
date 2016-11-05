@@ -22,13 +22,13 @@ class TablePromoInput extends Migration {
             $table->date('end_date');
             $table->text('promo_description');
             $table->string('item_name');
-            $table->float('investment_d', 8, 2);
+            $table->float('investment_d', 10, 2);
             $table->integer('forecasted_units');
-            $table->float('forecasted_d', 8, 2);
+            $table->float('forecasted_d', 10, 2);
             $table->string('customer_name');
             $table->string('level_of_promotion');
-            $table->float('discount_price_d', 8, 2);
-            $table->float('discount_p', 5, 2);
+            $table->float('discount_price_d', 10, 2);
+            $table->float('discount_p', 10, 2);
             $table->string('comments');
             $table->string('status');
             $table->timestamps();

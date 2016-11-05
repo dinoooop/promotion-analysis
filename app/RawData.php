@@ -5,10 +5,14 @@ namespace App;
 use App\Calendar;
 use App\Block;
 use App\Stock;
-use App\Sdcalc;
 use App\Smaterial;
+use App\Spinput;
+use App\Sdcalc;
+use App\Swcalc;
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Log;
 
 class RawData {
     
@@ -26,31 +30,36 @@ class RawData {
 
     function process() {
         
+        echo "\n";
+        
         Config::set('database.fetch', \PDO::FETCH_ASSOC);
         //$rec = $this->read_csv();
         $input = Stock::sample_input();
         
-        $this->input = new Spinput;
+        $this->spinput = new Spinput;
         $this->sdcalc = new Sdcalc;
+        $this->swcalc = new Swcalc;
         $this->smaterial = new Smaterial;
         
         
-        $this->input->set_vars($input);
+        $this->spinput->set_vars($input);
         
-        if (!$this->input->validate) {
-            Log::info('The given input is not valid');
+        if (!$this->spinput->validate) {
+            echo "The given input is not valid \n";
             return false;
         }
         
-        $this->sdcalc->set_vars($this->input->data);
+        echo "The given input is valid \n";
         
-        $this->smaterial->create_record($this->sdcalc->record_one);
-        $this->sdcalc->save_records($this->sdcalc->records);
+        $this->sdcalc->set_vars($this->spinput);
         
-//        $this->swcalc->set_vars($this->sdcalc->data);
-//        $this->swcalc->save_records();
+        $this->smaterial->set_vars($this->sdcalc);
+        echo "material created\n";
         
-        
+        if($this->sdcalc->record_count){
+            $this->swcalc->set_vars($this->sdcalc);
+            echo "Var set for swcalc \n";
+        }
         
     }
 

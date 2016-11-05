@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Routing\Controller as BaseController;
 use App\Dot;
 use App\Sdcalc;
+use App\Swcalc;
 use App\Merge;
 use App\RawData;
 use App\Calendar;
@@ -24,22 +25,22 @@ class TestController extends BaseController {
         $this->dmaterial = new Dmaterial;
         $this->dsales = new Dsales;
         $this->dchannel = new Dchannel;
+        $this->swcalc = new Swcalc;
     }
-    
+
     function test() {
-        //$this->calendar->get_quarter('2017-10-07');
+        //$this->calendar->quarter_weeks();
         //$this->dmaterial->generate();
-        $this->dchannel->generate();
+        //$this->dchannel->generate();
+
+        $this->rawdata->process();
         
     }
-    
+
     function local_test() {
-        
+
         $this->printm->print_drop_table_psql();
-        
-        
     }
-    
 
     function test_02() {
         

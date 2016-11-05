@@ -29,13 +29,14 @@ class Printm {
         $table_using = [
             'migrations',
             'password_resets',
-            'promo_date',
+            'users',
             'promo_input',
             'promo_items',
-            'users',
-            'nwl_pos.metric_sales',
-            'nwl_pos.dim_material',
-            'nwl_pos.metric_online_channel',
+            'promo_date',
+            'promo_week',
+            //'nwl_pos.metric_sales',
+            //'nwl_pos.dim_material',
+            //'nwl_pos.metric_online_channel',
         ];
         
         $psql = '';
@@ -85,56 +86,31 @@ class Printm {
 
     function print_array() {
 
-        $str = 'insert_pid
--	insert_ts
--	update_pid
--	update_ts
--	insert_key
--	item_id 
--	retailer_country_id 
--	date_day 
--	channel_attribute_id
--	unfilled_ordered_units
--	pre_order_sales_price
--	pre_order_amount
--	pre_order_sales_rank
--	pre_order_units
--	pre_order_quantity_rank
--	orders
--	ordered_sales_rank
--	ordered_units
+        $str = 'material_id
+-	retailer_id
+-	item_id
+-	week
+-	quarter
+-	pos_sales
+-	pos_qty
 -	ordered_amount
--	ordered_units_rank
--	shipped_sales_rank
--	shipped_units_rank
--	cat_average_selling_price
--	cat_perorder_sales_rank
--	cat_perorder_units_rank
--	cat_ordered_sales_rank
--	cat_ordered_units_rank
--	cat_shipped_sales_rank
--	cat_shipped_units_rank
--	subcat_perorder_sales_rank
--	subcat_perorder_units_rank
--	subcat_ordered_sales_rank
--	subcat_ordered_units_rank
--	subcat_shipped_sales_rank
--	subcat_shipped_units_rank
--	avg_customer_review
--	conversion_percentile
--	customer_reviews
--	page_view_index
--	page_view_rank
--	unique_visitor_index ';
+-	ordered_units
+-	pos_shipped_cog_sold
+-	ordered_cogs
+-	wkly_avg_oa_quarterly
+-	normalized_ordered_amount
+-	avg_weekly_ordered_units_quarterly
+-	normalized_ordered_units
+-	normalized_ordered_cogs';
         $ex_str = explode('-', $str);
         
-        echo '[';
+        echo "\n";
         foreach ($ex_str as $key => $value) {
             $value = trim($value);
-            echo '$table->string(\'' . $value . '\');<br>';
-            //echo '\'' . $value . '\',<br>';
+            echo "\$table->string('{$value}');\n";
+            //echo "'{$value}',\n";
         }
-        echo ']';
+        echo "\n";
     }
 
     /**

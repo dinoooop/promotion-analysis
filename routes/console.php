@@ -6,6 +6,8 @@ use App\Redshift\Dmaterial;
 use App\Redshift\Dsales;
 use App\Redshift\Dchannel;
 use App\Swcalc;
+use App\Printm;
+use App\RawData;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,10 +42,15 @@ Artisan::command('redshiftimport_dchannel', function () {
     $obj->generate();
 })->describe('Importing redshift data');
 
+Artisan::command('print_array', function () {
+    $obj = new Printm;
+    $obj->print_array();
+    
+})->describe('Print array for code use');
 
-
-Artisan::command('sample', function () {
-    $this->comment("sample");
-    $dchannel = new Swcalc;
-    $dchannel->calc();
-})->describe('Importing redshift data');
+Artisan::command('raw_data_process', function () {
+    
+    $obj = new RawData;
+    $obj->process();
+    
+})->describe('Processing the raw data');

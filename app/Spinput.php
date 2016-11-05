@@ -29,13 +29,14 @@ class Spinput extends Model {
         'comments',
         'status'
     ];
-
     private $merge;
     public $data;
 
     function set_vars($input) {
 
         $this->merge = new Merge;
+
+        // Record to be inserted to promo_input
         $this->data = $this->sanitize($input);
 
 
@@ -44,20 +45,35 @@ class Spinput extends Model {
         if (!$this->validate) {
             return false;
         }
+
+        $this->material_id = isset($this->data['material_id']) ? $this->data['material_id'] : '';
+        $this->retailer_id = isset($this->data['retailer_id']) ? $this->data['retailer_id'] : '';
         
+        $this->retailer_sku = isset($this->data['retailer_sku']) ? $this->data['retailer_sku'] : '';
+
         $this->is_single_day_promo = ($this->data['start_date'] == $this->data['end_date']);
-        
-        self::create($this->data);
-        
+
+        $spinput = self::create($this->data);
+        $this->promo_id = $spinput->id;
+        echo "Inputs Created \n";
     }
-    
+
     function validate() {
+
+
+        if ((!isset($this->data['material_id']) || $this->data['material_id'] == '')) {
+            
+            if (!isset($this->data['retailer_id']) || $this->data['retailer_id'] == '') {
+                return false;
+            }
+        }
+
 
         if (!Dot::validate_date($this->data['start_date']) || !Dot::validate_date($this->data['end_date'])) {
             return false;
         }
 
-        if ($this->data['start_date'] >= $this->data['end_date']) {
+        if ($this->data['start_date'] > $this->data['end_date']) {
             return false;
         }
         return true;
@@ -65,6 +81,8 @@ class Spinput extends Model {
 
     function sanitize($input) {
         return [
+            'material_id' => $input['material_id'],
+            'retailer_id' => $input['retailer_id'],
             'promotions_name' => $input['promotions_name'],
             'promotion_type' => $input['promotion_type'],
             'start_date' => date('Y-m-d', strtotime($input['start_date'])),
@@ -84,8 +102,5 @@ class Spinput extends Model {
             'status' => $input['status'],
         ];
     }
-    
-   
-    
 
 }

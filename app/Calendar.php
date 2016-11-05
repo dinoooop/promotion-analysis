@@ -61,8 +61,6 @@ class Calendar {
         return $date;
     }
 
-    
-
     function date_difference($start, $end) {
 
         $start = strtotime($start);
@@ -72,10 +70,10 @@ class Calendar {
     }
 
     function get_quarter($date) {
-        
-        
+
+
         $Y = date('Y', strtotime($date));
-        
+
         $quarter = [
             'Q1' => [
                 'start' => "{$Y}-01-01",
@@ -113,19 +111,43 @@ class Calendar {
                 'end' => $this->get_week_sat($quarter['Q4']['end']),
             ],
         ];
-        
-        
+
+
         $return = [];
         foreach ($quarter_refined as $key => $value) {
-            if($date >= $value['start'] && $date <= $value['end']){
+            if ($date >= $value['start'] && $date <= $value['end']) {
                 $return['quarter'] = $key;
                 $return['start'] = $value['start'];
-                $return['end'] = $value['end'];
+                $return['end'] = $this->get_last_week($value['end']);
+                $return['week_count'] = $this->week_count($return['start'], $return['end']);
             }
-            
         }
-        
+
         return $return;
+    }
+
+    /**
+     * 
+     * Get total number weeks in a quarter
+     */
+    function week_count($start, $end) {
+        $diff_dates = $this->date_difference($start, $end);
+        return floor($diff_dates / 7) + 1;
+    }
+
+    /**
+     * 
+     * The end date may greater than today 
+     * such case turn the end date as today
+     * @param string $end_date end_date
+     */
+    function get_last_week($end_date) {
+
+        //$today = new date('Y-m-d') ;
+        //@testing
+        $today = '2016-09-16';
+        $end_date = ($end_date > $today) ? $today : $end_date;
+        return $this->get_week_sat($end_date);
     }
 
 }

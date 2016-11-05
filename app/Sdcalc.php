@@ -12,12 +12,14 @@ use Illuminate\Support\Facades\DB;
 class Sdcalc extends Model {
 
     protected $table = 'promo_date';
+    public $timestamps = false;
     protected $guarded = array('id');
     protected $fillable = [
         'item_id',
+        'promo_id',
         'week',
         'quarter',
-        'date',
+        'date_day',
         'pos_sales',
         'pos_qty',
         'ordered_amount',
@@ -30,81 +32,87 @@ class Sdcalc extends Model {
 
     function set_vars($input) {
         
-        Log::info('Setting the sdcalc vars');
+        echo "setting the vars for sdcalc \n";
+        
+        //@testing
+        self::truncate();
+
 
         $this->calendar = new Calendar;
 
-        $this->data = $input;
+        $this->spinput = $input;
 
-        $this->quarter = $this->calendar->get_quarter($this->data['start_date']);
+        $this->quarter = $this->calendar->get_quarter($this->spinput->data['start_date']);
+        
+        
 
         $this->set_psql_where();
-        
-        
-        Log::info("Sql condtion for daily pos are : {$this->where_id}, $this->where_date");
 
+        echo "SQL condition for daily pos are : {$this->where_id}, {$this->where_date} \n";
 
         $sql = Stock::psql_dayily_pos($this->where_id, $this->where_date);
-        $this->records = DB::connection('redshift')->select($sql);
+        
+        $records = DB::connection('redshift')->select($sql);
 
-        $this->record_count = count($this->records);
-        
-        Log::info("Total number of records for the quarter {$this->quarter['quarter']} is {$this->record_count}");
-        
+        $this->record_count = count($records);
+
+        echo "Total number of records for the quarter {$this->quarter['quarter']} is {$this->record_count} \n";
+        $this->save_records($records);
+
         if ($this->record_count) {
-            $this->record_one = $this->records[0];
-            $this->material_id = $this->record_one['material_id'];
+            $this->record_one = $records[0];
+            // Set material id once more
+            $this->spinput->material_id = $this->record_one['material_id'];
+            
         }
+        
+        //@testing
+        self::where('date_day', '>', '2016-09-17')->delete();
+        
     }
 
     function calc($find, $input) {
 
         switch ($find) {
             case 'ordered_cogs':
+                if($input['pos_qty'] == 0){
+                    return 0;
+                }
                 return ($input['pos_shipped_cog_sold'] / $input['pos_qty']) * $input['ordered_units'];
                 break;
         }
     }
 
     function set_psql_where() {
-        if (isset($this->data['material_id']) && $this->data['material_id'] != '') {
-            $this->material_id = $this->data['material_id'];
-            $this->where_id = "m.material_id = '{$this->material_id}'";
-        } elseif (isset($this->data['retailer_id']) && $this->data['retailer_id'] != '') {
-            $this->retailer_id = $this->data['retailer_id'];
-            $this->where_id = " m.retailer_id = '{$this->retailer_id}' ";
+        if ($this->spinput->material_id != '') {
+            $this->where_id = " m.material_id = '{$this->spinput->material_id}' ";
+        } elseif ($this->spinput->retailer_id != '') {
+            $this->where_id = " m.retailer_sku = '{$this->spinput->retailer_id}' ";
         }
-        
+
         $this->where_date = " BETWEEN '{$this->quarter['start']}' AND '{$this->quarter['end']}' ";
     }
 
-    
-
     function create_record($record) {
-
-        $row = [
-            'item_id' => $record['item_id'],
-            'week' => $this->calendar->get_week_sat($record['date']),
-            'quarter' => $this->quarter['quarter'],
-            'date' => date('Y-m-d', strtotime($record['date'])),
-            'pos_sales' => $record['pos_sales'],
-            'pos_qty' => $record['pos_qty'],
-            'ordered_amount' => $record['ordered_amount'],
-            'ordered_units' => $record['ordered_units'],
-            'pos_shipped_cog_sold' => $record['pos_shipped_cog_sold'],
-            'ordered_cogs' => $this->calc('ordered_cogs', $record),
-        ];
+        
+        $row['promo_id'] = $this->spinput->promo_id;
+        $row['week'] = $this->calendar->get_week_sat($record['date_day']);
+        $row['quarter'] = $this->quarter['quarter'];
+        $row['date_day'] = date('Y-m-d', strtotime($record['date_day']));
+        $row['pos_sales'] = $record['pos_sales'];
+        $row['pos_qty'] = $record['pos_units']; // pos_qty
+        $row['ordered_amount'] = $record['ordered_amount'];
+        $row['ordered_units'] = $record['ordered_units'];
+        $row['pos_shipped_cog_sold'] = $record['pos_shipped_cogs'];
+        $row['ordered_cogs'] = $this->calc('ordered_cogs', $row);
 
         self::create($row);
     }
 
     function save_records($records) {
-
         foreach ($records as $key => $record) {
             $this->create_record($record);
         }
-        
-        Log::info("Required daily pos records are saved in promo_date table successfully");
     }
 
 }
