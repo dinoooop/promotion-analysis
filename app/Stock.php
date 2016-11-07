@@ -190,6 +190,8 @@ AND ms.date_day BETWEEN '{$start_date}' AND '{$end_date}'";
             'promotion_type' => 'Best Deal',
             'start_date' => '07/12/2016',// July 12
             'end_date' => '07/12/2016',// July 12
+//            'start_date' => '2016-06-24',
+//            'end_date' => '2016-07-02',
             'retailer_id' => 'B01ABQBYSO',
             'material_id' => '1954840',
             'promo_description' => '',

@@ -538,6 +538,7 @@ return array(
     'TablePromoDate' => $baseDir . '/database/migrations/2016_11_02_072158_table_promo_date.php',
     'TablePromoInput' => $baseDir . '/database/migrations/2016_11_01_075606_table_promo_input.php',
     'TablePromoItems' => $baseDir . '/database/migrations/2016_11_02_072657_table_promo_items.php',
+    'TablePromoPod' => $baseDir . '/database/migrations/2016_11_07_074242_table_promo_pod.php',
     'TablePromoWeek' => $baseDir . '/database/migrations/2016_11_04_120334_table_promo_week.php',
     'TestCase' => $baseDir . '/tests/TestCase.php',
     'Text_Template' => $vendorDir . '/phpunit/php-text-template/src/Template.php',

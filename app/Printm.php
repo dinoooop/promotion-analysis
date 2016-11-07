@@ -24,7 +24,7 @@ class Printm {
             echo $sat . '<br>';
         }
     }
-    
+
     function print_drop_table_psql() {
         $table_using = [
             'migrations',
@@ -34,16 +34,16 @@ class Printm {
             'promo_items',
             'promo_date',
             'promo_week',
-            //'nwl_pos.metric_sales',
-            //'nwl_pos.dim_material',
-            //'nwl_pos.metric_online_channel',
+                //'nwl_pos.metric_sales',
+                //'nwl_pos.dim_material',
+                //'nwl_pos.metric_online_channel',
         ];
-        
+
         $psql = '';
         foreach ($table_using as $key => $value) {
-            $psql .=  "DROP TABLE IF EXISTS {$value};";
+            $psql .= "DROP TABLE IF EXISTS {$value};";
         }
-        
+
         echo $psql;
     }
 
@@ -86,24 +86,33 @@ class Printm {
 
     function print_array() {
 
-        $str = 'material_id
--	retailer_id
--	item_id
--	week
--	quarter
--	pos_sales
--	pos_qty
--	ordered_amount
--	ordered_units
--	pos_shipped_cog_sold
--	ordered_cogs
--	wkly_avg_oa_quarterly
--	normalized_ordered_amount
--	avg_weekly_ordered_units_quarterly
--	normalized_ordered_units
--	normalized_ordered_cogs';
+        $str = 'promo_id
+-	year
+-	ordered_amount_during
+-	wkly_baseline
+-	baseline
+-	incremental_d
+-	incremental_p
+-	wkly_avg_ordered_amount_post_2_wks
+-	wkly_pull_forward_halo_d
+-	pull_forward_halo_d
+-	pull_forward_halo_p
+-	pos_during
+-	cogs_during
+-	ppm_p_during
+-	pos_during_baseline_period
+-	cogs_during_baseline_period
+-	ppm_p_baseline
+-	ordered_qty_during
+-	investment_unit
+-	funding_source
+-	investment
+-	roi
+-	forecast_qty
+-	fcst_investment
+-	discount_amount';
         $ex_str = explode('-', $str);
-        
+
         echo "\n";
         foreach ($ex_str as $key => $value) {
             $value = trim($value);

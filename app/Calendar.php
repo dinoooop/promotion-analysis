@@ -139,13 +139,15 @@ class Calendar {
      * 
      * The end date may greater than today 
      * such case turn the end date as today
-     * @param string $end_date end_date
+     * @param string $end_date quarter end_date
      */
     function get_last_week($end_date) {
 
-        //$today = new date('Y-m-d') ;
+        //$today = date('Y-m-d') ;
+        
         //@testing
         $today = '2016-09-16';
+        
         $end_date = ($end_date > $today) ? $today : $end_date;
         return $this->get_week_sat($end_date);
     }

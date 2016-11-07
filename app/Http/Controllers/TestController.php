@@ -32,9 +32,13 @@ class TestController extends BaseController {
         //$this->calendar->quarter_weeks();
         //$this->dmaterial->generate();
         //$this->dchannel->generate();
-
-        $this->rawdata->process();
-        
+        //$this->rawdata->process();
+        //echo date('Y-m-d', strtotime('2016-07-12' . "-2 weeks"));
+        try {
+            $test = (5/0)+ 2;
+        } catch (Exception $e) {
+            echo '0';
+        }
     }
 
     function local_test() {

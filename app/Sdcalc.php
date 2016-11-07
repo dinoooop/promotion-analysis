@@ -34,18 +34,10 @@ class Sdcalc extends Model {
         
         echo "setting the vars for sdcalc \n";
         
-        //@testing
-        self::truncate();
-
-
         $this->calendar = new Calendar;
 
         $this->spinput = $input;
-
-        $this->quarter = $this->calendar->get_quarter($this->spinput->data['start_date']);
         
-        
-
         $this->set_psql_where();
 
         echo "SQL condition for daily pos are : {$this->where_id}, {$this->where_date} \n";
@@ -56,7 +48,7 @@ class Sdcalc extends Model {
 
         $this->record_count = count($records);
 
-        echo "Total number of records for the quarter {$this->quarter['quarter']} is {$this->record_count} \n";
+        echo "Total number of records for the quarter {$this->spinput->quarter['quarter']} is {$this->record_count} \n";
         $this->save_records($records);
 
         if ($this->record_count) {
@@ -66,8 +58,6 @@ class Sdcalc extends Model {
             
         }
         
-        //@testing
-        self::where('date_day', '>', '2016-09-17')->delete();
         
     }
 
@@ -90,14 +80,14 @@ class Sdcalc extends Model {
             $this->where_id = " m.retailer_sku = '{$this->spinput->retailer_id}' ";
         }
 
-        $this->where_date = " BETWEEN '{$this->quarter['start']}' AND '{$this->quarter['end']}' ";
+        $this->where_date = " BETWEEN '{$this->spinput->quarter['start']}' AND '{$this->spinput->quarter['end']}' ";
     }
 
     function create_record($record) {
         
         $row['promo_id'] = $this->spinput->promo_id;
         $row['week'] = $this->calendar->get_week_sat($record['date_day']);
-        $row['quarter'] = $this->quarter['quarter'];
+        $row['quarter'] = $this->spinput->quarter['quarter'];
         $row['date_day'] = date('Y-m-d', strtotime($record['date_day']));
         $row['pos_sales'] = $record['pos_sales'];
         $row['pos_qty'] = $record['pos_units']; // pos_qty

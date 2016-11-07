@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\Dot;
 use App\Merge;
+use App\Calendar;
 
 class Spinput extends Model {
 
@@ -30,15 +31,24 @@ class Spinput extends Model {
         'status'
     ];
     private $merge;
+    private $calendar;
     public $data;
+    public $promo_id;
 
     function set_vars($input) {
 
         $this->merge = new Merge;
+        $this->calendar = new Calendar;
+        
+        $this->today = date("Y-m-d");
+        
 
         // Record to be inserted to promo_input
         $this->data = $this->sanitize($input);
-
+        
+        
+        $this->year = date('Y', strtotime($this->data['start_date']));
+        
 
         $this->validate = $this->validate();
 
@@ -48,21 +58,31 @@ class Spinput extends Model {
 
         $this->material_id = isset($this->data['material_id']) ? $this->data['material_id'] : '';
         $this->retailer_id = isset($this->data['retailer_id']) ? $this->data['retailer_id'] : '';
-        
+
         $this->retailer_sku = isset($this->data['retailer_sku']) ? $this->data['retailer_sku'] : '';
 
         $this->is_single_day_promo = ($this->data['start_date'] == $this->data['end_date']);
 
-        $spinput = self::create($this->data);
-        $this->promo_id = $spinput->id;
+
+        $this->quarter = $this->calendar->get_quarter($this->data['start_date']);
+        
+        echo "Quarter Q: - {$this->quarter['quarter']} \n";
+        echo "Quarter start date - {$this->quarter['start']} \n";
+        echo "Quarter end date - {$this->quarter['end']} \n";
+        echo "Quarter week count - {$this->quarter['week_count']} \n";
+        
+        
         echo "Inputs Created \n";
     }
 
     function validate() {
-
-
+        
+        if($this->data['start_date'] > $this->today){
+            return false;
+        }
+        
         if ((!isset($this->data['material_id']) || $this->data['material_id'] == '')) {
-            
+
             if (!isset($this->data['retailer_id']) || $this->data['retailer_id'] == '') {
                 return false;
             }
@@ -102,5 +122,34 @@ class Spinput extends Model {
             'status' => $input['status'],
         ];
     }
+
+    function create_record($data) {
+        $spinput = self::create($data);
+        return $spinput->id;
+    }
+
+    function set_vars_nh() {
+        $weekly_baseline_number = $this->merge->admin_settings('weekly_baseline_number');
+        $this->weekly_baseline_date = date('Y-m-d', strtotime($this->data['start_date'] . " -{$weekly_baseline_number} weeks"));
+        
+        $this->is_require_nhqs = $this->is_nh_quarter_require($this->weekly_baseline_date);
+        
+        
+        $post_weekly_baseline = $this->merge->admin_settings('post_weekly_baseline_number');
+        echo "end_date is {$this->data['end_date']} \n";
+        $this->post_weekly_baseline_date = date('Y-m-d', strtotime($this->data['end_date'] . " +{$post_weekly_baseline} weeks"));
+        $this->is_require_nhqe = $this->is_nh_quarter_require($this->post_weekly_baseline_date);        
+        
+    }
+    
+    function is_nh_quarter_require($date) {
+        echo "date is {$date} \n";
+        $calander = new Calendar();
+        $nh_quarter = $calander->get_quarter($date);
+        
+        return ($this->quarter['quarter'] == $nh_quarter['quarter'])? false : true;
+    }
+
+    
 
 }
