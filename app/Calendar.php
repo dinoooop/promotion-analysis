@@ -143,10 +143,10 @@ class Calendar {
      */
     function get_last_week($end_date) {
 
-        //$today = date('Y-m-d') ;
+        $today = date('Y-m-d') ;
         
         //@testing
-        $today = '2016-09-16';
+        //$today = '2016-09-16';
         
         $end_date = ($end_date > $today) ? $today : $end_date;
         return $this->get_week_sat($end_date);

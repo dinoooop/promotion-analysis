@@ -33,8 +33,12 @@ class Merge {
             case 'post_weekly_baseline_number':
                 return 2;
                 break;
+            case 'baseline_normalization_thresholds':
+                return 0.25;
+                break;
 
             default:
+                return 0;
                 break;
         }
     }

@@ -31,16 +31,9 @@ class Swcalc extends Model {
     private $merge;
 
     function set_vars($input) {
-        echo "Creating week records \n";
-        
-        
-        
         $this->merge = new Merge;
         $this->sdcalc = $input;
-        echo "Promo Id is {$this->sdcalc->spinput->promo_id} \n";
-        echo "[]Week count is {$this->sdcalc->spinput->quarter['week_count']} \n";
         $this->save_records();
-        echo "weekly pos created \n";
     }
 
     function basic_week_data() {
@@ -123,14 +116,14 @@ class Swcalc extends Model {
     function calc($find, $input) {
         switch ($find) {
             case 'normalized_ordered_amount':
-                if ($input['ordered_amount'] > (1 + 0.25) * $input['wkly_avg_oa_quarterly']) {
+                if ($input['ordered_amount'] > (1 + $this->merge->admin_settings('baseline_normalization_thresholds')) * $input['wkly_avg_oa_quarterly']) {
                     return $input['wkly_avg_oa_quarterly'];
                 } else {
                     return $input['ordered_amount'];
                 }
                 break;
             case 'normalized_ordered_units':
-                if ($input['ordered_units'] > (1 + 0.25) * $input['avg_weekly_ordered_units_quarterly']) {
+                if ($input['ordered_units'] > (1 + $this->merge->admin_settings('baseline_normalization_thresholds')) * $input['avg_weekly_ordered_units_quarterly']) {
                     return $input['avg_weekly_ordered_units_quarterly'];
                 } else {
                     return $input['ordered_units'];

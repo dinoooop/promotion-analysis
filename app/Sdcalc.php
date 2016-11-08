@@ -32,15 +32,13 @@ class Sdcalc extends Model {
 
     function set_vars($input) {
         
-        echo "setting the vars for sdcalc \n";
-        
         $this->calendar = new Calendar;
 
         $this->spinput = $input;
         
         $this->set_psql_where();
 
-        echo "SQL condition for daily pos are : {$this->where_id}, {$this->where_date} \n";
+        
 
         $sql = Stock::psql_dayily_pos($this->where_id, $this->where_date);
         
@@ -48,7 +46,7 @@ class Sdcalc extends Model {
 
         $this->record_count = count($records);
 
-        echo "Total number of records for the quarter {$this->spinput->quarter['quarter']} is {$this->record_count} \n";
+        
         $this->save_records($records);
 
         if ($this->record_count) {
@@ -58,6 +56,7 @@ class Sdcalc extends Model {
             
         }
         
+        echo "On Sdcalc, records {$this->record_count} \n";        
         
     }
 

@@ -62,17 +62,13 @@ class Spinput extends Model {
         $this->retailer_sku = isset($this->data['retailer_sku']) ? $this->data['retailer_sku'] : '';
 
         $this->is_single_day_promo = ($this->data['start_date'] == $this->data['end_date']);
-
-
         $this->quarter = $this->calendar->get_quarter($this->data['start_date']);
         
-        echo "Quarter Q: - {$this->quarter['quarter']} \n";
+        
         echo "Promotion start date - {$this->data['start_date']} \n";
-        echo "Promotion end date - {$this->data['end_date']} \n";
-        echo "Quarter week count - {$this->quarter['week_count']} \n";
+        echo "Promotion end date   - {$this->data['end_date']} \n";
+        echo "Quarter: {$this->quarter['quarter']}, week count: {$this->quarter['week_count']} records from {$this->quarter['start']} to {$this->quarter['end']} \n";
         
-        
-        echo "Inputs Created \n";
     }
 
     function validate() {
@@ -134,19 +130,15 @@ class Spinput extends Model {
         
         $this->is_require_nhqs = $this->is_nh_quarter_require($this->weekly_baseline_date);
         
-        
         $post_weekly_baseline = $this->merge->admin_settings('post_weekly_baseline_number');
-        echo "end_date is {$this->data['end_date']} \n";
         $this->post_weekly_baseline_date = date('Y-m-d', strtotime($this->data['end_date'] . " +{$post_weekly_baseline} weeks"));
         $this->is_require_nhqe = $this->is_nh_quarter_require($this->post_weekly_baseline_date);        
         
     }
     
     function is_nh_quarter_require($date) {
-        echo "date is {$date} \n";
         $calander = new Calendar();
         $nh_quarter = $calander->get_quarter($date);
-        
         return ($this->quarter['quarter'] == $nh_quarter['quarter'])? false : true;
     }
 

@@ -54,7 +54,15 @@ class Spod extends Model {
         $this->promo_end_date = $this->swcalc->sdcalc->spinput->data['end_date'];
         $this->promo_start_week = $this->calendar->get_week_sat($this->promo_start_date);
         $this->promo_end_week = $this->calendar->get_week_sat($this->promo_end_date);
-
+        $this->is_single_day = ($this->promo_start_date == $this->promo_end_date);
+        
+        if(!$this->is_single_day){
+            $this->date_difference = $this->calendar->date_difference($this->promo_start_date, $this->promo_end_date);
+        }
+        
+        // Number of days based denominator for single day it is 7
+        $this->nod_based_denominator = $this->is_single_day ? 7 : $this->date_difference;
+        
         $this->weekly_baseline_date = $this->swcalc->sdcalc->spinput->weekly_baseline_date;
         $this->weekly_baseline_start_week = $this->calendar->get_week_sat($this->weekly_baseline_date);
         $this->weekly_baseline_end_week = date('Y-m-d', strtotime($this->promo_start_week . '-1 weeks'));
@@ -66,7 +74,7 @@ class Spod extends Model {
         // Setting DB values
         $this->ordered_amount_during = $this->get_sum_promo_period('ordered_amount');
         $this->wkly_baseline = $this->get_avg_prior_promo_period('normalized_ordered_amount');
-        $this->baseline = $this->wkly_baseline / 7;
+        $this->baseline = $this->wkly_baseline / $this->nod_based_denominator;
         $this->incremental_d = $this->ordered_amount_during - $this->baseline;
         $this->incremental_p = $this->merge->safe_division($this->ordered_amount_during - $this->baseline, $this->baseline);
         $this->wkly_avg_ordered_amount_post_2_wks = $this->get_avg_post_promo_period('normalized_ordered_amount');

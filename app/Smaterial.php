@@ -24,8 +24,6 @@ class Smaterial extends Model {
     
     function set_vars($input) {
         
-        echo "Setting table promo_items \n";
-        
         $this->sdcalc = $input;
         $this->create_record($this->sdcalc->record_one);
         

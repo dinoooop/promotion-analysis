@@ -50,12 +50,11 @@ Artisan::command('print_array', function () {
 
 
 
-Artisan::command('raw_data_process', function () {
-    
+Artisan::command('raw_data {switch}', function ($switch) {    
     $obj = new RawData;
-    $obj->init();
+    $obj->init($switch);
     
-})->describe('Processing the raw data');
+})->describe('Processing data');
 
 
 Artisan::command('drop_table', function () {
@@ -64,8 +63,3 @@ Artisan::command('drop_table', function () {
     
 })->describe('Print array for code use');
 
-Artisan::command('table_trucate', function () {
-    $obj = new Printm;
-    $obj->table_trucate();
-    
-})->describe('Truncate tables');
