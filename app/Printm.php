@@ -31,9 +31,11 @@ class Printm {
             'password_resets',
             'users',
             'promo_input',
-            'promo_items',
             'promo_date',
+            'promo_items',
             'promo_week',
+            'promo_pod',
+            'user_input',
                 //'nwl_pos.metric_sales',
                 //'nwl_pos.dim_material',
                 //'nwl_pos.metric_online_channel',
@@ -207,6 +209,13 @@ class Printm {
             echo '\'' . $value . '\' => [\'label\' => \'' . $dup . '\'],<br>';
             //echo '\''.$value.'\',<br>';
         }
+    }
+    
+    function table_trucate() {
+        Sdcalc::truncate();
+        Swcalc::truncate();
+        Spod::truncate();
+        Spinput::truncate();
     }
 
 }

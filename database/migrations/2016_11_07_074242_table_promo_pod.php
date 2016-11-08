@@ -40,6 +40,7 @@ class TablePromoPod extends Migration {
             $table->float('fcst_investment', 10, 2);
             $table->float('discount_amount', 10, 2);
         });
+        
     }
 
     /**

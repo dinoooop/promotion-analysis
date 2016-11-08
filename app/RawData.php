@@ -24,17 +24,42 @@ class RawData {
         $this->calendar = new Calendar;
     }
 
-    function process() {
-
-        // @testing
-        Sdcalc::truncate();
-        Swcalc::truncate();
-        
-
+    function init() {
 
         Config::set('database.fetch', \PDO::FETCH_ASSOC);
-        //$rec = $this->read_csv();
-        $input = Stock::sample_input();
+
+        $mode = 'table_user_input';
+
+        switch ($mode) {
+
+            case 'sample':
+                $input = Stock::sample_input();
+                $this->process($input);
+                break;
+
+            case 'table_user_input':
+                $records = $this->read_table_user_input();
+                foreach ($records as $key => $input) {
+                    $this->process($input);
+                }
+                break;
+
+            case 'csv':
+                $records = $this->read_csv();
+                foreach ($records as $key => $input) {
+                    $this->process($input);
+                }
+                break;
+        }
+    }
+
+    function process($input) {
+
+        // @testing 
+//        Sdcalc::truncate();
+//        Swcalc::truncate();
+//        Spod::truncate();
+//        Spinput::truncate();
 
         $this->spinput = new Spinput;
         $this->sdcalc = new Sdcalc;
@@ -107,6 +132,9 @@ class RawData {
             $this->spod->set_vars($this->swcalc);
             $this->spod->create_record();
         }
+        
+        
+        echo "One promotion completed ------------------------------------------ \n";
     }
 
     function csv_write($list) {
@@ -137,5 +165,11 @@ class RawData {
 
         return $row;
     }
+
+    function read_table_user_input() {
+        return DB::table("user_input")->get();
+    }
+
+    
 
 }

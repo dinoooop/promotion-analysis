@@ -48,9 +48,24 @@ Artisan::command('print_array', function () {
     
 })->describe('Print array for code use');
 
+
+
 Artisan::command('raw_data_process', function () {
     
     $obj = new RawData;
-    $obj->process();
+    $obj->init();
     
 })->describe('Processing the raw data');
+
+
+Artisan::command('drop_table', function () {
+    $obj = new Printm;
+    $obj->print_drop_table_psql();
+    
+})->describe('Print array for code use');
+
+Artisan::command('table_trucate', function () {
+    $obj = new Printm;
+    $obj->table_trucate();
+    
+})->describe('Truncate tables');

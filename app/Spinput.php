@@ -67,8 +67,8 @@ class Spinput extends Model {
         $this->quarter = $this->calendar->get_quarter($this->data['start_date']);
         
         echo "Quarter Q: - {$this->quarter['quarter']} \n";
-        echo "Quarter start date - {$this->quarter['start']} \n";
-        echo "Quarter end date - {$this->quarter['end']} \n";
+        echo "Promotion start date - {$this->data['start_date']} \n";
+        echo "Promotion end date - {$this->data['end_date']} \n";
         echo "Quarter week count - {$this->quarter['week_count']} \n";
         
         
