@@ -62,7 +62,7 @@ class RawData {
                 $obj = new Printm;
                 $obj->table_trucate();
                 break;
-            // php artisan raw_data refresh_table_promotions_master_input
+            
             
 
             case 'refresh_table_promotions_master_input':

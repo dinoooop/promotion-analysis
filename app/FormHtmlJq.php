@@ -267,7 +267,7 @@ class FormHtmlJq {
     function create_array_string($array) {
         $new = [];
         foreach ($array as $value) {
-            $new[] = "'{$value}'";
+            $new[] = "\"{$value}\"";
         }
         
         return implode(', ', $new);
