@@ -22,7 +22,7 @@ Route::get('admin/logout', 'UsersController@logout');
 Route::get('admin/profile', 'UsersController@profile');
 
 
-Route::group([ 'prefix' => 'admin'], function() {
+Route::group([ 'prefix' => 'admin', 'middleware' => 'role'], function() {
     Route::resource('users', 'UsersController');
     Route::resource('promotions', 'PromotionsController');
 });
