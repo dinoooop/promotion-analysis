@@ -76,6 +76,12 @@ class RawData {
                 
                 $this->refresh_table_dim_retailer_channel();
                 break;
+            
+            case 'refresh_table_basic':
+                // php artisan raw_data refresh_table_basic
+                
+                $this->refresh_table_basic();
+                break;
 
             case 'print_array_key_value':
                 // php artisan raw_data print_array_key_value
@@ -143,6 +149,40 @@ class RawData {
         DB::table($table_name)->insert(['retailer' => 'Amazone']);
         DB::table($table_name)->insert(['retailer' => 'Flipkart']);
         DB::table($table_name)->insert(['retailer' => 'Walmart']);
+    }
+    
+    
+    /**
+     * 
+     * Refresh the user table
+     */
+    function refresh_table_basic() {
+        $table_name = 'users';
+        Schema::dropIfExists($table_name);
+        Schema::create($table_name, function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('name');
+            $table->string('username')->unique();
+            $table->string('email')->unique();
+            $table->string('role');
+            $table->string('password');
+            $table->rememberToken();
+            $table->timestamps();
+        });
+        
+        $users = [
+            [
+                'name' => 'Admin',
+                'username' => 'admin',
+                'email' => 'dinoop@sparksupport.com',
+                'role' => 'admin',
+                'password' => bcrypt('promo2016'),
+            ]
+        ];
+
+        foreach ($users as $value) {
+            DB::table($table_name)->insert($value);
+        }
         
     }
 
