@@ -25,10 +25,12 @@
         <link href="{{ asset('assets/croppie/croppie.css') }}" rel="stylesheet" type="text/css" />
         <link href="{{ asset('assets/bootstrap-select/bootstrap-select.css') }}" rel="stylesheet" type="text/css" />
         <link href="{{ asset('css/styles.css') }}" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
         
         <script src="{{ asset('js/jquery.min.js') }}"></script>
         <script src="{{ asset('js/app-const.js') }}"></script>        
         
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
         <script src="{{ asset('js/merge.js') }}"></script>        
         
         

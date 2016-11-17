@@ -14,6 +14,7 @@ use App\Redshift\Dmaterial;
 use App\Redshift\Dsales;
 use App\Redshift\Dchannel;
 use Illuminate\Support\Facades\DB;
+use App\promotions\Promotion;
 
 class TestController extends BaseController {
 
@@ -34,16 +35,15 @@ class TestController extends BaseController {
         //$this->dchannel->generate();
         //$this->rawdata->process();
         //echo date('Y-m-d', strtotime('2016-07-12' . "-2 weeks"));
-        try {
-            $test = (5/0)+ 2;
-        } catch (Exception $e) {
-            echo '0';
-        }
+        
+        //echo '<pre>', print_r(range("Q1", "Q9")), '</pre>';
+        echo csrf_token();
+        
     }
 
     function local_test() {
 
-        $this->printm->print_drop_table_psql();
+        $this->printm->mint_create_array();
     }
 
     function test_02() {

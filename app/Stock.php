@@ -2,6 +2,9 @@
 
 namespace App;
 
+
+use App\Redshift\Pgquery;
+
 class Stock {
 
     public static function get($key) {
@@ -55,35 +58,101 @@ class Stock {
                 );
                 break;
 
-            case 'ad_location':
-                $location = self::get('ad_location_size');
-                $result = array();
-                foreach ($location as $key => $value) {
-                    $result[$key] = $key . ' (' . $value['width'] . ' x ' . $value['height'] . ')';
-                }
-                return $result;
+            case 'retailer':
+                
+                return Pgquery::get_distinct_column_values('retailer');
                 break;
 
-            case 'ad_location_size':
-                $placeholder = self::get('ad_placeholders');
-                return array(
-                    'A1' => array('width' => 600, 'height' => 100, 'placeholder' => $placeholder['600_100']),
-                    'A2' => array('width' => 600, 'height' => 100, 'placeholder' => $placeholder['600_100']),
-                    'B1' => array('width' => 450, 'height' => 240, 'placeholder' => $placeholder['450_240']),
-                    'B2' => array('width' => 450, 'height' => 240, 'placeholder' => $placeholder['450_240']),
-                    'C' => array('width' => 600, 'height' => 150, 'placeholder' => $placeholder['600_150']),
-                );
+
+            case 'retailer_country':
+                $country = ['US', 'Canada', 'UK', 'Spain', 'Germany', 'India', 'France'];
+                return array_combine($country, $country);
                 break;
 
-            case 'ad_placeholders':
-                return array(
-                    '600_100' => url('shape/images/ad-1.gif'),
-                    '450_240' => url('shape/images/ad-2.jpg'),
-                    '600_150' => url('shape/images/ad-3.gif'),
-                );
+            case 'newell_status':
+                $return = [
+                    'Approved',
+                    'Rejected',
+                    'Supressed',
+                    'Cancelled',
+                ];
+                return array_combine($return, $return);
+                break;
+
+            case 'promotions_status':
+                $return = [
+                    'Not Started',
+                    'In',
+                    'Progress',
+                    'Completed',
+                ];
+                return array_combine($return, $return);
+                break;
+
+            case 'promotions_type':
+                $return = [
+                    'DOTD',
+                    'CSLD',
+                    'Best Deals',
+                    'VPC',
+                    'Price Discount',
+                    'Non Price Discount',
+                    'Gift Card',
+                    'Buy X and Get Y',
+                    'Percent Discount OFF',
+                    'Other'
+                ];
+                return array_combine($return, $return);
+                break;
+
+            case 'level_of_promotions':
+                $return = [
+                    'Item Level',
+                    'Brand',
+                    'Category',
+                ];
+                return array_combine($return, $return);
+                break;
+
+            case 'marketing_type':
+                $return = [
+                    'Price Promotion',
+                    'Marketing Promotion',
+                ];
+                return array_combine($return, $return);
+                break;
+
+            case 'brand':
+                return Pgquery::get_distinct_column_values('brand');
+                break;
+
+            case 'category':
+                return Pgquery::get_distinct_column_values('category');
+                break;
+
+            case 'product_family':
+                return [];
+                break;
+
+            case 'product_line':
+                return [];
+                break;
+
+            case 'division':
+                return Pgquery::get_distinct_column_values('division');
+                break;
+
+            case 'status':
+                $return = [
+                    'Not Processed',
+                    'In',
+                    'Progress',
+                    'Processed',
+                    'Needs Attention',
+                ];
+                return array_combine($return, $return);
                 break;
         }
-
 
         return false;
     }
@@ -188,8 +257,8 @@ AND ms.date_day BETWEEN '{$start_date}' AND '{$end_date}'";
         return [
             'promotions_name' => 'Prime Day, 7/12/16',
             'promotion_type' => 'Best Deal',
-            'start_date' => '07/12/2016',// July 12
-            'end_date' => '07/12/2016',// July 12
+            'start_date' => '07/12/2016', // July 12
+            'end_date' => '07/12/2016', // July 12
 //            'start_date' => '2016-06-24',
 //            'end_date' => '2016-07-02',
             'retailer_id' => 'B01ABQBYSO',

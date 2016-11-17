@@ -8,8 +8,8 @@ class Gform {
     private $form_refined;
     private $form_values;
     public $form_types_orange = array(
-        'text', 'email', 'password', 'hidden', 'url',
-        'checkbox', 'radio', 'select', 'select-multiple',
+        'text', 'email', 'password', 'hidden', 'url', 'auto_complete',
+        'checkbox', 'radio', 'select', 'select-multiple', 'boolean_checkbox',
         'textarea', 'date', 'file', 'ckeditor', 'autocomplete', 'min_max', 'ng_location_tag', 'I_agree');
     public $form_types_green = array('heading', 'paragraph', 'clearfix', 'country-state-city');
 

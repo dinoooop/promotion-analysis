@@ -69,30 +69,7 @@ $(function () {
 
     });
     
-    /**
-     * 
-     * Reach at bottom
-     */
-    var post_page_num = 1;
-    var $loader = $(".post-loader");
-    
-        $(window).scroll(function () {
-            if ($(window).scrollTop() + $(window).height() == $(document).height()) {
 
-                $loader.fadeIn(1000);
-
-                setTimeout(function () {
-
-                    post_page_num++;
-                    var url = appConst.url_get_videos + '/' + post_page_num;
-                    $.get(url, function (response) {
-                        $loader.hide();                        
-                        $(".video-page-container").append(response)
-                    }, 'html');
-
-                }, 3000);
-            }
-        });
 
     
 });

@@ -27,10 +27,10 @@ class Merge {
     function admin_settings($param) {
         //@testing
         switch ($param) {
-            case 'weekly_baseline_number':
+            case 'number_weeks_baseline':
                 return 4;
                 break;
-            case 'post_weekly_baseline_number':
+            case 'number_weeks_post_promotion':
                 return 2;
                 break;
             case 'baseline_normalization_thresholds':

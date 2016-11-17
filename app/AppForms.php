@@ -28,6 +28,147 @@ class AppForms {
                     ),
                 );
                 break;
+            case 'pv_form_promotion':
+                return array(
+                    'form_name' => 'pv_form_promotion',
+                    'fields' => array(
+                        array(
+                            'type' => 'text',
+                            'name' => 'promotions_name',
+                            'label' => 'Promotions Name',
+                        ),
+                        array(
+                            'type' => 'textarea',
+                            'name' => 'promotions_description',
+                            'label' => 'Promotions Description',
+                        ),
+                        array(
+                            'type' => 'date',
+                            'name' => 'promotions_startdate',
+                            'label' => 'Promotions start date',
+                            'col' => 6,
+                        ),
+                        array(
+                            'type' => 'date',
+                            'name' => 'promotions_enddate',
+                            'label' => 'Promotions end date',
+                            'col' => 6,
+                        ),
+                        array(
+                            'type' => 'auto_complete',
+                            'name' => 'retailer',
+                            'label' => 'Retailer',
+                            'list' => Stock::get('retailer'),
+                        ),
+                        
+                        array(
+                            'type' => 'text',
+                            'name' => 'retailer_country_id',
+                            'label' => 'Retailer Country Id',
+                        ),
+                        array(
+                            'type' => 'select',
+                            'name' => 'retailer_country',
+                            'label' => 'Retailer Country',
+                            'options' => Stock::get('retailer_country'),
+                            'default' => 'US'
+                        ),
+                        array(
+                            'type' => 'select',
+                            'name' => 'newell_status',
+                            'label' => 'Newell Status',
+                            'options' => Stock::get('newell_status'),
+                            'default' => 'approved'
+                        ),
+                        array(
+                            'type' => 'select',
+                            'name' => 'promotions_status',
+                            'label' => 'Promotions Status',
+                            'options' => Stock::get('promotions_status'),
+                        ),
+                        array(
+                            'type' => 'select',
+                            'name' => 'promotions_type',
+                            'label' => 'Promotions Type',
+                            'options' => Stock::get('promotions_type'),
+                        ),
+                        array(
+                            'type' => 'select',
+                            'name' => 'level_of_promotions',
+                            'label' => 'Level of promotions',
+                            'options' => Stock::get('level_of_promotions'),
+                        ),
+                        array(
+                            'type' => 'select',
+                            'name' => 'marketing_type',
+                            'label' => 'Marketing Type',
+                            'options' => Stock::get('marketing_type'),
+                        ),
+                        array(
+                            'type' => 'boolean_checkbox',
+                            'name' => 'annivarsaried',
+                            'label' => 'Annivarsaried',
+                        ),
+                        array(
+                            'type' => 'text',
+                            'name' => 'promotions_projected_sales',
+                            'label' => 'Promotions Projected Sales',
+                        ),
+                        array(
+                            'type' => 'text',
+                            'name' => 'promotions_expected_lift',
+                            'label' => 'Promotions expected lift',
+                        ),
+                        array(
+                            'type' => 'text',
+                            'name' => 'promotions_budget_type',
+                            'label' => 'Promotions Budget Type',
+                        ),
+                        array(
+                            'type' => 'text',
+                            'name' => 'brand_id',
+                            'label' => 'Brand Id',
+                        ),
+                        array(
+                            'type' => 'auto_complete',
+                            'name' => 'brand',
+                            'label' => 'Brand',
+                            'list' => Stock::get('brand'),
+                        ),
+                        array(
+                            'type' => 'select',
+                            'name' => 'category',
+                            'label' => 'Category',
+                            'options' => Stock::get('category'),
+                        ),
+                        array(
+                            'type' => 'select',
+                            'name' => 'product_family',
+                            'label' => 'Product Family',
+                            'options' => Stock::get('product_family'),
+                        ),
+                        array(
+                            'type' => 'select',
+                            'name' => 'product_line',
+                            'label' => 'Product Line',
+                            'options' => Stock::get('product_line'),
+                        ),
+                        array(
+                            'type' => 'select',
+                            'name' => 'division',
+                            'label' => 'Division',
+                            'options' => Stock::get('division'),
+                        ),
+                        array(
+                            'type' => 'select',
+                            'name' => 'status',
+                            'label' => 'Status',
+                            'options' => Stock::get('status'),
+                        ),
+                    ),
+                );
+
+                break;
 
 
             case 'pv_form_videos':
@@ -59,7 +200,7 @@ class AppForms {
                     ),
                 );
                 break;
-            
+
             case 'pv_form_user':
                 return array(
                     'form_name' => 'pv_form_user',

@@ -56,7 +56,7 @@ class Sdcalc extends Model {
             
         }
         
-        echo "On Sdcalc, records {$this->record_count} \n";        
+        echo "On Sdcalc, records {$this->record_count} \n";
         
     }
 

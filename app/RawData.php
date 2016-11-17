@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Database\Schema\Blueprint;
 use App\Calendar;
 use App\Block;
 use App\Stock;
@@ -14,15 +15,20 @@ use App\Printm;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
+use App\promotions\Promotion;
+use Illuminate\Support\Facades\Schema;
+
 
 class RawData {
 
     private $calendar;
     private $sdcalc;
     private $smaterial;
+    private $printm;
 
     public function __construct() {
         $this->calendar = new Calendar;
+        $this->printm = new Printm;
     }
 
     function init($mode) {
@@ -56,9 +62,128 @@ class RawData {
                 $obj = new Printm;
                 $obj->table_trucate();
                 break;
+            // php artisan raw_data refresh_table_promotions_master_input
+            
+
+            case 'refresh_table_promotions_master_input':
+                // php artisan raw_data refresh_table_promotions_master_input
+                $this->refresh_table_promotions_master_input();
+                $this->recreate_table_promotions_master_input();
+                break;
+            
+            case 'refresh_table_dim_retailer_channel':
+                // php artisan raw_data refresh_table_dim_retailer_channel
+                
+                $this->refresh_table_dim_retailer_channel();
+                break;
+
+            case 'print_array_key_value':
+                // php artisan raw_data print_array_key_value
+                $this->printm->print_array_key_value();
+                break;
+
+            case 'print_array_simple':
+                // php artisan raw_data print_array_simple
+                $this->printm->print_array_simple();
+                break;
+
+            case 'sample_test':
+
+                $this->printm->sample_test();
+                break;
+
+
 
             default:
                 echo "Command not found \n";
+        }
+    }
+
+    function refresh_table_promotions_master_input() {
+        Schema::dropIfExists('promotions.promotions_master_input');
+        Schema::create('promotions.promotions_master_input', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('promotions_name');
+            $table->text('promotions_description');
+            $table->date('promotions_startdate');
+            $table->date('promotions_enddate');
+            $table->string('retailer')->nullable();
+            $table->string('retailer_country_id')->nullable();
+            $table->string('retailer_country')->nullable();
+            $table->string('newell_status')->nullable();
+            $table->string('promotions_status')->nullable();
+            $table->string('promotions_type')->nullable();
+            $table->string('level_of_promotions')->nullable();
+            $table->string('marketing_type')->nullable();
+            $table->boolean('annivarsaried')->default(0);
+            $table->double('promotions_budget', 15, 8);
+            $table->double('promotions_projected_sales', 15, 8);
+            $table->double('promotions_expected_lift', 15, 8);
+            $table->string('promotions_budget_type')->nullable();
+            $table->string('brand_id')->nullable();
+            $table->string('brand')->nullable();
+            $table->string('category')->nullable();
+//            $table->string('product_family')->nullable();
+//            $table->string('product_line')->nullable();
+            $table->string('division')->nullable();
+            $table->string('status');
+            $table->timestamps();
+        });
+    }
+    
+    
+    function refresh_table_dim_retailer_channel() {
+        $table_name = 'nwl_pos.dim_retailer_channel';
+        Schema::dropIfExists($table_name);
+        Schema::create($table_name, function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('retailer');
+        });
+        
+        DB::table($table_name)->insert(['retailer' => 'Amazone']);
+        DB::table($table_name)->insert(['retailer' => 'Flipkart']);
+        DB::table($table_name)->insert(['retailer' => 'Walmart']);
+        
+    }
+
+    /**
+     * 
+     * Back up for recreate the promotions.promotions_master_input on 16.11.2016
+     * @return array
+     */
+    function recreate_table_promotions_master_input() {
+
+        $create = [
+            [
+                'promotions_name' => 'Graco Black Friday',
+                'promotions_description' => 'All BF products with promotions',
+                'promotions_startdate' => '2016-11-18',
+                'promotions_enddate' => '2016-11-25',
+                'retailer' => 'Amazon',
+                'retailer_country_id' => '',
+                'retailer_country' => 'US',
+                'newell_status' => 'Approved',
+                'promotions_status' => 'Not Started',
+                'promotions_type' => 'Price Discount',
+                'level_of_promotions' => 'Item Level',
+                'marketing_type' => 'Price Promotion',
+                'annivarsaried' => 0,
+                'promotions_budget' => 0,
+                'promotions_projected_sales' => 0,
+                'promotions_expected_lift' => 0,
+                'promotions_budget_type' => '',
+                'brand_id' => '',
+                'brand' => 'Graco',
+                'category' => '',
+                'product_family' => '',
+                'product_line' => '',
+                'division' => 'Baby',
+                'status' => 'Not Processed',
+            ],
+        ];
+
+        foreach ($create as $key => $value) {
+            Promotion::create($value);
         }
     }
 
@@ -115,29 +240,29 @@ class RawData {
         }
 
         if ($this->spinput->is_require_nhqe) {
-            
+
             echo "Neighbourhood quarter required (end) \n";
-            
+
             $this->nh_spinput = new Spinput;
             $this->nh_sdcalc = new Sdcalc;
             $this->nh_swcalc = new Swcalc;
             $input['start_date'] = $this->spinput->post_weekly_baseline_date;
             $input['end_date'] = $this->spinput->post_weekly_baseline_date;
-            
+
             $this->nh_spinput->set_vars($input);
             $this->nh_spinput->promo_id = $this->spinput->promo_id;
             $this->nh_sdcalc->set_vars($this->nh_spinput);
-            
+
             if ($this->nh_sdcalc->record_count) {
                 $this->nh_swcalc->set_vars($this->nh_sdcalc);
             }
         }
-        
+
         if ($this->sdcalc->record_count) {
             $this->spod->set_vars($this->swcalc);
             $this->spod->create_record();
         }
-        
+
         echo "Promotion {$this->spinput->promo_id} completed ------------------------------------------\n";
     }
 

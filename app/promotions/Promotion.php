@@ -1,54 +1,63 @@
 <?php
 
-namespace App;
+namespace App\promotions;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Dot;
 use App\Merge;
 use App\Calendar;
 
-class Spinput extends Model {
+class Promotion extends Model {
 
-    protected $table = 'promo_input';
+    protected $table = 'promotions.promotions_master_input';
     protected $guarded = array('id');
     protected $fillable = [
-        'material_id',
-        'retailer_id',
         'promotions_name',
-        'promotion_type',
-        'start_date',
-        'end_date',
-        'promo_description',
-        'item_name',
-        'investment_d',
-        'forecasted_units',
-        'forecasted_d',
-        'customer_name',
-        'level_of_promotion',
-        'discount_price_d',
-        'discount_p',
-        'comments',
+        'promotions_description',
+        'promotions_startdate',
+        'promotions_enddate',
+        'retailer',
+        'retailer_country_id',
+        'retailer_country',
+        'newell_status',
+        'promotions_status',
+        'promotions_type',
+        'level_of_promotions',
+        'marketing_type',
+        'annivarsaried',
+        'promotions_budget',
+        'promotions_projected_sales',
+        'promotions_expected_lift',
+        'promotions_budget_type',
+        'brand_id',
+        'brand',
+        'category',
+//        'product_family',
+//        'product_line',
+        'division',
         'status'
     ];
     private $merge;
     private $calendar;
     public $data;
     public $promo_id;
+    public static $form_create_rules = [];
+    public static $form_edit_rules = [];
 
     function set_vars($input) {
 
         $this->merge = new Merge;
         $this->calendar = new Calendar;
-        
+
         $this->today = date("Y-m-d");
-        
+
 
         // Record to be inserted to promo_input
         $this->data = $this->sanitize($input);
-        
-        
+
+
         $this->year = date('Y', strtotime($this->data['start_date']));
-        
+
 
         $this->validate = $this->validate();
 
@@ -63,23 +72,22 @@ class Spinput extends Model {
 
         $this->is_single_day_promo = ($this->data['start_date'] == $this->data['end_date']);
         $this->quarter = $this->calendar->get_quarter($this->data['start_date']);
-        
-        
+
+
         $this->during_dates = $this->calendar->get_req_dates($this->data['start_date']);
-        
-        
+
+
         echo "Promotion start date - {$this->data['start_date']} \n";
         echo "Promotion end date   - {$this->data['end_date']} \n";
         echo "Quarter: {$this->quarter['quarter']}, week count: {$this->quarter['week_count']} records from {$this->quarter['start']} to {$this->quarter['end']} \n";
-        
     }
 
     function validate() {
-        
-        if($this->data['start_date'] > $this->today){
+
+        if ($this->data['start_date'] > $this->today) {
             return false;
         }
-        
+
         if ((!isset($this->data['material_id']) || $this->data['material_id'] == '')) {
 
             if (!isset($this->data['retailer_id']) || $this->data['retailer_id'] == '') {
@@ -98,28 +106,41 @@ class Spinput extends Model {
         return true;
     }
 
-    function sanitize($input) {
-        return [
-            'material_id' => $input['material_id'],
-            'retailer_id' => $input['retailer_id'],
-            'promotions_name' => $input['promotions_name'],
-            'promotion_type' => $input['promotion_type'],
-            'start_date' => date('Y-m-d', strtotime($input['start_date'])),
-            'end_date' => date('Y-m-d', strtotime($input['end_date'])),
-            'retailer_id' => $input['retailer_id'],
-            'material_id' => $input['material_id'],
-            'promo_description' => $input['promo_description'],
-            'item_name' => $input['item_name'],
-            'investment_d' => $this->merge->refine_dollar($input['investment_d']),
-            'forecasted_units' => $input['forecasted_units'],
-            'forecasted_d' => $this->merge->refine_dollar($input['forecasted_d']),
-            'customer_name' => $input['customer_name'],
-            'level_of_promotion' => $input['level_of_promotion'],
-            'discount_price_d' => $this->merge->refine_dollar($input['discount_price_d']),
-            'discount_p' => $this->merge->refine_dollar($input['discount_p']),
-            'comments' => $input['comments'],
-            'status' => $input['status'],
+    public static function sanitize($input) {
+        $sanitize =  [
+            'promotions_name' => trim($input['promotions_name']),
+            'promotions_description' => $input['promotions_description'],
+            //'promotions_startdate' => date('Y-m-d', strtotime($input['promotions_startdate'])),
+            //'promotions_enddate' => date('Y-m-d', strtotime($input['promotions_enddate'])),
+            //'retailer',
+            //'retailer_country_id',
+            //'retailer_country',
+            //'newell_status',
+            //'promotions_status',
+            //'promotions_type',
+            //'level_of_promotions',
+            //'marketing_type',
+            'annivarsaried' => isset($input['annivarsaried']) ? 1 : 0,
+            'promotions_budget' => (isset($input['promotions_budget']) && isset($input['promotions_budget']) != '') ? $input['promotions_budget'] : 0,
+            'promotions_projected_sales' => (isset($input['promotions_projected_sales']) && $input['promotions_projected_sales'] != '')? $input['promotions_projected_sales'] : 0,
+            'promotions_expected_lift' => (isset($input['promotions_expected_lift']) && $input['promotions_expected_lift'] != '')? $input['promotions_expected_lift'] : 0,
+            //'promotions_budget_type',
+            //'brand_id',
+            //'brand',
+            //'category',
+            //'product_family',
+            //'product_line',
+            //'division',
+            //'status'
         ];
+        
+        return array_merge($input, $sanitize);
+    }
+    
+    public static function display_prepare($input) {
+        $input->promotions_startdate = date('m/d/Y', strtotime($input->promotions_startdate));
+        $input->promotions_enddate = date('m/d/Y', strtotime($input->promotions_enddate));
+        return $input;
     }
 
     function create_record($data) {
@@ -130,21 +151,18 @@ class Spinput extends Model {
     function set_vars_nh() {
         $weekly_baseline_number = $this->merge->admin_settings('weekly_baseline_number');
         $this->weekly_baseline_date = date('Y-m-d', strtotime($this->data['start_date'] . " -{$weekly_baseline_number} weeks"));
-        
+
         $this->is_require_nhqs = $this->is_nh_quarter_require($this->weekly_baseline_date);
-        
+
         $post_weekly_baseline = $this->merge->admin_settings('post_weekly_baseline_number');
         $this->post_weekly_baseline_date = date('Y-m-d', strtotime($this->data['end_date'] . " +{$post_weekly_baseline} weeks"));
-        $this->is_require_nhqe = $this->is_nh_quarter_require($this->post_weekly_baseline_date);        
-        
+        $this->is_require_nhqe = $this->is_nh_quarter_require($this->post_weekly_baseline_date);
     }
-    
+
     function is_nh_quarter_require($date) {
         $calander = new Calendar();
         $nh_quarter = $calander->get_quarter($date);
-        return ($this->quarter['quarter'] == $nh_quarter['quarter'])? false : true;
+        return ($this->quarter['quarter'] == $nh_quarter['quarter']) ? false : true;
     }
-
-    
 
 }

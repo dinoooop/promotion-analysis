@@ -4,13 +4,30 @@ namespace App;
 
 use App\Merge;
 use App\Spinput;
+use App\Dot;
+use App\promotions\Promotion;
+use App\Redshift\Pgquery;
 
 class Printm {
 
     public function __construct() {
         $this->calendar = new Calendar;
     }
+    
+    
+    function get_hyphen_data() {
 
+        $str = 'Item Level
+Brand
+Category';
+
+        return $str;
+    }
+
+    /**
+     * 
+     * Print all saturday of an year
+     */
     function print_sat() {
         $Y = 2017;
         $dup = $Y;
@@ -86,40 +103,53 @@ class Printm {
         Dsales::create($row);
     }
 
-    function print_array() {
+    
 
-        $str = 'promo_id
--	year
--	ordered_amount_during
--	wkly_baseline
--	baseline
--	incremental_d
--	incremental_p
--	wkly_avg_ordered_amount_post_2_wks
--	wkly_pull_forward_halo_d
--	pull_forward_halo_d
--	pull_forward_halo_p
--	pos_during
--	cogs_during
--	ppm_p_during
--	pos_during_baseline_period
--	cogs_during_baseline_period
--	ppm_p_baseline
--	ordered_qty_during
--	investment_unit
--	funding_source
--	investment
--	roi
--	forecast_qty
--	fcst_investment
--	discount_amount';
+  
+
+    function refine_hyphen_array($str) {
+        
+        $str = str_replace("\n", '-', $str);
         $ex_str = explode('-', $str);
+        $return = [];
+        foreach ($ex_str as $key => $value) {
+            $return[] = trim($value);
+        }
+        return $return;
+    }
 
+    function print_array_key_value() {
+        $str = $this->get_hyphen_data();
+        $refined = $this->refine_hyphen_array($str);
+        $records[] = Dot::get_array_key_value($refined);
+        
+        foreach ($records as $value) {
+            echo "[\n";
+            foreach ($value as $key => $val) {
+                echo "'{$key}' => '{$val}', \n";
+            }
+            echo "]\n";
+        }
+    }
+
+    function print_array_table_schema_create() {
+        $records = refine_hyphen_array();
         echo "\n";
         foreach ($ex_str as $key => $value) {
-            $value = trim($value);
             echo "\$table->string('{$value}');\n";
-            //echo "'{$value}',\n";
+        }
+        echo "\n";
+    }
+
+    function print_array_simple() {
+        
+        $str = $this->get_hyphen_data();
+
+        $records = $this->refine_hyphen_array($str);
+
+        echo "\n";
+        foreach ($records as $key => $value) {
+            echo "'{$value}',\n";
         }
         echo "\n";
     }
@@ -210,12 +240,35 @@ class Printm {
             //echo '\''.$value.'\',<br>';
         }
     }
-    
+
     function table_trucate() {
         Sdcalc::truncate();
         Swcalc::truncate();
         Spod::truncate();
         Spinput::truncate();
+    }
+
+    function create_array_from_table_browser() {
+
+        $records = Promotion::all()->toArray();
+
+        echo '[<br/>';
+        foreach ($records as $value) {
+            echo '[<br/>';
+            foreach ($value as $key => $val) {
+                echo "'{$key}' => '{$val}', <br/>";
+            }
+            echo '],<br/>';
+        }
+        echo ']<br/>';
+    }
+    
+    /**
+     * 
+     * php artisan raw_data sample_test
+     */
+    function sample_test() {
+        Pgquery::get_distinct_column_values();
     }
 
 }

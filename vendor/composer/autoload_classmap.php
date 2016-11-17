@@ -6,8 +6,8 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'CreatePasswordResetsTable' => $baseDir . '/database/migrations/2014_10_12_100000_create_password_resets_table.php',
-    'CreateUsersTable' => $baseDir . '/database/migrations/2014_10_12_000000_create_users_table.php',
+    'CreatePasswordResetsTable' => $baseDir . '/database/user/2014_10_12_100000_create_password_resets_table.php',
+    'CreateUsersTable' => $baseDir . '/database/user/2014_10_12_000000_create_users_table.php',
     'DatabaseSeeder' => $baseDir . '/database/seeds/DatabaseSeeder.php',
     'File_Iterator' => $vendorDir . '/phpunit/php-file-iterator/src/Iterator.php',
     'File_Iterator_Facade' => $vendorDir . '/phpunit/php-file-iterator/src/Facade.php',
@@ -454,6 +454,7 @@ return array(
     'PHP_Token_YIELD' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',
     'PHP_Token_YIELD_FROM' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',
     'PromoItems' => $baseDir . '/database/migrations/2016_11_08_090947_promo_items.php',
+    'PromotionsMasterInput' => $baseDir . '/database/migrations/2016_11_16_085924_promotions_master_input.php',
     'SebastianBergmann\\CodeCoverage\\CodeCoverage' => $vendorDir . '/phpunit/php-code-coverage/src/CodeCoverage.php',
     'SebastianBergmann\\CodeCoverage\\CoveredCodeNotExecutedException' => $vendorDir . '/phpunit/php-code-coverage/src/Exception/CoveredCodeNotExecutedException.php',
     'SebastianBergmann\\CodeCoverage\\Driver\\Driver' => $vendorDir . '/phpunit/php-code-coverage/src/Driver/Driver.php',
@@ -540,7 +541,7 @@ return array(
     'TablePromoInput' => $baseDir . '/database/migrations/2016_11_01_075606_table_promo_input.php',
     'TablePromoPod' => $baseDir . '/database/migrations/2016_11_07_074242_table_promo_pod.php',
     'TablePromoWeek' => $baseDir . '/database/migrations/2016_11_04_120334_table_promo_week.php',
-    'TableUserTable' => $baseDir . '/database/migrations/2016_11_08_051240_table_user_table.php',
+    'TableUserTable' => $baseDir . '/database/redshift/2016_11_08_051240_table_user_table.php',
     'TestCase' => $baseDir . '/tests/TestCase.php',
     'Text_Template' => $vendorDir . '/phpunit/php-text-template/src/Template.php',
     'UsersTableSeeder' => $baseDir . '/database/seeds/UsersTableSeeder.php',

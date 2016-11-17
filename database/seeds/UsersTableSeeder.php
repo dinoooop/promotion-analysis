@@ -16,24 +16,10 @@ class UsersTableSeeder extends Seeder {
             [
                 'name' => 'admin',
                 'username' => 'admin',
-                'email' => 'admin@mail.com',
+                'email' => 'dinoop@sparksupport.com',
                 'role' => 'admin',
-                'password' => bcrypt('admin'),
-            ],
-            [
-                'name' => 'John',
-                'username' => 'john',
-                'email' => 'john@mail.com',
-                'role' => 'employee',
-                'password' => bcrypt('admin'),
-            ],
-            [
-                'name' => 'Ajmal',
-                'username' => 'ajmal',
-                'email' => 'ajmal@mail.com',
-                'role' => 'employee',
-                'password' => bcrypt('admin'),
-            ],
+                'password' => bcrypt('promo2016'),
+            ]
         ];
 
         foreach ($users as $value) {

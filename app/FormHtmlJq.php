@@ -43,7 +43,7 @@ class FormHtmlJq {
             case 'text':
             case 'url':
 
-                
+
                 $description = (isset($description) && $description != '') ? $description : '';
                 $placeholder = (isset($placeholder) && $placeholder != '') ? $placeholder : '';
                 ?>
@@ -93,7 +93,7 @@ class FormHtmlJq {
 
             case 'select':
 
-                
+
                 if (!isset($options)) {
                     return false;
                 }
@@ -120,7 +120,7 @@ class FormHtmlJq {
 
             case 'select-multiple':
 
-                
+
                 $description = (isset($description) && $description != '') ? $description : '';
                 ?>
                 <?php echo $col; ?>
@@ -129,10 +129,10 @@ class FormHtmlJq {
                     <select class="selectpicker" multiple 
                             name="<?php echo $name; ?>"
                             title="<?php echo $label; ?>">
-                        <?php
-                        foreach ($options as $key => $option_value):
-                            $selected = ($key == $value) ? 'selected' : '';
-                            ?>
+                                <?php
+                                foreach ($options as $key => $option_value):
+                                    $selected = ($key == $value) ? 'selected' : '';
+                                    ?>
                             <option value="<?php echo $key; ?>" <?php echo $selected; ?>>
                                 <?php echo $option_value; ?>
                             </option>
@@ -144,10 +144,23 @@ class FormHtmlJq {
                 <?php
                 break;
 
+            case 'boolean_checkbox':
+                $checked = (isset($value) && $value == 1) ? 'checked' : '';
+                ?>
+                <?php echo $col; ?>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox"  value="1" name="<?php echo $name; ?>" <?php echo $checked; ?>> <?php echo $label ?>
+                    </label>
+                </div>
+                <?php echo '</div>'; ?>
+                <?php
+                break;
+
             case 'hidden':
                 ?><input type="hidden" id="<?php echo $id ?>" name="<?php echo $name; ?>" value="<?php echo $value; ?>"><?php
                 break;
-            
+
             case 'file':
                 $description = (isset($description) && $description != '') ? $description : '';
                 $placeholder = (isset($placeholder)) ? $placeholder : 'Upload';
@@ -176,6 +189,54 @@ class FormHtmlJq {
                 echo '<div class="clearfix"></div>';
                 break;
 
+            case 'date':
+                $value = (!isset($value) || $value == '') ? date('m/d/Y') : date('m/d/Y', strtotime($value));
+                $description = (isset($description) && $description != '') ? $description : '';
+                ?>
+                <?php echo $col; ?>
+                <div class="form-group">
+                    <label><?php echo $label; ?></label>
+                    <p class="help-description"><?php echo $description; ?></p>
+                    <input type="text" name="<?php echo $name; ?>" class="form-control" value="<?php echo $value; ?>" />
+
+
+                </div>
+                <?php echo '</div>'; ?>
+
+                <script type="text/javascript">
+                    $(function () {
+                        $('input[name="<?php echo $name; ?>"]').daterangepicker({
+                            singleDatePicker: true,
+                            showDropdowns: true
+                        },
+                                function (start, end, label) {
+                                    var years = moment().diff(start, 'years');
+                                });
+                    });
+                </script>
+                <?php
+                break;
+
+            case 'auto_complete':
+                $list = $this->create_array_string($list)
+                ?>
+                <?php echo $col; ?>
+                <div class="form-group">
+                    <label><?php echo $label; ?></label>
+                    <input id="<?php echo $id ?>" class="form-control">
+                </div>
+                <script>
+                    $(function () {
+                        var availableTags = [<?php echo $list; ?>];
+                        $("#<?php echo $id ?>").autocomplete({
+                            source: availableTags
+                        });
+                    });
+                </script>
+                <?php echo '</div>'; ?>
+                <?php
+                break;
+
         endswitch;
         $html = ob_get_contents();
         ob_end_clean();
@@ -193,6 +254,23 @@ class FormHtmlJq {
         $html = ob_get_contents();
         ob_end_clean();
         return $html;
+    }
+    
+    
+    /**
+     * 
+     * Create comma separated list from array
+     * e.g 'amazone', 'flipkart', 'walmart'
+     * @param array $array single dimensional array
+     * @return string
+     */
+    function create_array_string($array) {
+        $new = [];
+        foreach ($array as $value) {
+            $new[] = "'{$value}'";
+        }
+        
+        return implode(', ', $new);
     }
 
 }

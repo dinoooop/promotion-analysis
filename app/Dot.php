@@ -39,6 +39,24 @@ class Dot {
         $title = strtolower($title);
         return $title;
     }
+    
+    public static function create_array_key($key) {
+        $key = trim($key);
+        $key = preg_replace('/[^a-zA-Z0-9- ]/', '', $key);
+        $key = str_replace("'", '', $key);
+        $key = str_replace(' ', '_', $key);
+        $key = strtolower($key);
+        return $key;
+    }
+    
+    public static function get_array_key_value($array) {
+        $return = [];
+        foreach ($array as $key => $value) {
+            $refined_key = self::create_array_key($value);
+            $return[$refined_key] = $value;
+        }
+        return $return;
+    }
 
     public static function get_model_by_slug($table) {
 
@@ -80,6 +98,8 @@ class Dot {
 
         return json_encode($new_array);
     }
+    
+    
 
     /**
      * 
@@ -111,5 +131,7 @@ class Dot {
         
         return true;
     }
+    
+    
 
 }

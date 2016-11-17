@@ -1,10 +1,10 @@
 
 var appConst = {};
 
-if (location.host == 'localhost' || location.host == '192.168.1.133') {
-    appConst.base_url = location.port + '//' + location.host + '/post-video';
+if (location.host == 'localhost') {
+    appConst.base_url = location.port + '//' + location.host + '/promotion-analysis';
 } else {
-    appConst.base_url = location.port + '//' + location.host + '/nri-stories';
+    appConst.base_url = location.port + '//' + location.host;
 }
 
 // update
@@ -18,6 +18,4 @@ appConst.url_move_uploaded_file = appConst.base_url + "/ajax/mu-file";
 appConst.url_ajax = appConst.base_url + "/ajax/";
 
 // Custom urls
-appConst.url_preview_uploaded_file = appConst.base_url + "/ajax/preview-uploaded-file";
-appConst.url_get_videos = appConst.base_url + "/ajax/videos";
-appConst.token = "1Gz6YI0h0hIOhBPKTztw8CtuhousXiOEeSWPRFEf";
+appConst.token = 'utxzlLzlNhj6BEL5qG8mV9ePqgVF94eslqKskcc7';
