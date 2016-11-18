@@ -148,10 +148,10 @@ $.fn.extend({
 
         switch ($form.attr('id')) {
 
-            case "pv_form_ads":
+            case "pv_create_promotion":
 
                 var value = $field.cu_getVal();
-                var required_fileds = ["title"];
+                var required_fileds = ["promotions_name", "promotions_startdate", "promotions_enddate"];
                 if (required_fileds.indexOf(name) != -1) {
                     error = $field.cu_require();
                     $field.cu_error_switch(error);
@@ -159,23 +159,25 @@ $.fn.extend({
 
                 if (!error) {
                     switch (name) {
-                        case 'ad_file':
+
+                        case 'promotions_enddate':
+
                             error = $field.cu_require();
-                            $field.cu_error_switch(error, "Please upload an ad");
+                            $field.cu_error_switch(error, "Please ender the promotion date");
+                            var start_date = $form.find("[name='promotions_startdate']").val();
+                            var date_one = new Date(start_date);
+                            var date_two = new Date(value);
+
+                            error = (date_one <= date_two) ? 0 : 1;
+                            var message = "Please enter valid promotion duration";
+                            $field.cu_error_switch(error, message);
                             break;
                     }
 
                 }
                 break;
 
-            case "pv_form_videos":
-                var value = $field.cu_getVal();
-                var required_fileds = ["title", "file"];
-                if (required_fileds.indexOf(name) != -1) {
-                    error = $field.cu_require();
-                    $field.cu_error_switch(error);
-                }
-                break;
+            
 
             case "pv_form_edit_user":
                 var value = $field.cu_getVal();

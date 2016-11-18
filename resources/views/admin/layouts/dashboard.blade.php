@@ -26,15 +26,16 @@
         <link href="{{ asset('assets/bootstrap-select/bootstrap-select.css') }}" rel="stylesheet" type="text/css" />
         <link href="{{ asset('css/styles.css') }}" rel="stylesheet" type="text/css" />
         <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-        
+
         <script src="{{ asset('js/jquery.min.js') }}"></script>
-        <script src="{{ asset('js/app-const.js') }}"></script>        
+        <script src="{{ asset('js/app-const.js') }}"></script> 
+        <script type="text/javascript">appConst.token = '<?php echo csrf_token(); ?>';</script>
         
-        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script src="{{ asset('js/jquery-ui.js') }}"></script>
         <script src="{{ asset('js/merge.js') }}"></script>        
-        
-        
-        
+
+
+
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
                 <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -50,14 +51,14 @@
 
 
             <div class="main_container">
-                
+
                 @if(Auth::check() && !isset($page_404))
 
-                    @include('admin/tmp/sidemenu')
+                @include('admin/tmp/sidemenu')
 
-                    <!-- top navigation -->
-                    @include('admin/tmp/topnav')
-                    <!-- /top navigation -->
+                <!-- top navigation -->
+                @include('admin/tmp/topnav')
+                <!-- /top navigation -->
                 @endif
 
                 <!-- page content -->
@@ -78,7 +79,7 @@
         <script src="{{ asset('gentelella/js/bootstrap.min.js') }}"></script>
 
         <!-- gauge js -->
-        
+
         <!-- bootstrap progress js -->
         <script src="{{ asset('gentelella/js/progressbar/bootstrap-progressbar.min.js') }}"></script>
         <script src="{{ asset('gentelella/js/nicescroll/jquery.nicescroll.min.js') }}"></script>
@@ -87,7 +88,7 @@
         <!-- daterangepicker -->
         <script type="text/javascript" src="{{ asset('gentelella/js/moment/moment.min.js') }}"></script>
         <script type="text/javascript" src="{{ asset('gentelella/js/datepicker/daterangepicker.js') }}"></script>
-        
+
 
         <script src="{{ asset('gentelella/js/custom.js') }}"></script>
 
@@ -102,23 +103,23 @@
         <script type="text/javascript" src="{{ asset('gentelella/js/flot/jquery.flot.stack.js') }}"></script>
         <script type="text/javascript" src="{{ asset('gentelella/js/flot/curvedLines.js') }}"></script>
         <script type="text/javascript" src="{{ asset('gentelella/js/flot/jquery.flot.resize.js') }}"></script>
-        
+
         <!-- worldmap -->
         <script type="text/javascript" src="{{ asset('gentelella/js/maps/gdp-data.js') }}"></script>
-        
+
         <!-- pace -->
         <script src="{{ asset('gentelella/js/pace/pace.min.js') }}"></script>
-        
+
         <!-- skycons -->
         <script src="{{ asset('gentelella/js/skycons/skycons.min.js') }}"></script>
         <script src="{{ asset('assets/sweetalert/sweetalert.min.js') }}"></script>
-        
+
         <script src="{{ asset('assets/uploadm/jsUpload.js') }}"></script>
         <script src="{{ asset('assets/uploadm/file-upload.js') }}"></script>
         <script src="{{ asset('assets/croppie/croppie.js') }}"></script>
         <script src="{{ asset('assets/bootstrap-select/bootstrap-select.js') }}"></script>
         <script src="{{ asset('gentelella/js/nprogress.js') }}"></script>
-        
+
         <script src="{{ asset('js/form-validation.js') }}"></script>
         <script src="{{ asset('js/scripts.js') }}"></script>
     </body>

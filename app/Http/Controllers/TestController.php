@@ -37,7 +37,7 @@ class TestController extends BaseController {
         //echo date('Y-m-d', strtotime('2016-07-12' . "-2 weeks"));
         
         //echo '<pre>', print_r(range("Q1", "Q9")), '</pre>';
-        echo csrf_token();
+        echo date('d-m-Y', strtotime('16-01-17'));
         
     }
 

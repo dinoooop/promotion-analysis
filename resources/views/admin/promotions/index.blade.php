@@ -20,7 +20,7 @@
                 <th>Projected sales</th>
                 <th>expected lift</th>
                 
-                <th>Action</th>
+                <th width="150">Action</th>
             </tr>
         </thead>
 

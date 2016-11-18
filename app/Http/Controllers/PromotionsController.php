@@ -59,7 +59,7 @@ class PromotionsController extends Controller {
 
         $data = array();
 
-        $form = $this->gform->set_form(AppForms::get_form('pv_form_promotion'));
+        $form = $this->gform->set_form(AppForms::form_promotion());
         $form['form_name'] = 'pv_create_promotion';
 
         $data['form_create'] = $this->formHtmlJq->create_form($form);
@@ -115,7 +115,7 @@ class PromotionsController extends Controller {
         $data = array();
         $data['record'] = Promotion::find($id);
         
-        $form = $this->gform->set_form(AppForms::get_form('pv_form_promotion'), $data['record']);
+        $form = $this->gform->set_form(AppForms::form_promotion(), $data['record']);
         $form['form_name'] = 'pv_edit_promotion';
         $data['form_edit'] = $this->formHtmlJq->create_form($form);
         return View::make('admin.promotions.edit', $data);

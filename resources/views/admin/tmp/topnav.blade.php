@@ -8,9 +8,10 @@
 
             <ul class="nav navbar-nav navbar-right">
                 <li class="">
+                    
                     @if(Auth::check())
                     <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                        {{ Auth::user()->name }}
+                        {{ date('Y-m-d h:i A') }} &nbsp; {{ Auth::user()->name }}
                         <span class=" fa fa-angle-down"></span>
                     </a>
                     @endif
@@ -19,6 +20,7 @@
                         <li><a href="{{ URL::action('UsersController@logout') }}"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
                     </ul>
                 </li>
+                
             </ul>
         </nav>
     </div>

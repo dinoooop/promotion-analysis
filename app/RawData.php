@@ -65,8 +65,8 @@ class RawData {
             
             
 
-            case 'refresh_table_promotions_master_input':
-                // php artisan raw_data refresh_table_promotions_master_input
+            case 'refresh_master_input':
+                // php artisan raw_data refresh_master_input
                 $this->refresh_table_promotions_master_input();
                 $this->recreate_table_promotions_master_input();
                 break;
@@ -110,7 +110,7 @@ class RawData {
         Schema::create('promotions.promotions_master_input', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('promotions_name');
-            $table->text('promotions_description');
+            $table->text('promotions_description')->nullable();
             $table->date('promotions_startdate');
             $table->date('promotions_enddate');
             $table->string('retailer')->nullable();
@@ -121,10 +121,10 @@ class RawData {
             $table->string('promotions_type')->nullable();
             $table->string('level_of_promotions')->nullable();
             $table->string('marketing_type')->nullable();
-            $table->boolean('annivarsaried')->default(0);
-            $table->double('promotions_budget', 15, 8);
-            $table->double('promotions_projected_sales', 15, 8);
-            $table->double('promotions_expected_lift', 15, 8);
+            $table->boolean('annivarsaried')->default(0)->nullable();
+            $table->double('promotions_budget', 15, 8)->nullable();
+            $table->double('promotions_projected_sales', 15, 8)->nullable();
+            $table->double('promotions_expected_lift', 15, 8)->nullable();
             $table->string('promotions_budget_type')->nullable();
             $table->string('brand_id')->nullable();
             $table->string('brand')->nullable();
@@ -132,7 +132,7 @@ class RawData {
 //            $table->string('product_family')->nullable();
 //            $table->string('product_line')->nullable();
             $table->string('division')->nullable();
-            $table->string('status');
+            $table->string('status')->nullable();
             $table->timestamps();
         });
     }
@@ -210,7 +210,7 @@ class RawData {
                 'annivarsaried' => 0,
                 'promotions_budget' => 0,
                 'promotions_projected_sales' => 0,
-                'promotions_expected_lift' => 0,
+                'promotions_expected_lift',
                 'promotions_budget_type' => '',
                 'brand_id' => '',
                 'brand' => 'Graco',

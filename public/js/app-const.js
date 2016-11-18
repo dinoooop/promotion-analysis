@@ -3,10 +3,10 @@ var appConst = {};
 
 if (location.host == 'localhost') {
     appConst.base_url = location.port + '//' + location.host + '/promotion-analysis';
-    appConst.token = 'utxzlLzlNhj6BEL5qG8mV9ePqgVF94eslqKskcc7';
+    
 } else {
     appConst.base_url = location.port + '//' + location.host;
-    appConst.token = 'jqt9FGpAwfpqYf8BcDPQltZN2zexIdTIQrB8RGMt';
+    
 }
 
 // update
