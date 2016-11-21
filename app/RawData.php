@@ -18,7 +18,6 @@ use Illuminate\Support\Facades\Log;
 use App\promotions\Promotion;
 use Illuminate\Support\Facades\Schema;
 
-
 class RawData {
 
     private $calendar;
@@ -59,27 +58,24 @@ class RawData {
                 break;
 
             case 'truncate':
-                $obj = new Printm;
-                $obj->table_trucate();
+                $this->table_trucate();
                 break;
-            
-            
 
             case 'refresh_master_input':
                 // php artisan raw_data refresh_master_input
                 $this->refresh_table_promotions_master_input();
                 $this->recreate_table_promotions_master_input();
                 break;
-            
+
             case 'refresh_table_dim_retailer_channel':
                 // php artisan raw_data refresh_table_dim_retailer_channel
-                
+
                 $this->refresh_table_dim_retailer_channel();
                 break;
-            
+
             case 'refresh_table_basic':
                 // php artisan raw_data refresh_table_basic
-                
+
                 $this->refresh_table_basic();
                 break;
 
@@ -94,7 +90,6 @@ class RawData {
                 break;
 
             case 'sample_test':
-
                 $this->printm->sample_test();
                 break;
 
@@ -136,8 +131,17 @@ class RawData {
             $table->timestamps();
         });
     }
-    
-    
+
+    function refresh_table_promotions_child_input() {
+        $table_name = 'promotions.promotions_child_input';
+        Schema::dropIfExists($table_name);
+        Schema::create($table_name, function (Blueprint $table) {
+            $table->bigIncrements('id');
+            // @todo
+            $table->timestamps();
+        });
+    }
+
     function refresh_table_dim_retailer_channel() {
         $table_name = 'nwl_pos.dim_retailer_channel';
         Schema::dropIfExists($table_name);
@@ -145,13 +149,12 @@ class RawData {
             $table->bigIncrements('id');
             $table->string('retailer');
         });
-        
+
         DB::table($table_name)->insert(['retailer' => 'Amazone']);
         DB::table($table_name)->insert(['retailer' => 'Flipkart']);
         DB::table($table_name)->insert(['retailer' => 'Walmart']);
     }
-    
-    
+
     /**
      * 
      * Refresh the user table
@@ -169,7 +172,7 @@ class RawData {
             $table->rememberToken();
             $table->timestamps();
         });
-        
+
         $users = [
             [
                 'name' => 'Admin',
@@ -183,7 +186,6 @@ class RawData {
         foreach ($users as $value) {
             DB::table($table_name)->insert($value);
         }
-        
     }
 
     /**
@@ -337,6 +339,13 @@ class RawData {
 
     function read_table_user_input() {
         return DB::table("user_input")->get();
+    }
+
+    function table_trucate() {
+        Sdcalc::truncate();
+        Swcalc::truncate();
+        Spod::truncate();
+        Spinput::truncate();
     }
 
 }

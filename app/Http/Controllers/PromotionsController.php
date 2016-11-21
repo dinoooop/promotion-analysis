@@ -99,9 +99,8 @@ class PromotionsController extends Controller {
      * @return Response
      */
     public function show($id) {
-
         $data = array();
-        $data['records'] = Promotion::find($id);
+        $data['record'] = Promotion::find($id);
         return View::make('admin.promotions.show', $data);
     }
 

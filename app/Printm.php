@@ -241,12 +241,7 @@ Category';
         }
     }
 
-    function table_trucate() {
-        Sdcalc::truncate();
-        Swcalc::truncate();
-        Spod::truncate();
-        Spinput::truncate();
-    }
+  
 
     function create_array_from_table_browser() {
 
