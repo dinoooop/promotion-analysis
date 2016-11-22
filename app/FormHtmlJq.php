@@ -41,11 +41,14 @@ class FormHtmlJq {
             case 'password':
             case 'phone':
             case 'text':
+            case 'number':
             case 'url':
 
 
                 $description = (isset($description) && $description != '') ? $description : '';
                 $placeholder = (isset($placeholder) && $placeholder != '') ? $placeholder : '';
+                //For number
+                $step = (isset($step) && $step != '') ? ' step="' . $step . '" ' : '';
                 ?>
 
                 <?php echo $col; ?>
@@ -58,7 +61,8 @@ class FormHtmlJq {
                         name="<?php echo $name; ?>" 
                         class="form-control"
                         value="<?php echo $value; ?>"
-                        placeholder="<?php echo $placeholder ?>">
+                        placeholder="<?php echo $placeholder ?>"
+                        <?php echo $step; ?>>
                     <p class="help-description"><?php echo $description; ?></p>
                 </div>
                 <?php echo '</div>'; ?>
@@ -223,7 +227,7 @@ class FormHtmlJq {
                 <?php echo $col; ?>
                 <div class="form-group">
                     <label><?php echo $label; ?></label>
-                    <input id="<?php echo $id ?>" class="form-control">
+                    <input id="<?php echo $id ?>" class="form-control" value="<?php echo $value; ?>" name="<?php echo $name; ?>">
                 </div>
                 <script>
                     $(function () {
@@ -255,8 +259,7 @@ class FormHtmlJq {
         ob_end_clean();
         return $html;
     }
-    
-    
+
     /**
      * 
      * Create comma separated list from array
@@ -269,7 +272,7 @@ class FormHtmlJq {
         foreach ($array as $value) {
             $new[] = "\"{$value}\"";
         }
-        
+
         return implode(', ', $new);
     }
 

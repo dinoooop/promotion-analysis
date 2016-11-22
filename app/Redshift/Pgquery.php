@@ -37,6 +37,30 @@ class Pgquery {
                                 ->distinct()
                                 ->pluck('division');
                 break;
+            case 'material_id':
+                return DB::connection('redshift')
+                                ->table('nwl_pos.dim_material')
+                                ->distinct()
+                                ->pluck('material_id');
+                break;
+            case 'product_name':
+                return DB::connection('redshift')
+                                ->table('nwl_pos.dim_material')
+                                ->distinct()
+                                ->pluck('material_description');
+                break;
+            case 'asin':
+                return DB::connection('redshift')
+                                ->table('nwl_pos.dim_material')
+                                ->distinct()
+                                ->pluck('retailer_sku');
+                break;
+            case 'rtl_id':
+                return DB::connection('redshift')
+                                ->table('nwl_pos.dim_material')
+                                ->distinct()
+                                ->pluck('retailer_sku');
+                break;
 
             default:
                 return [];

@@ -49,5 +49,25 @@ class Merge {
         }
         return $numerator / $denominator;
     }
+    
+    function url($key, $param) {
+        switch ($key) {
+            case 'items_index':
+                if(isset($param['pid'])){
+                    return url('admin/items?pid=' . $param['pid']);
+                }
+                break;
+            case 'items_create':
+                if(isset($param['pid'])){
+                    return url('admin/items/create?pid=' . $param['pid']);
+                }
+                break;
+
+            default:
+                break;
+        }
+        
+        return false;
+    }
 
 }

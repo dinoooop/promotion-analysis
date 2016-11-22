@@ -132,6 +132,10 @@ class Dot {
         return true;
     }
     
+    public static function have_value($key, $input) {
+        return (isset($input[$key]) && $input[$key] != '')? $input[$key] : null;
+    }
+    
     
 
 }

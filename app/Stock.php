@@ -152,6 +152,19 @@ class Stock {
                 ];
                 return array_combine($return, $return);
                 break;
+            
+            case 'material_id':
+                return Pgquery::get_distinct_column_values('material_id');
+                break;
+            case 'product_name':
+                return Pgquery::get_distinct_column_values('product_name');
+                break;
+            case 'asin':
+                return Pgquery::get_distinct_column_values('asin');
+                break;
+            case 'rtl_id':
+                return Pgquery::get_distinct_column_values('rtl_id');
+                break;
         }
 
         return false;

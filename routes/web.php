@@ -25,5 +25,6 @@ Route::get('admin/profile', 'UsersController@profile');
 Route::group([ 'prefix' => 'admin', 'middleware' => 'role'], function() {
     Route::resource('users', 'UsersController');
     Route::resource('promotions', 'PromotionsController');
+    Route::resource('items', 'ItemsController');
 });
 

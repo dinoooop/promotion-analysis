@@ -17,9 +17,26 @@ class Printm {
     
     function get_hyphen_data() {
 
-        $str = 'Item Level
-Brand
-Category';
+        $str = 'promotions_startdate
+promotions_enddate
+materialid
+product_name
+asin
+rtl_id
+promotions_budget
+promotions_projected_sales
+promotions_expected_lift
+x_plant_material_status
+x_plant_status_date
+promotions_budget_type
+funding_per_unit
+forecaseted_qty
+forecasted_unit_sales
+promoted
+user_input
+validated
+percent_discount
+price_discount';
 
         return $str;
     }

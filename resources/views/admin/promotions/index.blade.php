@@ -29,7 +29,7 @@
             @foreach ($records as $record)
             <?php $record = App\promotions\Promotion::display_prepare($record)?>
             <tr>
-                <td>{{ link_to_route('promotions.edit', $record->promotions_name, array($record->id)) }}</td>
+                <td>{{ link_to_route('items.index', $record->promotions_name, array('pid' => $record->id)) }}</td>
                 <td>{{ $record->promotions_startdate }}</td>
                 <td>{{ $record->promotions_enddate }}</td>
                 <td>{{ $record->brand }}</td>

@@ -4,28 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Support\Facades\Response;
 use App\Gform;
 use App\FormHtmlJq;
 use App\AppForms;
 use App\promotions\Promotion;
-
-use App\Dot;
-use App\Sdcalc;
-use App\Swcalc;
-use App\Merge;
-use App\RawData;
-use App\Calendar;
-use App\Printm;
-use App\Redshift\Dmaterial;
-use App\Redshift\Dsales;
-use App\Redshift\Dchannel;
-use Illuminate\Support\Facades\DB;
-
 
 class PromotionsController extends Controller {
 
@@ -68,13 +54,13 @@ class PromotionsController extends Controller {
     }
 
     /**
+     * 
      * Store a newly created resource in storage.
-     *
      * @return Response
      */
     public function store() {
         $input = Input::all();
-        
+
         $input = Promotion::sanitize($input);
 
         $validation = Validator::make($input, Promotion::$form_create_rules);
@@ -93,6 +79,7 @@ class PromotionsController extends Controller {
     }
 
     /**
+     * 
      * Display the specified resource.
      *
      * @param  int  $id
@@ -105,6 +92,7 @@ class PromotionsController extends Controller {
     }
 
     /**
+     * 
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
@@ -113,7 +101,7 @@ class PromotionsController extends Controller {
     public function edit($id) {
         $data = array();
         $data['record'] = Promotion::find($id);
-        
+
         $form = $this->gform->set_form(AppForms::form_promotion(), $data['record']);
         $form['form_name'] = 'pv_edit_promotion';
         $data['form_edit'] = $this->formHtmlJq->create_form($form);
@@ -121,6 +109,7 @@ class PromotionsController extends Controller {
     }
 
     /**
+     * 
      * Update the specified resource in storage.
      *
      * @param  int  $id
@@ -130,11 +119,11 @@ class PromotionsController extends Controller {
 
         $input = Input::all();
         $input = Promotion::sanitize($input);
-        
+
         $validation = Validator::make($input, Promotion::$form_edit_rules);
 
         if ($validation->passes()) {
-            
+
             $record = Promotion::find($id);
             $record->update($input);
             return Redirect::route('promotions.index');
