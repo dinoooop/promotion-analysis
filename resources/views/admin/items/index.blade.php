@@ -41,10 +41,16 @@
             <table class="table table-striped table-bordered">
                 <thead>
                     <tr>
-                        <th>Promotion Id</th>
-                        <th>Product Name</th>
+                        <th>Material Id</th>
+                        <th>ASIN</th>
+                        
                         <th>Start date</th>
                         <th>End date</th>
+                        <th>Product Name</th>
+                        <th>Promotions Projected Sales</th>
+                        <th>Promotions Budget Type</th>
+                        <th>Funding per unit</th>
+                        <th>Forecaseted qty</th>
                         <th width="150">Action</th>
                     </tr>
                 </thead>
@@ -54,10 +60,16 @@
                     @foreach ($records as $record)
                     <?php $record = App\promotions\Item::display_prepare($record) ?>
                     <tr>
-                        <td>{{ $record->promotions_id }}</td>
-                        <td>{{ $record->product_name }}</td>
+                        <td>{{ $record->material_id }}</td>
+                        <td>{{ $record->asin }}</td>
+                        
                         <td>{{ $record->promotions_startdate }}</td>
                         <td>{{ $record->promotions_enddate }}</td>
+                        <td>{{ $record->product_name }}</td>
+                        <td>{{ $record->promotions_projected_sales }}</td>
+                        <td>{{ $record->promotions_budget_type }}</td>
+                        <td>{{ $record->funding_per_unit }}</td>
+                        <td>{{ $record->forecaseted_qty }}</td>
 
                         <td>
                             <a href="{{route('items.edit', array($record->id, 'pid'=>$promotion->id))}}" class="btn btn-info"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>

@@ -234,28 +234,28 @@ class AppForms {
                 ),
                 
                 array(
-                    'type' => 'auto_complete',
+                    'type' => 'text',
                     'name' => 'material_id',
                     'label' => 'Material ID',
-                    'list' => Stock::get('material_id'),
+                    //'list' => Stock::get('material_id'),
                 ),
                 array(
-                    'type' => 'auto_complete',
+                    'type' => 'text',
                     'name' => 'product_name',
                     'label' => 'Product Name',
-                    'list' => Stock::get('product_name'),
+                    //'list' => Stock::get('product_name'),
                 ),
                 array(
-                    'type' => 'auto_complete',
+                    'type' => 'text',
                     'name' => 'asin',
                     'label' => 'ASIN',
-                    'list' => Stock::get('asin'),
+                    //'list' => Stock::get('asin'),
                 ),
                 array(
-                    'type' => 'auto_complete',
+                    'type' => 'text',
                     'name' => 'rtl_id',
                     'label' => 'Rtl ID',
-                    'list' => Stock::get('rtl_id'),
+                    //'list' => Stock::get('rtl_id'),
                 ),
                 array(
                     'type' => 'number',
