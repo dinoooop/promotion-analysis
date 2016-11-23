@@ -22,12 +22,7 @@ class Smaterial extends Model {
         'prod_line',
     ];
     
-    function set_vars($input) {
-        
-        $this->sdcalc = $input;
-        $this->create_record($this->sdcalc->record_one);
-        
-    }
+
     
     function create_record($record) {
         

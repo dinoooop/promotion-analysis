@@ -10,11 +10,13 @@ use App\Merge;
 use App\RawData;
 use App\Calendar;
 use App\Printm;
+use App\Mockup;
 use App\Redshift\Dmaterial;
 use App\Redshift\Dsales;
 use App\Redshift\Dchannel;
 use Illuminate\Support\Facades\DB;
 use App\promotions\Promotion;
+use Illuminate\Support\Facades\Config;
 
 class TestController extends BaseController {
 
@@ -35,15 +37,22 @@ class TestController extends BaseController {
         //$this->dchannel->generate();
         //$this->rawdata->process();
         //echo date('Y-m-d', strtotime('2016-07-12' . "-2 weeks"));
-        
         //echo '<pre>', print_r(range("Q1", "Q9")), '</pre>';
         echo date('d-m-Y', strtotime('16-01-17'));
         
+        Config::set('database.fetch', \PDO::FETCH_ASSOC);
+        
+        $this->mockup = new Mockup;
+
+        $this->mockup->promotion_chunk();
     }
 
     function local_test() {
-
-        $this->printm->mint_create_array();
+        //$date = $this->calendar->init('2016-11-16', '2016-11-16');
+        $date = $this->calendar->get_quarter_info('2016-12-31');
+        echo '<pre>', print_r($date), '</pre>';
+        exit();
+        
     }
 
     function test_02() {

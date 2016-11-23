@@ -36,6 +36,10 @@ class Merge {
             case 'baseline_normalization_thresholds':
                 return 0.25;
                 break;
+            case 'post_week_avail_week_count':
+                // Execute only the promotion with end_date less than 3 weeks before
+                return 3;
+                break;
 
             default:
                 return 0;

@@ -12,6 +12,7 @@ use App\Sdcalc;
 use App\Swcalc;
 use App\Spod;
 use App\Printm;
+use App\Mockup;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
@@ -28,6 +29,7 @@ class RawData {
     public function __construct() {
         $this->calendar = new Calendar;
         $this->printm = new Printm;
+        $this->mockup = new Mockup;
     }
 
     function init($mode) {
@@ -39,15 +41,14 @@ class RawData {
         switch ($mode) {
 
             case 'sample':
-                $input = Stock::sample_input();
-                $this->process($input);
+                
+                $date = $this->calendar->init('2016-07-09', '2016-10-12');
+                
+                
                 break;
 
             case 'process':
-                $records = $this->read_table_user_input();
-                foreach ($records as $key => $input) {
-                    $this->process($input);
-                }
+                $this->mockup->promotion_chunk();
                 break;
 
             case 'csv':
@@ -57,8 +58,8 @@ class RawData {
                 }
                 break;
 
-            case 'truncate':
-                $this->table_trucate();
+            case 'table_truncate':
+                $this->table_truncate();
                 break;
 
             case 'refresh_master_input':
@@ -72,7 +73,7 @@ class RawData {
 
                 $this->refresh_table_dim_retailer_channel();
                 break;
-            
+
             case 'refresh_table_item':
                 // php artisan raw_data refresh_table_item
 
@@ -235,84 +236,7 @@ class RawData {
         }
     }
 
-    function process($input) {
-
-//        @testing 
-//        Sdcalc::truncate();
-//        Swcalc::truncate();
-//        Spod::truncate();
-//        Spinput::truncate();
-
-        $this->spinput = new Spinput;
-        $this->sdcalc = new Sdcalc;
-        $this->swcalc = new Swcalc;
-        $this->smaterial = new Smaterial;
-        $this->spod = new Spod;
-
-
-        $this->spinput->set_vars($input);
-
-        if (!$this->spinput->validate) {
-            echo "The given input is not valid \n";
-            return false;
-        }
-
-        $this->spinput->promo_id = $this->spinput->create_record($this->spinput->data);
-
-        echo "Executing the promotion with id {$this->spinput->promo_id} \n";
-
-        $this->sdcalc->set_vars($this->spinput);
-
-        $this->smaterial->set_vars($this->sdcalc);
-
-        if ($this->sdcalc->record_count) {
-            $this->swcalc->set_vars($this->sdcalc);
-        }
-
-        $this->spinput->set_vars_nh();
-        if ($this->spinput->is_require_nhqs) {
-            echo "Neighbourhood quarter required (start) \n";
-            $this->nh_spinput = new Spinput;
-            $this->nh_sdcalc = new Sdcalc;
-            $this->nh_swcalc = new Swcalc;
-            $input['start_date'] = $this->spinput->weekly_baseline_date;
-            $input['end_date'] = $this->spinput->weekly_baseline_date;
-
-            $this->nh_spinput->set_vars($input);
-            $this->nh_spinput->promo_id = $this->spinput->promo_id;
-            $this->nh_sdcalc->set_vars($this->nh_spinput);
-
-            if ($this->nh_sdcalc->record_count) {
-                $this->nh_swcalc->set_vars($this->nh_sdcalc);
-            }
-        }
-
-        if ($this->spinput->is_require_nhqe) {
-
-            echo "Neighbourhood quarter required (end) \n";
-
-            $this->nh_spinput = new Spinput;
-            $this->nh_sdcalc = new Sdcalc;
-            $this->nh_swcalc = new Swcalc;
-            $input['start_date'] = $this->spinput->post_weekly_baseline_date;
-            $input['end_date'] = $this->spinput->post_weekly_baseline_date;
-
-            $this->nh_spinput->set_vars($input);
-            $this->nh_spinput->promo_id = $this->spinput->promo_id;
-            $this->nh_sdcalc->set_vars($this->nh_spinput);
-
-            if ($this->nh_sdcalc->record_count) {
-                $this->nh_swcalc->set_vars($this->nh_sdcalc);
-            }
-        }
-
-        if ($this->sdcalc->record_count) {
-            $this->spod->set_vars($this->swcalc);
-            $this->spod->create_record();
-        }
-
-        echo "Promotion {$this->spinput->promo_id} completed ------------------------------------------\n";
-    }
+    
 
     function csv_write($list) {
         //$header[] = Block::get_headers();
@@ -347,16 +271,15 @@ class RawData {
         return DB::table("user_input")->get();
     }
 
-    function table_trucate() {
+    function table_truncate() {
         Sdcalc::truncate();
         Swcalc::truncate();
         Spod::truncate();
-        Spinput::truncate();
+        //Spinput::truncate();
     }
-    
-    
+
     function refresh_table_item() {
-            
+
         $table_name = 'promotions.promotions_child_input';
         Schema::dropIfExists($table_name);
         Schema::create($table_name, function (Blueprint $table) {

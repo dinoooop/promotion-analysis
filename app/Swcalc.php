@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\Sdcalc;
 use App\Merge;
+use App\Calendar;
 use Illuminate\Support\Facades\Log;
 
 class Swcalc extends Model {
@@ -30,9 +31,11 @@ class Swcalc extends Model {
     ];
     private $merge;
 
-    function set_vars($input) {
+    function set_vars($spinput, $sdcalc) {
         $this->merge = new Merge;
-        $this->sdcalc = $input;
+        $this->calendar = new Calendar;
+        $this->spinput = $spinput;
+        $this->sdcalc = $sdcalc;
         $this->save_records();
     }
 
@@ -60,12 +63,11 @@ class Swcalc extends Model {
         ];
 
         $sum_raw_select = $this->merge->create_sum_select_raw($raw);
-        
+
         $records = Sdcalc::selectRaw("week, $sum_raw_select")
-                ->where('promo_id', $this->sdcalc->spinput->promo_id)                
-                ->where('quarter', $this->sdcalc->spinput->quarter['quarter'])
-                ->groupBy('week')
-                ->get()->toArray();
+                        ->where('promo_id', $this->spinput->promo_id)
+                        ->groupBy('week')
+                        ->get()->toArray();
         return $records;
     }
 
@@ -76,8 +78,7 @@ class Swcalc extends Model {
         ];
         $sum_raw_select = $this->merge->create_sum_select_raw($raw);
         $records = Sdcalc::selectRaw($sum_raw_select)
-                ->where('promo_id', $this->sdcalc->spinput->promo_id)
-                ->where('quarter', $this->sdcalc->spinput->quarter['quarter'])
+                ->where('promo_id', $this->spinput->promo_id)
                 ->groupBy('quarter')
                 ->first();
         return $records;
@@ -85,15 +86,15 @@ class Swcalc extends Model {
 
     function save_records() {
         $records_week = $this->basic_week_data();
-        
+
 
         foreach ($records_week as $key => $record) {
             $raw = array();
 
 
-            $raw['promo_id'] = $this->sdcalc->spinput->promo_id;
+            $raw['promo_id'] = $this->spinput->promo_id;
             $raw['week'] = $record['week'];
-            $raw['quarter'] = $this->sdcalc->spinput->quarter['quarter'];
+            $raw['quarter'] = $this->calendar->get_quarter_id($record['week']);
             $raw['pos_sales'] = $record['pos_sales'];
             $raw['pos_qty'] = $record['pos_qty'];
             $raw['ordered_amount'] = $record['ordered_amount'];
@@ -101,12 +102,12 @@ class Swcalc extends Model {
             $raw['pos_shipped_cog_sold'] = $record['pos_shipped_cog_sold'];
             $raw['ordered_cogs'] = $record['ordered_cogs'];
 
-            
             $records_quarter = $this->basic_quarter_data();
-            
-            $raw['wkly_avg_oa_quarterly'] = $records_quarter['ordered_amount'] / $this->sdcalc->spinput->quarter['week_count'];
+            $quarter = $this->calendar->get_quarter_info($raw['quarter']);
+
+            $raw['wkly_avg_oa_quarterly'] = $records_quarter['ordered_amount'] / $quarter['week_count'];
             $raw['normalized_ordered_amount'] = $this->calc('normalized_ordered_amount', $raw);
-            $raw['avg_weekly_ordered_units_quarterly'] = $records_quarter['ordered_units'] / $this->sdcalc->spinput->quarter['week_count'];
+            $raw['avg_weekly_ordered_units_quarterly'] = $records_quarter['ordered_units'] / $quarter['week_count'];
             $raw['normalized_ordered_units'] = $this->calc('normalized_ordered_units', $raw);
             $raw['normalized_ordered_cogs'] = $this->calc('normalized_ordered_cogs', $raw);
             self::create($raw);

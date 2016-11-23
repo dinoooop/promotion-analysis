@@ -42,8 +42,7 @@ class Spinput extends Model {
         
         $this->today = date("Y-m-d");
         
-
-        // Record to be inserted to promo_input
+        // The data required for calculations
         $this->data = $this->sanitize($input);
         
         
@@ -55,6 +54,8 @@ class Spinput extends Model {
         if (!$this->validate) {
             return false;
         }
+        
+        $this->promo_id = $input['promo_id'];
 
         $this->material_id = isset($this->data['material_id']) ? $this->data['material_id'] : '';
         $this->retailer_id = isset($this->data['retailer_id']) ? $this->data['retailer_id'] : '';
@@ -62,15 +63,13 @@ class Spinput extends Model {
         $this->retailer_sku = isset($this->data['retailer_sku']) ? $this->data['retailer_sku'] : '';
 
         $this->is_single_day_promo = ($this->data['start_date'] == $this->data['end_date']);
-        $this->quarter = $this->calendar->get_quarter($this->data['start_date']);
         
-        
-        $this->during_dates = $this->calendar->get_req_dates($this->data['start_date']);
+        $this->calendar_dates = $this->calendar->init($this->data['start_date'], $this->data['end_date']);
         
         
         echo "Promotion start date - {$this->data['start_date']} \n";
         echo "Promotion end date   - {$this->data['end_date']} \n";
-        echo "Quarter: {$this->quarter['quarter']}, week count: {$this->quarter['week_count']} records from {$this->quarter['start']} to {$this->quarter['end']} \n";
+        
         
     }
 
@@ -95,8 +94,15 @@ class Spinput extends Model {
         if ($this->data['start_date'] > $this->data['end_date']) {
             return false;
         }
+        
+        
+        if(!$this->calendar->is_avail_post_week($this->data['end_date'])){
+            return false;
+        }
         return true;
     }
+    
+    
 
     function sanitize($input) {
         return [
@@ -118,7 +124,6 @@ class Spinput extends Model {
             'discount_price_d' => $this->merge->refine_dollar($input['discount_price_d']),
             'discount_p' => $this->merge->refine_dollar($input['discount_p']),
             'comments' => $input['comments'],
-            'status' => $input['status'],
         ];
     }
 

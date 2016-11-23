@@ -144,11 +144,11 @@ class Stock {
 
             case 'status':
                 $return = [
-                    'Not Processed',
-                    'In',
-                    'Progress',
-                    'Processed',
-                    'Needs Attention',
+                    'Sleep',
+                    'Active',
+                    'Processing',
+                    'Completed',
+                    'Failed',
                 ];
                 return array_combine($return, $return);
                 break;

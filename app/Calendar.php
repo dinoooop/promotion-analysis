@@ -8,6 +8,8 @@ class Calendar {
 
     public function __construct() {
         $this->merge = new Merge;
+        $this->today = date("Y-m-d");
+        //$this->today = '2016-09-17';
     }
 
     function input($start, $end) {
@@ -86,8 +88,9 @@ class Calendar {
         $Y = date('Y', strtotime($date));
 
         $quarters = $this->get_quarters_year($Y);
-
+        
         $return = [];
+        
         foreach ($quarters as $key => $quarter) {
             if ($date >= $quarter['start'] && $date <= $quarter['end']) {
                 $return['quarter'] = $key;
@@ -97,11 +100,9 @@ class Calendar {
                 $return['week_count'] = $this->week_count($return['start_date'], $return['end_date']);
             }
         }
-
+        
         return $return;
     }
-
-
 
     /**
      * 
@@ -152,6 +153,12 @@ class Calendar {
         return $quarter_refined;
     }
 
+    /**
+     * 
+     * End date of a quarter will be treated as quarter id
+     * @param string $date
+     * @return string date
+     */
     function get_quarter_id($date) {
         $return = $this->get_quarter_info($date);
         return $return['id'];
@@ -175,11 +182,12 @@ class Calendar {
      */
     function get_week_end($date) {
 
-        $today = date('Y-m-d');
+        //$today = date('Y-m-d');
+        $today = $this->today;
 
         // @testing
         // $today = '2015-12-28';
-        
+
         $m = date('m', strtotime($date));
 
         if ($m == 12) {
@@ -194,8 +202,7 @@ class Calendar {
             return $this->get_week_sat($date);
         }
     }
-    
-    
+
     /**
      * 
      * 
@@ -204,18 +211,18 @@ class Calendar {
      * @param string $date quarter end_date
      */
     function get_week_start($date = '2015-01-05') {
-        
+
         $m = date('m', strtotime($date));
 
         if ($m == 01) {
             // January
             $Y = date('Y', strtotime($date));
-            
+
             $week_start = $this->get_week_sun($date);
             $new_year = "{$Y}-01-01";
             return ($week_start < $new_year) ? $new_year : $week_start;
         } else {
-            
+
             return $this->get_week_sun($date);
         }
     }
@@ -232,6 +239,7 @@ class Calendar {
             $date['start_week'] = $this->get_week_sat($date['start_date']);
             $date['end_week'] = $date['start_week'];
             $quarter[] = $this->get_quarter_id($date['start_date']);
+            $date['quarters'] = $quarter;
         } else {
             $date['start_week'] = $this->get_week_sat($date['start_date']);
             $date['end_week'] = $this->get_week_sat($date['end_date']);
@@ -255,40 +263,62 @@ class Calendar {
         return $date;
     }
 
-   
-
     /**
      * 
-     * @param type $start_date promotion start date
+     * @param type $date promotion start date
      */
-    function get_weekly_baseline($start_date) {
-
+    function get_number_weeks_baseline($date) {
         $week_number = $this->merge->admin_settings('number_weeks_baseline');
-        $date['start_date'] = date('Y-m-d', strtotime($start_date . " -{$week_number} weeks"));
+        return date('Y-m-d', strtotime($date . " -{$week_number} weeks"));
+    }
 
+    function get_number_weeks_post_promotion($date) {
         $week_number = $this->merge->admin_settings('number_weeks_post_promotion');
-        $date['end_date'] = date('Y-m-d', strtotime($start_date . " -{$week_number} weeks"));
-        return $date;
+        return date('Y-m-d', strtotime($date . " +{$week_number} weeks"));
     }
 
     function init($start_date, $end_date) {
-        $date = [];
-        $dates = $this->get_req_dates($start_date, $end_date);
-        echo '<pre>', print_r($dates['quarters']), '</pre>';
+        $dates = [];
+        $dates['during'] = $this->get_req_dates($start_date, $end_date);
 
-        foreach ($dates['quarters'] as $key => $value) {
+   
 
-            $quarters = $this->get_quarter_info($value);
+        $baseline_start_date = $this->get_number_weeks_baseline($start_date);
+        $baseline_end_date = date('Y-m-d', strtotime($start_date . " -1 days"));
 
-            echo '<pre>', print_r($quarters), '</pre>';
+        $dates['baseline'] = $this->get_req_dates($baseline_start_date, $baseline_end_date);
+
+        $post_start_date = date('Y-m-d', strtotime($end_date . " +1 days"));
+        $post_end_date = $this->get_number_weeks_post_promotion($end_date);
+
+        $dates['post'] = $this->get_req_dates($post_start_date, $post_end_date);
+
+        $all_quarters = array_merge($dates['during']['quarters'], $dates['baseline']['quarters'], $dates['post']['quarters']);
+        $all_quarters = array_unique($all_quarters);
+        sort($all_quarters);
+
+        $dates['all_quarters'] = $all_quarters;
+        
+        return $dates;
+    }
+    
+    /**
+     * 
+     * Execute only the promotion with end_date less than 3 weeks before
+     * @param string end date
+     * 
+     */
+    function is_avail_post_week($date) {
+        
+        $week_number = $this->merge->admin_settings('post_week_avail_week_count');
+        $sun = $this->get_week_sun($this->today);
+        $post_week = date('Y-m-d', strtotime($sun . " -{$week_number} weeks"));
+        
+        if($post_week > $date){
+            return true;
         }
-        exit();
-
-        $date['baseline'] = $this->get_weekly_baseline($start_date);
-
-        $date['baseline_dates'] = $this->get_req_dates($date['baseline']['start_date'], $date['baseline']['end_date']);
-
-        $quarter = array_merge($date['dates']['quarters'], $date['baseline_dates']['quarters']);
+        
+        return false;
     }
 
 }
