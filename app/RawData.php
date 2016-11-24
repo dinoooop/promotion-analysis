@@ -43,10 +43,10 @@ class RawData {
         switch ($mode) {
 
             case 'sample':
-                
+
                 $date = $this->calendar->init('2016-07-09', '2016-10-12');
-                
-                
+
+
                 break;
 
             case 'process':
@@ -101,11 +101,11 @@ class RawData {
             case 'sample_test':
                 $this->printm->sample_test();
                 break;
-            
+
             case 'db_change_next_commit':
                 Option::create_table();
                 break;
-            
+
             case 'db_create_materials':
                 // php artisan raw_data don_not_run_local_db_create_materials
                 // Find material to test category level of promotions
@@ -248,8 +248,6 @@ class RawData {
         }
     }
 
-    
-
     function csv_write($list) {
         //$header[] = Stock::get_headers();
         //$list = array_merge($header, $records);
@@ -334,18 +332,17 @@ class RawData {
 //            DB::table($table_name)->insert($value);
 //        }
     }
-    
-    
+
     function db_create_materials() {
-        
+
         $category = 'Car Seats';
-        
+
         $records = Pgquery::get_items_category($category);
-        
+
         foreach ($records as $key => $value) {
-           // Dmaterial::create($value);
+            echo $records['material_id'] . "\n";
+            Dmaterial::create($value);
         }
-        
     }
 
 }
