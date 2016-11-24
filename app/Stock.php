@@ -144,11 +144,11 @@ class Stock {
 
             case 'status':
                 $return = [
-                    'Sleep',
-                    'Active',
-                    'Processing',
-                    'Completed',
-                    'Failed',
+                    'sleep', // (setting user) do not process the promotion
+                    'active', // (setting user) execute only this promotion
+                    'processing', // (set by pgm) Promotion go through the calculation
+                    'completed', // (set by pgm) calculation completed 
+                    'failed', // calculation failed
                 ];
                 return array_combine($return, $return);
                 break;

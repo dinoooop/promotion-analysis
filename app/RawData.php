@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use App\promotions\Promotion;
+use App\promotions\Item;
 use Illuminate\Support\Facades\Schema;
 use App\Redshift\Pgquery;
 use App\Redshift\Dmaterial;
@@ -64,11 +65,7 @@ class RawData {
                 $this->table_truncate();
                 break;
 
-            case 'refresh_master_input':
-                // php artisan raw_data refresh_master_input
-                $this->refresh_table_promotions_master_input();
-                $this->recreate_table_promotions_master_input();
-                break;
+
 
             case 'refresh_table_dim_retailer_channel':
                 // php artisan raw_data refresh_table_dim_retailer_channel
@@ -105,18 +102,49 @@ class RawData {
             case 'db_change_next_commit':
                 Option::create_table();
                 break;
-            
+
+
+            case 'refresh_master_input':
+                $this->refresh_master_input();
+                break;
+
+            case 'sample_data_master_input':
+                $this->sample_data_master_input();
+                break;
+            /**
+             * 
+             * child input
+             */
+            case 'refresh_child_input':
+                $this->refresh_child_input();
+                break;
+
+            case 'sample_data_child_input':
+                $this->sample_data_child_input();
+                break;
+            /**
+             * 
+             * 
+             * Redshift dim_materials functions
+             */
             case 'refresh_dim_materials':
                 Dmaterial::refresh();
                 break;
-            
+
             case 'insert_sample_data':
                 Dmaterial::insert_sample_data();
                 break;
-            
+
             case 'insert_sample_data_category':
                 Dmaterial::insert_sample_data_category();
                 break;
+
+            case 'insert_sample_data_category':
+                $this->sample_data_child_input();
+                break;
+
+
+
 
 
 
@@ -125,7 +153,7 @@ class RawData {
         }
     }
 
-    function refresh_table_promotions_master_input() {
+    function refresh_master_input() {
         Schema::dropIfExists('promotions.promotions_master_input');
         Schema::create('promotions.promotions_master_input', function (Blueprint $table) {
             $table->bigIncrements('id');
@@ -218,14 +246,14 @@ class RawData {
      * Back up for recreate the promotions.promotions_master_input on 16.11.2016
      * @return array
      */
-    function recreate_table_promotions_master_input() {
+    function sample_data_master_input() {
 
         $create = [
             [
                 'promotions_name' => 'Graco Black Friday',
                 'promotions_description' => 'All BF products with promotions',
-                'promotions_startdate' => '2016-11-18',
-                'promotions_enddate' => '2016-11-25',
+                'promotions_startdate' => '07/12/2016',
+                'promotions_enddate' => '07/12/2016',
                 'retailer' => 'Amazon',
                 'retailer_country_id' => '',
                 'retailer_country' => 'US',
@@ -245,7 +273,33 @@ class RawData {
                 'product_family' => '',
                 'product_line' => '',
                 'division' => 'Baby',
-                'status' => 'Not Processed',
+                'status' => 'Active',
+            ],
+            [
+                'promotions_name' => 'Sample test category level',
+                'promotions_description' => 'sample',
+                'promotions_startdate' => '2016-11-18',
+                'promotions_enddate' => '2016-11-25',
+                'retailer' => 'Amazon',
+                'retailer_country_id' => '',
+                'retailer_country' => 'US',
+                'newell_status' => 'Approved',
+                'promotions_status' => 'Not Started',
+                'promotions_type' => 'Price Discount',
+                'level_of_promotions' => 'Category',
+                'marketing_type' => 'Price Promotion',
+                'annivarsaried' => 0,
+                'promotions_budget' => 0,
+                'promotions_projected_sales' => 0,
+                'promotions_expected_lift',
+                'promotions_budget_type' => '',
+                'brand_id' => '',
+                'brand' => 'Graco',
+                'category' => 'Car Seats',
+                'product_family' => '',
+                'product_line' => '',
+                'division' => 'Baby',
+                'status' => 'Active',
             ],
         ];
 
@@ -294,7 +348,7 @@ class RawData {
         //Spinput::truncate();
     }
 
-    function refresh_table_item() {
+    function refresh_child_input() {
 
         $table_name = 'promotions.promotions_child_input';
         Schema::dropIfExists($table_name);
@@ -323,22 +377,40 @@ class RawData {
             $table->double('price_discount', 15, 8)->nullable();
             $table->string('reference')->nullable();
         });
-
-//        $users = [
-//            [
-//                'name' => '2016-11-18',
-//                'username' => '2016-11-25',
-//                'email' => 'dinoop@sparksupport.com',
-//                'role' => 'admin',
-//                'password' => bcrypt('promo2016'),
-//            ]
-//        ];
-//
-//        foreach ($users as $value) {
-//            DB::table($table_name)->insert($value);
-//        }
     }
 
-    
+    function sample_data_child_input() {
+        $table_name = 'promotions.promotions_child_input';
+        $records = [
+            [
+                'promotions_id' => 1,
+                'promotions_startdate' => '07/12/2016',
+                'promotions_enddate' => '07/12/2016',
+                'material_id' => '1954840',
+                'product_name' => '',
+                'asin' => 'B01ABQBYSO',
+                'rtl_id' => 'B01ABQBYSO',
+                'promotions_budget',
+                'promotions_projected_sales',
+                'promotions_expected_lift',
+                'x_plant_material_status',
+                'x_plant_status_date',
+                'promotions_budget_type',
+                'funding_per_unit' => '42.84',
+                'forecaseted_qty' => 1800,
+                'forecasted_unit_sales',
+                'promoted',
+                'user_input',
+                'validated',
+                'percent_discount',
+                'price_discount',
+                'reference',
+            ]
+        ];
+
+        foreach ($records as $value) {
+            Item::create($value);
+        }
+    }
 
 }

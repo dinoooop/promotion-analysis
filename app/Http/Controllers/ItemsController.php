@@ -12,6 +12,7 @@ use App\Gform;
 use App\FormHtmlJq;
 use App\AppForms;
 use App\Merge;
+use App\Temp;
 use App\promotions\Item;
 use App\promotions\Promotion;
 
@@ -48,6 +49,7 @@ class ItemsController extends Controller {
                 ->paginate(50);
 
         $data['promotion'] = Promotion::find($input['pid']);
+        $data['button_update_promotion_status'] = Temp::button_update_promotion_status($data['promotion']);
 
         return View::make('admin.items.index', $data);
     }

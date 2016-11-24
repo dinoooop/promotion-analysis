@@ -152,14 +152,16 @@ class AppForms {
                     'label' => 'Annivarsaried',
                 ),
                 array(
-                    'type' => 'text',
+                    'type' => 'number',
                     'name' => 'promotions_projected_sales',
                     'label' => 'Promotions Projected Sales',
+                    'step' => '0.01',
                 ),
                 array(
-                    'type' => 'text',
+                    'type' => 'number',
                     'name' => 'promotions_expected_lift',
-                    'label' => 'Promotions expected lift',
+                    'label' => 'Promotions Expected Lift',
+                    'step' => '0.01',
                 ),
                 array(
                     'type' => 'text',
@@ -261,19 +263,19 @@ class AppForms {
                     'type' => 'number',
                     'name' => 'promotions_budget',
                     'label' => 'Promotions Budget',
-                    'step' => '0.001',
+                    'step' => '0.01',
                 ),
                 array(
                     'type' => 'number',
                     'name' => 'promotions_projected_sales',
                     'label' => 'Promotions Projected Sales',
-                    'step' => '0.001',
+                    'step' => '0.01',
                 ),
                 array(
                     'type' => 'number',
                     'name' => 'promotions_expected_lift',
                     'label' => 'Promotions Expected Lift',
-                    'step' => '0.001',
+                    'step' => '0.01',
                 ),
                 array(
                     'type' => 'text',
@@ -286,15 +288,16 @@ class AppForms {
                     'label' => 'X Plant status date',
                 ),
                 array(
-                    'type' => 'text',
+                    'type' => 'number',
                     'name' => 'promotions_budget_type',
                     'label' => 'Promotions Budget Type',
+                    'step' => '0.01',
                 ),
                 array(
                     'type' => 'number',
                     'name' => 'funding_per_unit',
                     'label' => 'Funding per unit',
-                    'step' => '0.001',
+                    'step' => '0.01',
                 ),
                 array(
                     'type' => 'number',
@@ -305,7 +308,7 @@ class AppForms {
                     'type' => 'number',
                     'name' => 'forecasted_unit_sales',
                     'label' => 'Forecasted Unit Sales',
-                    'step' => '0.001',
+                    'step' => '0.01',
                 ),
                 array(
                     'type' => 'boolean_checkbox',
@@ -321,13 +324,13 @@ class AppForms {
                     'type' => 'number',
                     'name' => 'percent_discount',
                     'label' => 'Percent Discount',
-                    'step' => '0.001',
+                    'step' => '0.01',
                 ),
                 array(
                     'type' => 'number',
                     'name' => 'price_discount',
                     'label' => 'Price Discount',
-                    'step' => '0.001',
+                    'step' => '0.01',
                 ),
                 array(
                     'type' => 'text',

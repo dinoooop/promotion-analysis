@@ -45,8 +45,7 @@ class FormHtmlJq {
             case 'url':
 
 
-                $description = (isset($description) && $description != '') ? $description : '';
-                $placeholder = (isset($placeholder) && $placeholder != '') ? $placeholder : '';
+
                 //For number
                 $step = (isset($step) && $step != '') ? ' step="' . $step . '" ' : '';
                 ?>
@@ -63,7 +62,10 @@ class FormHtmlJq {
                         value="<?php echo $value; ?>"
                         placeholder="<?php echo $placeholder ?>"
                         <?php echo $step; ?>>
-                    <p class="help-description"><?php echo $description; ?></p>
+
+                    <?php if ($description != ''): ?>
+                        <p class="help-description"><?php echo $description; ?></p>
+                    <?php endif; ?>
                 </div>
                 <?php echo '</div>'; ?>
 
@@ -71,9 +73,6 @@ class FormHtmlJq {
                 break;
 
             case 'textarea':
-
-                $description = (isset($description) && $description != '') ? $description : '';
-                $placeholder = (isset($placeholder) && $placeholder != '') ? $placeholder : '';
                 ?>
 
                 <?php echo $col; ?>
@@ -87,7 +86,9 @@ class FormHtmlJq {
                         class="form-control" 
                         placeholder="<?php echo $placeholder ?>"><?php echo $value; ?></textarea>
                 </div>
-                <p class="help-description"><?php echo $description; ?></p>
+                <?php if ($description != ''): ?>
+                    <p class="help-description"><?php echo $description; ?></p>
+                <?php endif; ?>
                 <?php echo '</div>'; ?>
 
                 <?php
@@ -101,7 +102,6 @@ class FormHtmlJq {
                 if (!isset($options)) {
                     return false;
                 }
-                $description = (isset($description) && $description != '') ? $description : '';
                 ?>
                 <?php echo $col; ?>
                 <div class="form-group">
@@ -116,7 +116,7 @@ class FormHtmlJq {
                             </option>
                         <?php endforeach; ?>
                     </select>
-                    <p class="help-description"><?php echo $description; ?></p>
+                    <?php if ($description != ''): ?><p class="help-description"><?php echo $description; ?></p><?php endif; ?>
                 </div>
                 <?php echo '</div>'; ?>
                 <?php
@@ -142,7 +142,7 @@ class FormHtmlJq {
                             </option>
                         <?php endforeach; ?>
                     </select>
-                    <p class="help-description"><?php echo $description; ?></p>
+                    <?php if ($description != ''): ?><p class="help-description"><?php echo $description; ?></p><?php endif; ?>
                 </div>
                 <?php echo '</div>'; ?>
                 <?php
@@ -166,14 +166,14 @@ class FormHtmlJq {
                 break;
 
             case 'file':
-                $description = (isset($description) && $description != '') ? $description : '';
-                $placeholder = (isset($placeholder)) ? $placeholder : 'Upload';
+                
+                $placeholder = ($placeholder != '') ? $placeholder : 'Upload';
                 echo Temp::upload_file($field);
                 ?>
                 <?php echo $col; ?>
                 <div class="form-group">
                     <label><?php echo $label; ?></label>
-                    <p class="help-description"><?php echo $description; ?></p>
+                    <?php if ($description != ''): ?><p class="help-description"><?php echo $description; ?></p><?php endif; ?>
 
                     <a href="#" class="btn btn-default" data-toggle="modal" data-target="#<?php echo $id; ?>"><i class="fa fa-picture-o"></i>&nbsp; <?php echo $placeholder; ?></a>
                     <input type="hidden" name="<?php echo $name; ?>" value="<?php echo $value; ?>">
@@ -195,15 +195,13 @@ class FormHtmlJq {
 
             case 'date':
                 $value = (!isset($value) || $value == '') ? date('m/d/Y') : date('m/d/Y', strtotime($value));
-                $description = (isset($description) && $description != '') ? $description : '';
+                
                 ?>
                 <?php echo $col; ?>
                 <div class="form-group">
                     <label><?php echo $label; ?></label>
                     <p class="help-description"><?php echo $description; ?></p>
                     <input type="text" name="<?php echo $name; ?>" class="form-control" value="<?php echo $value; ?>" />
-
-
                 </div>
                 <?php echo '</div>'; ?>
 

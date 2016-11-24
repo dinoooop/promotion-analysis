@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Response;
 use App\Gform;
+use App\Temp;
 use App\FormHtmlJq;
 use App\AppForms;
 use App\promotions\Promotion;
@@ -145,6 +146,12 @@ class PromotionsController extends Controller {
         Promotion::find($id)->delete();
         exit();
         //return Redirect::route('promotions.index');
+    }
+    
+    
+    function update_promotion_status($promotion_id, $status) {
+        Promotion::update_promotion_status($promotion_id, $status);
+        exit(0);
     }
 
 }

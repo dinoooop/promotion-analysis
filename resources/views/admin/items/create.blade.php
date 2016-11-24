@@ -27,7 +27,7 @@
 
                 <div class="row">
                     <div class="col-md-6 col-sm-12">
-                        {{ Form::open(array('route' => 'items.store', 'id' => 'pv_create_item', 'class'=>'normal_form', 'novalidate' => 'novalidate')) }}
+                        {{ Form::open(array('route' => 'items.store', 'id' => 'pv_create_item', 'class'=>'normal_form')) }}
                         <?php echo $form_create; ?>
                         {{ Form::close() }}
                     </div>

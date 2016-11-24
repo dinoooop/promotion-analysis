@@ -76,29 +76,29 @@ class Spinput extends Model {
     function validate() {
         
         if($this->data['start_date'] > $this->today){
+            echo "Skip, future promotion \n";
             return false;
         }
         
         if ((!isset($this->data['material_id']) || $this->data['material_id'] == '')) {
 
             if (!isset($this->data['retailer_id']) || $this->data['retailer_id'] == '') {
+                echo "material_id or retailer_id does't exist \n";
                 return false;
             }
         }
 
 
         if (!Dot::validate_date($this->data['start_date']) || !Dot::validate_date($this->data['end_date'])) {
+            echo "Input date is not valid \n";
             return false;
         }
 
         if ($this->data['start_date'] > $this->data['end_date']) {
+            echo "Input date is not  valid since start date greater than end date \n";
             return false;
         }
         
-        
-        if(!$this->calendar->is_avail_post_week($this->data['end_date'])){
-            return false;
-        }
         return true;
     }
     

@@ -20,9 +20,10 @@ class Mockup {
     private $sdcalc;
     private $swcalc;
     private $promotion;
+    private $calendar;
 
     function __construct() {
-        
+        $this->calendar = new Calendar;
     }
 
     function promotion_chunk() {
@@ -35,13 +36,20 @@ class Mockup {
     }
 
     function item_chunk() {
+        
+        // Validation 1
+        if(!$this->calendar->is_avail_post_week($this->promotion->promotions_enddate)){
+            echo "Future promotion since post week not available \n";
+            return false;
+        }
 
         if ($this->promotion->level_of_promotions == 'Category') {
-            echo "executing a category level promotion \n";
+            echo "Executing a category level promotion \n";
             $this->insert_items_under_promotion();
         }
 
         Item::where('promotions_id', $this->promotion->id)->orderBy('id')->chunk(100, function ($items) {
+            echo "Promotion id {$this->promotion->id} count child items {$items->count()} \n";
             foreach ($items as $item) {
                 $input = $this->set_input_array($item);
                 $this->process($input);
@@ -96,14 +104,18 @@ class Mockup {
         }
 
         echo "Executing the promotion with id {$this->spinput->promo_id} \n";
-        exit();
-
         $this->sdcalc = new Sdcalc;
         $this->swcalc = new Swcalc;
         $this->spod = new Spod;
-
         $this->sdcalc->inject($this->spinput);
-        $this->swcalc->set_vars($this->spinput, $this->sdcalc);
+        if ($this->sdcalc->record_count) {
+
+
+
+
+            $this->swcalc->set_vars($this->spinput, $this->sdcalc);
+        }
+
 
         echo "Promotion {$this->spinput->promo_id} completed ------------------------------------------\n";
     }
@@ -113,20 +125,23 @@ class Mockup {
      * Category level promotion may not contain items, create items
      */
     function insert_items_under_promotion() {
-        
-        if($this->have_child_items()){
+
+        if ($this->have_child_items()) {
+            echo "Items already exist";
             return true;
         }
 
         $records = Pgquery::get_items_category($this->promotion->category);
+
+        echo "Found " . count($records) . " number of items for the category {$this->promotion->category} \n";
         foreach ($records as $key => $record) {
             $item = $this->prepare_redshift_item($record);
             Item::create($item);
         }
         
-        $this->set_have_child_items(1);
-        
+        //$this->set_have_child_items(1);
     }
+
     /**
      * 
      * Check wheather the child are availbale for a category level of promotion
@@ -136,7 +151,7 @@ class Mockup {
         $mata_key = 'have_child_items_' . $this->promotion->id;
         return Option::get($mata_key);
     }
-    
+
     /**
      * 
      * Set or change option have_child_items_{n} value

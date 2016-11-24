@@ -33,6 +33,7 @@ class Sdcalc extends Model {
     function inject($input) {
 
         $this->calendar = new Calendar;
+        $this->record_count = 0;
 
         $this->spinput = $input;
         
@@ -54,7 +55,9 @@ class Sdcalc extends Model {
             $sql = Stock::psql_dayily_pos($this->where_id, $this->where_date);
             $records = DB::connection('redshift')->select($sql);
 
-            $this->record_count = count($records);
+            $this->record_count = count($records) + $this->record_count;
+            
+            echo "Total number of records for the condition {$this->where_id} {$this->record_count} \n";
 
 
             $this->save_records($records);

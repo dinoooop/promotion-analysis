@@ -30,20 +30,21 @@
                     <p>Promotion Status: {{ $promotion->promotions_status }}</p>
                 </div>
             </div>
-            
+
             <div class="row">
                 <div class="col-md-6 col-sm-12">
                     <a href="{{route('items.create', ['pid' => $promotion->id])}}" class="btn btn-primary">Add Item [+]</a>
+                    <?php echo $button_update_promotion_status; ?>
                 </div>
             </div>
-            
+
             @if ($records->count())
             <table class="table table-striped table-bordered">
                 <thead>
                     <tr>
                         <th>Material Id</th>
                         <th>ASIN</th>
-                        
+
                         <th>Start date</th>
                         <th>End date</th>
                         <th>Product Name</th>
@@ -62,7 +63,7 @@
                     <tr>
                         <td>{{ $record->material_id }}</td>
                         <td>{{ $record->asin }}</td>
-                        
+
                         <td>{{ $record->promotions_startdate }}</td>
                         <td>{{ $record->promotions_enddate }}</td>
                         <td>{{ $record->product_name }}</td>

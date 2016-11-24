@@ -44,8 +44,6 @@ class Promotion extends Model {
     public static $form_create_rules = [];
     public static $form_edit_rules = [];
 
-   
-
     function validate() {
 
         if ($this->data['start_date'] > $this->today) {
@@ -71,7 +69,7 @@ class Promotion extends Model {
     }
 
     public static function sanitize($input) {
-        $sanitize =  [
+        $sanitize = [
             'promotions_name' => trim($input['promotions_name']),
             'promotions_description' => $input['promotions_description'],
             //'promotions_startdate' => date('Y-m-d', strtotime($input['promotions_startdate'])),
@@ -86,34 +84,30 @@ class Promotion extends Model {
             //'marketing_type',
             'annivarsaried' => isset($input['annivarsaried']) ? 1 : 0,
             'promotions_budget' => (isset($input['promotions_budget']) && isset($input['promotions_budget']) != '') ? $input['promotions_budget'] : null,
-            'promotions_projected_sales' => (isset($input['promotions_projected_sales']) && $input['promotions_projected_sales'] != '')? $input['promotions_projected_sales'] : null,
-            'promotions_expected_lift' => (isset($input['promotions_expected_lift']) && $input['promotions_expected_lift'] != '')? $input['promotions_expected_lift'] : null,
-            //'promotions_budget_type',
-            //'brand_id',
-            //'brand',
-            //'category',
-            //'product_family',
-            //'product_line',
-            //'division',
-            //'status'
+            'promotions_projected_sales' => (isset($input['promotions_projected_sales']) && $input['promotions_projected_sales'] != '') ? $input['promotions_projected_sales'] : null,
+            'promotions_expected_lift' => (isset($input['promotions_expected_lift']) && $input['promotions_expected_lift'] != '') ? $input['promotions_expected_lift'] : null,
+                //'promotions_budget_type',
+                //'brand_id',
+                //'brand',
+                //'category',
+                //'product_family',
+                //'product_line',
+                //'division',
+                //'status'
         ];
-        
+
         return array_merge($input, $sanitize);
     }
-    
+
     public static function display_prepare($input) {
         $input->promotions_startdate = date('m/d/Y', strtotime($input->promotions_startdate));
         $input->promotions_enddate = date('m/d/Y', strtotime($input->promotions_enddate));
         return $input;
     }
-    
-    
-    public static function get_next_promotion() {
-        return self::where('status', 'Active')->orderBy('id')->first();
-    }
-    
-    
 
-    
+    public static function update_promotion_status($promotion_id, $status) {
+        self::where('id', $promotion_id)
+                ->update(['status' => $status]);
+    }
 
 }

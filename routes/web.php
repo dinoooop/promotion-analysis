@@ -26,5 +26,7 @@ Route::group([ 'prefix' => 'admin', 'middleware' => 'role'], function() {
     Route::resource('users', 'UsersController');
     Route::resource('promotions', 'PromotionsController');
     Route::resource('items', 'ItemsController');
+    
+    Route::get('ajax/promotion-status/{id}/{status}', 'PromotionsController@update_promotion_status');
 });
 
