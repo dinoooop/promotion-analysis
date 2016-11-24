@@ -105,11 +105,17 @@ class RawData {
             case 'db_change_next_commit':
                 Option::create_table();
                 break;
-
-            case 'db_create_materials':
-                // php artisan raw_data don_not_run_local_db_create_materials
-                // Find material to test category level of promotions
-                $this->db_create_materials();
+            
+            case 'refresh_dim_materials':
+                Dmaterial::refresh();
+                break;
+            
+            case 'insert_sample_data':
+                Dmaterial::insert_sample_data();
+                break;
+            
+            case 'insert_sample_data_category':
+                Dmaterial::insert_sample_data_category();
                 break;
 
 
@@ -333,16 +339,6 @@ class RawData {
 //        }
     }
 
-    function db_create_materials() {
-
-        $category = 'Car Seats';
-
-        $records = Pgquery::get_items_category($category);
-
-        foreach ($records as $key => $value) {
-            echo $value['material_id'] . "\n";
-            Dmaterial::create($value);
-        }
-    }
+    
 
 }
