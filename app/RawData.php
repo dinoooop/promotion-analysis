@@ -340,7 +340,7 @@ class RawData {
         $records = Pgquery::get_items_category($category);
 
         foreach ($records as $key => $value) {
-            echo $records['material_id'] . "\n";
+            echo $value['material_id'] . "\n";
             Dmaterial::create($value);
         }
     }
