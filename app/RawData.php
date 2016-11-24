@@ -341,8 +341,9 @@ class RawData {
         $category = 'Car Seats';
         
         $records = Pgquery::get_items_category($category);
+        
         foreach ($records as $key => $value) {
-            Dmaterial::create($value);
+           // Dmaterial::create($value);
         }
         
     }

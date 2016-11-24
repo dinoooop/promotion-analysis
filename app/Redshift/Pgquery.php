@@ -76,7 +76,7 @@ class Pgquery {
         return DB::connection('redshift')
                         ->table('nwl_pos.dim_material')
                         ->where('business_team', $category)
-                        ->groupBy('material_id')
+                        ->distinct('material_id')
                         ->get();
     }
 
