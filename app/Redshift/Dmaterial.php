@@ -39,7 +39,7 @@ class Dmaterial extends Model {
         'x_plant_valid_from',
     ];
 
-    function insert_sample_data() {
+    public static function insert_sample_data() {
 
         Config::set('database.fetch', \PDO::FETCH_ASSOC);
 
@@ -54,7 +54,7 @@ class Dmaterial extends Model {
         
     }
 
-    function insert_sample_data_category() {
+    public static function insert_sample_data_category() {
 
         $category = 'Car Seats';
 
