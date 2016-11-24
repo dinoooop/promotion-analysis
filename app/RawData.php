@@ -3,8 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Schema\Blueprint;
+use App\Option;
 use App\Calendar;
-use App\Block;
 use App\Stock;
 use App\Smaterial;
 use App\Spinput;
@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use App\promotions\Promotion;
 use Illuminate\Support\Facades\Schema;
+use App\Redshift\Pgquery;
+use App\Redshift\Dmaterial;
 
 class RawData {
 
@@ -98,6 +100,16 @@ class RawData {
 
             case 'sample_test':
                 $this->printm->sample_test();
+                break;
+            
+            case 'db_change_next_commit':
+                Option::create_table();
+                break;
+            
+            case 'db_create_materials':
+                // php artisan raw_data don_not_run_local_db_create_materials
+                // Find material to test category level of promotions
+                $this->db_create_materials();
                 break;
 
 
@@ -239,7 +251,7 @@ class RawData {
     
 
     function csv_write($list) {
-        //$header[] = Block::get_headers();
+        //$header[] = Stock::get_headers();
         //$list = array_merge($header, $records);
 
         $csv = storage_path('app/sample_02.csv');
@@ -321,6 +333,18 @@ class RawData {
 //        foreach ($users as $value) {
 //            DB::table($table_name)->insert($value);
 //        }
+    }
+    
+    
+    function db_create_materials() {
+        
+        $category = 'Car Seats';
+        
+        $records = Pgquery::get_items_category($category);
+        foreach ($records as $key => $value) {
+            Dmaterial::create($value);
+        }
+        
     }
 
 }

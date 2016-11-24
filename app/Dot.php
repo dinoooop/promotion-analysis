@@ -2,6 +2,10 @@
 
 namespace App;
 
+
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+
 class Dot {
 
     function __construct() {
@@ -134,6 +138,24 @@ class Dot {
     
     public static function have_value($key, $input) {
         return (isset($input[$key]) && $input[$key] != '')? $input[$key] : null;
+    }
+    
+    /**
+     * 
+     * Print a custom log
+     * @param array/string $data
+     */
+    static function print_log($data) {
+
+        ob_start();
+
+        echo PHP_EOL . '------------------------------------------------' . PHP_EOL;
+        print_r($data);
+
+        $contents = ob_get_contents();
+        ob_end_clean();
+
+        Log::info($contents);
     }
     
     

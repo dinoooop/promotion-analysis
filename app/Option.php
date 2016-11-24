@@ -2,7 +2,12 @@
 
 namespace App;
 
-class Option extends Eloquent {
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Eloquent\Model;
+
+
+class Option extends Model {
 
     protected $table = 'options';
     protected $guarded = array('id');
@@ -47,7 +52,7 @@ class Option extends Eloquent {
         if (!is_null($default)) {
             return $default;
         }
-        
+
         return false;
     }
 
@@ -181,62 +186,20 @@ class Option extends Eloquent {
 
         return true;
     }
-
+    
     /**
      * 
-     * 
-     * Create table before using the model class Option, Relation, Cronjob
-     * Remove the string key for unwanted model
-     * The class Cronjob require model Option
+     * Create table before using the model class Option
      */
-    static function create_tables() {
-
-        $sql['options'] = "CREATE TABLE IF NOT EXISTS options (
-            id bigint(20) NOT NULL AUTO_INCREMENT,
-            option_name varchar(200) NOT NULL,
-            option_value longtext,
-            PRIMARY KEY (id)
-        )";
-
-        $sql['relations'] = "CREATE TABLE IF NOT EXISTS relations (
-            id bigint(20) NOT NULL AUTO_INCREMENT,
-            relation_name varchar(200) NOT NULL,
-            first int(11) NOT NULL,
-            second int(11) NOT NULL,
-            PRIMARY KEY (id)
-        )";
-
-        $sql['cronjobs'] = "CREATE TABLE cronjobs (
-            id int(11) NOT NULL AUTO_INCREMENT,
-            task char(50) NOT NULL,
-            mode char(50) NOT NULL,
-            next datetime DEFAULT '0000-00-00 00:00:00',
-            extra text,
-            PRIMARY KEY (id)
-        )";
-
-
-        foreach ($sql as $key => $query) {
-
-            if (is_numeric($key)) {
-                continue;
-            }
-
-            DB::statement($query);
-        }
-    }
-
-    static function print_log($data) {
-
-        ob_start();
-
-        echo PHP_EOL . '------------------------------------------------' . PHP_EOL;
-        print_r($data);
-
-        $contents = ob_get_contents();
-        ob_end_clean();
-
-        Log::info($contents);
+    static function create_table() {
+        $table_name = 'options';
+        Schema::dropIfExists($table_name);
+        Schema::create($table_name, function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('option_name');
+            $table->text('option_value')->nullable();
+            $table->timestamps();
+        });
     }
 
 }

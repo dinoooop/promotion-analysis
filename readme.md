@@ -20,17 +20,34 @@ return [
             'status' => 'Approved'
         ];
 
-Models
+Eloquent Model
 -------------------------------------
-Spinput : Store input information
 Sdcalc: Store daily POS  information
 Swcalc: Store weekly POS  information
-Calendar: Custom date related scripts
+Spod: Store result data 
+promotions/Item : Store child input data
+promotions/promotion : Store master input data
+Option: Create meta key value pairs
+User: Eloquent Model for user table
 
-Objects
-Merge : Custom functions
 
+Mockup: Prepare the input and manage the process
+Spinput : Validate input and set variables for calculation
 
-Static
-Stock: Store details
-Dot: Common functions
+Form
+-------------------------------------------
+AppForms : store app html forms
+FormHtmlJq: Html form generator
+Gform: Prepare form inputs
+
+Helpers
+---------------------------------------
+Calendar: Custom date related scripts for the app
+Stock: Store bulk data
+Dot: Common static functions
+Merge : Custom object functions
+
+Builders
+------------------------------------
+Printm: Print codes
+RawData: Custom console actions

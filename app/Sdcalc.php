@@ -30,7 +30,7 @@ class Sdcalc extends Model {
     private $calendar;
     public $records;
 
-    function set_vars($input) {
+    function inject($input) {
 
         $this->calendar = new Calendar;
 
@@ -40,13 +40,14 @@ class Sdcalc extends Model {
         echo "Checking  for other quarters \n";
 
         $quarters = $this->spinput->calendar_dates['all_quarters'];
+        
         echo "total quarters " . count($quarters) . "\n";
+        
         foreach ($quarters as $key => $quarter_id) {
             
-            $this->quarter_id = $quarter_id;
+            echo "collecting daily_pos for the quarter id {$quarter_id} \n";
             
-            echo "collecting daily_pos for the quarter id {$this->quarter_id} \n";
-
+            $this->quarter_id = $quarter_id;
             $this->quarter = $this->calendar->get_quarter_info($quarter_id);
             
             $this->set_psql_where();

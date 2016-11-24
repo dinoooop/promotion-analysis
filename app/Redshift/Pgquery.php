@@ -23,14 +23,14 @@ class Pgquery {
                                 ->distinct()
                                 ->pluck('brand');
                 break;
-            
+
             case 'category':
                 return DB::connection('redshift')
                                 ->table('nwl_pos.dim_material')
                                 ->distinct()
                                 ->pluck('business_team');
                 break;
-            
+
             case 'division':
                 return DB::connection('redshift')
                                 ->table('nwl_pos.dim_material')
@@ -66,6 +66,18 @@ class Pgquery {
                 return [];
                 break;
         }
+    }
+
+    /**
+     * 
+     * Get items of category
+     */
+    public static function get_items_category($category) {
+        return DB::connection('redshift')
+                        ->table('nwl_pos.dim_material')
+                        ->where('business_team', $category)
+                        ->groupBy('material_id')
+                        ->get();
     }
 
 }

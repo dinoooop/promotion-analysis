@@ -3,7 +3,7 @@
 namespace App;
 
 use App\Calendar;
-use App\Block;
+use App\Option;
 use App\Stock;
 use App\Spinput;
 use App\Sdcalc;
@@ -12,12 +12,14 @@ use App\Spod;
 use Illuminate\Support\Facades\DB;
 use App\promotions\Promotion;
 use App\promotions\Item;
+use App\Redshift\Pgquery;
 
 class Mockup {
-    
+
     private $spinput;
     private $sdcalc;
     private $swcalc;
+    private $promotion;
 
     function __construct() {
         
@@ -33,6 +35,12 @@ class Mockup {
     }
 
     function item_chunk() {
+
+        if ($this->promotion->level_of_promotions == 'Category') {
+            echo "executing a category level promotion \n";
+            $this->insert_items_under_promotion();
+        }
+
         Item::where('promotions_id', $this->promotion->id)->orderBy('id')->chunk(100, function ($items) {
             foreach ($items as $item) {
                 $input = $this->set_input_array($item);
@@ -45,7 +53,7 @@ class Mockup {
         $promotion = $this->promotion;
         // required
         return [
-            'promo_id' => $item['id'],// Let's take child input table id as promo id
+            'promo_id' => $item['id'], // Let's take child input table id as promo id
             'promotions_name' => $promotion['promotions_name'],
             'promotion_type' => $promotion['promotions_type'],
             'start_date' => $item['promotions_startdate'],
@@ -79,81 +87,97 @@ class Mockup {
 
     function process($input) {
 
-//        @testing 
-//        Sdcalc::truncate();
-//        Swcalc::truncate();
-//        Spod::truncate();
-//        Spinput::truncate();
-
-
-
         $this->spinput = new Spinput;
-        $this->sdcalc = new Sdcalc;
-        $this->swcalc = new Swcalc;
-        
-        $this->spod = new Spod;
-
-
         $this->spinput->set_vars($input);
 
         if (!$this->spinput->validate) {
             echo "The given input is not valid \n";
             return false;
         }
-        
+
         echo "Executing the promotion with id {$this->spinput->promo_id} \n";
+        exit();
 
-        $this->sdcalc->set_vars($this->spinput);
-        
+        $this->sdcalc = new Sdcalc;
+        $this->swcalc = new Swcalc;
+        $this->spod = new Spod;
+
+        $this->sdcalc->inject($this->spinput);
         $this->swcalc->set_vars($this->spinput, $this->sdcalc);
-        
-        exit('completed.');
-        
-
-        
-        $this->spinput->set_vars_nh();
-        if ($this->spinput->is_require_nhqs) {
-            echo "Neighbourhood quarter required (start) \n";
-            $this->nh_spinput = new Spinput;
-            $this->nh_sdcalc = new Sdcalc;
-            $this->nh_swcalc = new Swcalc;
-            $input['start_date'] = $this->spinput->weekly_baseline_date;
-            $input['end_date'] = $this->spinput->weekly_baseline_date;
-
-            $this->nh_spinput->set_vars($input);
-            $this->nh_spinput->promo_id = $this->spinput->promo_id;
-            $this->nh_sdcalc->set_vars($this->nh_spinput);
-
-            if ($this->nh_sdcalc->record_count) {
-                $this->nh_swcalc->set_vars($this->nh_sdcalc);
-            }
-        }
-
-        if ($this->spinput->is_require_nhqe) {
-
-            echo "Neighbourhood quarter required (end) \n";
-
-            $this->nh_spinput = new Spinput;
-            $this->nh_sdcalc = new Sdcalc;
-            $this->nh_swcalc = new Swcalc;
-            $input['start_date'] = $this->spinput->post_weekly_baseline_date;
-            $input['end_date'] = $this->spinput->post_weekly_baseline_date;
-
-            $this->nh_spinput->set_vars($input);
-            $this->nh_spinput->promo_id = $this->spinput->promo_id;
-            $this->nh_sdcalc->set_vars($this->nh_spinput);
-
-            if ($this->nh_sdcalc->record_count) {
-                $this->nh_swcalc->set_vars($this->nh_sdcalc);
-            }
-        }
-
-        if ($this->sdcalc->record_count) {
-            $this->spod->set_vars($this->swcalc);
-            $this->spod->create_record();
-        }
 
         echo "Promotion {$this->spinput->promo_id} completed ------------------------------------------\n";
+    }
+
+    /**
+     * 
+     * Category level promotion may not contain items, create items
+     */
+    function insert_items_under_promotion() {
+        
+        if($this->have_child_items()){
+            return true;
+        }
+
+        $records = Pgquery::get_items_category($this->promotion->category);
+        foreach ($records as $key => $record) {
+            $item = $this->prepare_redshift_item($record);
+            Item::create($item);
+        }
+        
+        $this->set_have_child_items(1);
+        
+    }
+    /**
+     * 
+     * Check wheather the child are availbale for a category level of promotion
+     * @return boolean
+     */
+    function have_child_items() {
+        $mata_key = 'have_child_items_' . $this->promotion->id;
+        return Option::get($mata_key);
+    }
+    
+    /**
+     * 
+     * Set or change option have_child_items_{n} value
+     */
+    function set_have_child_items($value) {
+        $mata_key = 'have_child_items_' . $this->promotion->id;
+        Option::add($mata_key, $value);
+    }
+
+    /**
+     * 
+     * 
+     * Prepare records from dim_material for promotions_child_input table
+     * @param array $record
+     */
+    function prepare_redshift_item($record) {
+
+        return [
+            'promotions_id' => $this->promotion->id,
+            'promotions_startdate' => $this->promotion->promotions_startdate,
+            'promotions_enddate' => $this->promotion->promotions_enddate,
+            'material_id' => $record['material_id'],
+            'product_name' => $record['material_description'],
+            'asin' => $record['retailer_sku'],
+            'rtl_id' => $record['retailer_upc'],
+            'promotions_budget', // inheritted
+            'promotions_projected_sales', // inheritted
+            'promotions_expected_lift', // inheritted
+            'x_plant_material_status' => $record['x_plant_matl_status'],
+            'x_plant_status_date' => $record['x_plant_valid_from'],
+            'promotions_budget_type', // inheritted
+            'funding_per_unit', // @todo
+            'forecaseted_qty', // @todo
+            'forecasted_unit_sales', // @todo
+            'promoted' => 1, // @todo
+            'user_input' => 0, // @todo
+            'validated' => 1, // @todo
+            'percent_discount', // @todo
+            'price_discount', // @todo
+            'reference', // @todo
+        ];
     }
 
 }
