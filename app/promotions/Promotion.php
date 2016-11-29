@@ -185,5 +185,10 @@ class Promotion extends Model {
         }
         return $row;
     }
+    
+    function csv_validate_file($records) {
+        
+        return $this->csv === $records;
+    }
 
 }

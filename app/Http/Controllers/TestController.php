@@ -30,11 +30,35 @@ class TestController extends BaseController {
         $this->dsales = new Dsales;
         $this->dchannel = new Dchannel;
         $this->swcalc = new Swcalc;
+        $this->promotion = new Promotion;
     }
 
     function test() {
 
-        echo route('promotions.index', ['cvids' => 2]);
+        $records = [[
+        'promotions_name',
+        'promotions_description',
+        'promotions_startdate',
+        'promotions_enddate',
+        'retailer',
+        'retailer_country_id',
+        'retailer_country',
+        'newell_status',
+        'promotions_status',
+        'promotions_type',
+        'level_of_promotions',
+        'marketing_type',
+        'annivarsaried',
+        'promotions_budget',
+        'promotions_projected_sales',
+        'promotions_expected_lift',
+        'promotions_budget_type',
+        'brand_id',
+        'brand',
+        'category',
+        'division',
+        ]];
+        $this->promotion->csv_validate_file($records);
     }
 
     function local_test() {

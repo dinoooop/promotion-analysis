@@ -139,5 +139,10 @@ class Item extends Model {
         }
         return $row;
     }
+    
+    function csv_validate_file($records) {
+        
+        return $this->fillable === $records;
+    }
 
 }

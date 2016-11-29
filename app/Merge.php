@@ -82,7 +82,19 @@ class Merge {
 
     function import_csv($path, $type) {
         $records = $this->read_csv($path);
+        
         $info = [];
+        
+        if ($type == 'promotions') {
+            if(!$this->promotion->csv_validate_file($records[0])){
+                return [];
+            }
+        }else{
+            if(!$this->item->csv_validate_file($records[0])){
+                return [];
+            }
+        }
+        
         foreach ($records as $key => $record) {
             if ($key == 0) {
                 continue;
