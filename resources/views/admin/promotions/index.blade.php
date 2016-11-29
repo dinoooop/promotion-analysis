@@ -12,6 +12,7 @@
     <table class="table table-striped table-bordered">
         <thead>
             <tr>
+                <th>ID</th>
                 <th>Promotion name</th>
                 <th>Start date</th>
                 <th>End date</th>
@@ -29,6 +30,7 @@
             @foreach ($records as $record)
             <?php $record = App\promotions\Promotion::display_prepare($record)?>
             <tr>
+                <td>{{ $record->id }}</td>
                 <td>{{ link_to_route('items.index', $record->promotions_name, array('pid' => $record->id)) }}</td>
                 <td>{{ $record->promotions_startdate }}</td>
                 <td>{{ $record->promotions_enddate }}</td>

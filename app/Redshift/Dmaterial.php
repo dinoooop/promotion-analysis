@@ -37,6 +37,9 @@ class Dmaterial extends Model {
         'retailer_upc',
         'x_plant_matl_status',
         'x_plant_valid_from',
+        'new_segment',
+        'new_sub_segment',
+        'new_business_team',
     ];
 
     public static function insert_sample_data() {
@@ -51,7 +54,6 @@ class Dmaterial extends Model {
         foreach ($records as $key => $value) {
             self::create($value);
         }
-        
     }
 
     public static function insert_sample_data_category() {
@@ -64,89 +66,6 @@ class Dmaterial extends Model {
             echo $value['material_id'] . "\n";
             self::create($value);
         }
-    }
-
-    public static function refresh() {
-        $table_name = 'nwl_pos.dim_material';
-        Schema::dropIfExists($table_name);
-        Schema::create($table_name, function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('insert_pid')->nullable();
-            $table->dateTime('insert_ts')->nullable();
-            $table->string('update_pid')->nullable();
-            $table->dateTime('update_ts')->nullable();
-            $table->integer('item_id')->nullable();
-            $table->integer('retailer_country_id')->nullable();
-            $table->string('material_id')->nullable();
-            $table->string('material_description')->nullable();
-            $table->string('description1')->nullable();
-            $table->string('brand')->nullable();
-            $table->string('sub_brand')->nullable();
-            $table->string('division')->nullable();
-            $table->string('segment')->nullable();
-            $table->string('sub_segment')->nullable();
-            $table->string('business_team')->nullable();
-            $table->string('product_family')->nullable();
-            $table->string('product_line')->nullable();
-            $table->string('product_platform')->nullable();
-            $table->string('retailer_sku')->nullable();
-            $table->string('retailer_upc')->nullable();
-            $table->string('x_plant_matl_status')->nullable();
-            $table->string('x_plant_valid_from')->nullable();
-        });
-    }
-
-    function sample_data() {
-        return [
-            [
-                'insert_pid' => 1001,
-                'insert_ts' => 253625,
-                'update_pid' => 253625,
-                'update_ts' => 253625,
-                'item_id' => 12541,
-                'retailer_country_id' => 2536,
-                'material_id' => 1954840,
-                'material_description' => 'hello ',
-                'description1' => 'sample',
-                'brand' => 'MOto',
-                'sub_brand' => 'Lenovo',
-                'division' => 'G',
-                'segment' => 'G',
-                'sub_segment' => 'G4',
-                'business_team' => 'Len',
-                'product_family' => 'cell',
-                'product_line' => 'celphone',
-                'product_platform' => 'test',
-                'retailer_sku' => 'test',
-                'retailer_upc' => 'test',
-                'x_plant_matl_status' => 'test',
-                'x_plant_valid_from' => 'test',
-            ],
-            [
-                'insert_pid' => 1002,
-                'insert_ts' => 253625,
-                'update_pid' => 253625,
-                'update_ts' => 253625,
-                'item_id' => 12541,
-                'retailer_country_id' => 2536,
-                'material_id' => 25366,
-                'material_description' => 'hello ',
-                'description1' => 'sample',
-                'brand' => 'MOto',
-                'sub_brand' => 'Lenovo',
-                'division' => 'G',
-                'segment' => 'G',
-                'sub_segment' => 'G4',
-                'business_team' => 'Len',
-                'product_family' => 'cell',
-                'product_line' => 'celphone',
-                'product_platform' => 'test',
-                'retailer_sku' => 'test',
-                'retailer_upc' => 'test',
-                'x_plant_matl_status' => 'test',
-                'x_plant_valid_from' => 'test',
-            ]
-        ];
     }
 
 }

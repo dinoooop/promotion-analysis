@@ -234,30 +234,29 @@ class AppForms {
                     'label' => 'Promotions end date',
                     'col' => 6,
                 ),
-                
                 array(
                     'type' => 'text',
                     'name' => 'material_id',
                     'label' => 'Material ID',
-                    //'list' => Stock::get('material_id'),
+                //'list' => Stock::get('material_id'),
                 ),
                 array(
                     'type' => 'text',
                     'name' => 'product_name',
                     'label' => 'Product Name',
-                    //'list' => Stock::get('product_name'),
+                //'list' => Stock::get('product_name'),
                 ),
                 array(
                     'type' => 'text',
                     'name' => 'asin',
                     'label' => 'ASIN',
-                    //'list' => Stock::get('asin'),
+                //'list' => Stock::get('asin'),
                 ),
                 array(
                     'type' => 'text',
                     'name' => 'rtl_id',
                     'label' => 'Rtl ID',
-                    //'list' => Stock::get('rtl_id'),
+                //'list' => Stock::get('rtl_id'),
                 ),
                 array(
                     'type' => 'number',
@@ -336,6 +335,38 @@ class AppForms {
                     'type' => 'text',
                     'name' => 'reference',
                     'label' => 'Reference',
+                ),
+            ),
+        );
+    }
+
+    /**
+     * 
+     * 
+     * Create a form to import csv file (promotions)
+     * @return array
+     */
+    public static function form_multiple() {
+        return array(
+            'form_name' => 'form_multiple',
+            'submit' => 'Import',
+            'fields' => array(
+                array(
+                    'type' => 'file_upload',
+                    'name' => 'multiple_promotion_csv',
+                    'label' => 'Upload File',
+                    'description' => 'Upload your csv file here. '
+                    . '<br /> Download csv template for promotions - <a href="'.asset('downloads/template-promotions.csv').'">CSV Template (Promotions)</a>'
+                    . '<br /> Download csv template for items - <a href="'.asset('downloads/template-items.csv').'">CSV Template (Items)</a>',
+                ),
+                array(
+                    'type' => 'select',
+                    'name' => 'type',
+                    'label' => 'File content type',
+                    'options' => [
+                        'promotions' => 'Promotions',
+                        'items' => 'Items'
+                    ],
                 ),
             ),
         );

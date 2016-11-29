@@ -25,5 +25,21 @@ class Temp {
         ob_end_clean();
         return $html;
     }
+    
+    public static function csv_session_title($record) {
+        
+        if($record->type == 'promotions'){
+            $url = route('promotions.index', ['cvids' => $record->id]);
+        }else{
+            $url = route('items.index', ['cvids' => $record->id]);
+        }
+        ob_start();
+        ?>
+        <a href="<?php echo $url; ?>"><?php echo $record->title; ?></a>
+            <?php
+        $html = ob_get_contents();
+        ob_end_clean();
+        return $html;
+    }
 
 }

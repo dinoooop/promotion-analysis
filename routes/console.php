@@ -42,24 +42,16 @@ Artisan::command('redshiftimport_dchannel', function () {
     $obj->generate();
 })->describe('Importing redshift data');
 
-Artisan::command('print_array', function () {
-    $obj = new Printm;
-    $obj->print_array();
-    
-})->describe('Print array for code use');
 
-
-
-Artisan::command('raw_data {switch}', function ($switch) {    
+Artisan::command('promo {action}', function ($action) {    
     $obj = new RawData;
-    $obj->init($switch);
+    $obj->$action();
     
 })->describe('Processing data');
 
-
-Artisan::command('drop_table', function () {
-    $obj = new Printm;
-    $obj->print_drop_table_psql();
+Artisan::command('db_change {action}', function ($action) {
+    $obj = new App\DBChange;
+    $obj->$action();
     
-})->describe('Print array for code use');
+})->describe('Custom database changes');
 

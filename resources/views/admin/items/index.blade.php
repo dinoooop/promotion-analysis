@@ -16,7 +16,7 @@
                 <h2>Promotion Items</h2>
                 <div class="clearfix"></div>
             </div>
-
+            @if(isset($promotion))
             <div class="row">
                 <div class="col-md-6 col-sm-12">
                     <p>Promotion name: {{ $promotion->promotions_name }}</p>
@@ -31,12 +31,14 @@
                 </div>
             </div>
 
+
             <div class="row">
                 <div class="col-md-6 col-sm-12">
                     <a href="{{route('items.create', ['pid' => $promotion->id])}}" class="btn btn-primary">Add Item [+]</a>
                     <?php echo $button_update_promotion_status; ?>
                 </div>
             </div>
+            @endif
 
             @if ($records->count())
             <table class="table table-striped table-bordered">
@@ -73,7 +75,7 @@
                         <td>{{ $record->forecaseted_qty }}</td>
 
                         <td>
-                            <a href="{{route('items.edit', array($record->id, 'pid'=>$promotion->id))}}" class="btn btn-info"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                            <a href="{{route('items.edit', array($record->id, 'pid' => $record->promotions_id))}}" class="btn btn-info"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                             <a class="btn btn-danger row-delete" href="{{route('items.destroy', array($record->id))}}" data-modal_id="{{$record->id}}"><i class="fa fa-trash"></i></a>
                         </td>
                     </tr>

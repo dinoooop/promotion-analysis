@@ -45,6 +45,10 @@ class Mockup {
 
         if ($this->promotion->level_of_promotions == 'Category') {
             echo "Executing a category level promotion \n";
+            
+            if($this->promotion->category == ''){
+                return false;
+            }
             $this->insert_items_under_promotion();
         }
 
@@ -104,19 +108,16 @@ class Mockup {
         }
 
         echo "Executing the promotion with id {$this->spinput->promo_id} \n";
+        
         $this->sdcalc = new Sdcalc;
         $this->swcalc = new Swcalc;
         $this->spod = new Spod;
         $this->sdcalc->inject($this->spinput);
+        
         if ($this->sdcalc->record_count) {
-
-
-
-
             $this->swcalc->set_vars($this->spinput, $this->sdcalc);
         }
-
-
+        
         echo "Promotion {$this->spinput->promo_id} completed ------------------------------------------\n";
     }
 

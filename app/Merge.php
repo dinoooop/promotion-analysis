@@ -2,10 +2,16 @@
 
 namespace App;
 
+use Illuminate\Support\Facades\Validator;
+use App\promotions\Promotion;
+use App\promotions\Item;
+use Illuminate\Support\Facades\Log;
+
 class Merge {
 
     function __construct() {
-        
+        $this->promotion = new Promotion;
+        $this->item = new Item;
     }
 
     function refine_dollar($dollar) {
@@ -53,16 +59,16 @@ class Merge {
         }
         return $numerator / $denominator;
     }
-    
+
     function url($key, $param) {
         switch ($key) {
             case 'items_index':
-                if(isset($param['pid'])){
+                if (isset($param['pid'])) {
                     return url('admin/items?pid=' . $param['pid']);
                 }
                 break;
             case 'items_create':
-                if(isset($param['pid'])){
+                if (isset($param['pid'])) {
                     return url('admin/items/create?pid=' . $param['pid']);
                 }
                 break;
@@ -70,8 +76,64 @@ class Merge {
             default:
                 break;
         }
-        
+
         return false;
+    }
+
+    function import_csv($path, $type) {
+        $records = $this->read_csv($path);
+        $info = [];
+        foreach ($records as $key => $record) {
+            if ($key == 0) {
+                continue;
+            }
+
+            if ($type == 'promotions') {
+
+                $input = $this->promotion->csv_match_data($record);
+
+                $status = Promotion::status($input);
+                if ($status['status']) {
+                    $model = Promotion::create($status['input']);
+                    $info[] = $model->id;
+                } else {
+                    Log::info("CSV input failed (promotion)");
+                    Log::info($status['custom_validation']);
+                    if (isset($input['promotions_name'])) {
+                        Log::info($input['promotions_name']);
+                    }
+                }
+            } else {
+                $input = $this->item->csv_match_data($record);
+                
+                $status = Item::status($input);
+                if ($status['status']) {
+                    $model = Item::create($status['input']);
+                    $info[] = $model->id;
+                } else {
+                    Log::info("CSV input failed (item)");
+                    Log::info($status['custom_validation']);
+                    if (isset($input['material_id'])) {
+                        Log::info($input['material_id']);
+                    }
+                }
+            }
+        }
+
+        return $info;
+    }
+
+    function read_csv($path) {
+
+        $records = [];
+        if (($handle = fopen($path, "r")) !== FALSE) {
+            while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+                $records[] = $data;
+            }
+            fclose($handle);
+        }
+
+        return $records;
     }
 
 }

@@ -8,11 +8,15 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Http\Request;
 use App\Gform;
 use App\Temp;
 use App\FormHtmlJq;
 use App\AppForms;
 use App\promotions\Promotion;
+use App\Option;
+use App\Merge;
+use App\Multiple;
 
 class PromotionsController extends Controller {
 
@@ -24,6 +28,7 @@ class PromotionsController extends Controller {
         $this->gform = new Gform;
         $this->formHtmlJq = new FormHtmlJq;
         $this->posts = new Promotion;
+        $this->merge = new Merge;
     }
 
     /**
@@ -33,7 +38,15 @@ class PromotionsController extends Controller {
      */
     public function index() {
         $data = array();
-        $data['records'] = Promotion::orderBy('id', 'desc')->paginate(50);
+        $input = Input::get();
+
+        $query = Promotion::orderBy('id', 'desc');
+        if (isset($input['cvids'])) {
+            $multiple = Multiple::findOrFail($input['cvids']);
+            $query->whereBetween('id', [$multiple->start_id, $multiple->end_id]);
+        }
+
+        $data['records'] = $query->paginate(50);
         return View::make('admin.promotions.index', $data);
     }
 
@@ -62,21 +75,17 @@ class PromotionsController extends Controller {
     public function store() {
         $input = Input::all();
 
-        $input = Promotion::sanitize($input);
+        $status = Promotion::status($input);
 
-        $validation = Validator::make($input, Promotion::$form_create_rules);
-
-        if ($validation->passes()) {
-
-            Promotion::create($input);
-
+        if ($status['status']) {
+            Promotion::create($status['input']);
             return Redirect::route('promotions.index');
         }
 
         return Redirect::route('promotions.create')
                         ->withInput()
-                        ->withErrors($validation)
-                        ->with('message', 'There were validation errors.');
+                        ->withErrors($status['custom_validation'])
+                        ->with('message', 'Validation error');
     }
 
     /**
@@ -119,21 +128,19 @@ class PromotionsController extends Controller {
     public function update($id) {
 
         $input = Input::all();
-        $input = Promotion::sanitize($input);
 
-        $validation = Validator::make($input, Promotion::$form_edit_rules);
+        $status = Promotion::status($input);
 
-        if ($validation->passes()) {
-
+        if ($status['status']) {
             $record = Promotion::find($id);
-            $record->update($input);
+            $record->update($status['input']);
             return Redirect::route('promotions.index');
         }
 
         return Redirect::route('promotions.edit', $id)
                         ->withInput()
-                        ->withErrors($validation)
-                        ->with('message', 'There were validation errors.');
+                        ->withErrors($status['custom_validation'])
+                        ->with('message', 'Validation error');
     }
 
     /**
@@ -147,11 +154,14 @@ class PromotionsController extends Controller {
         exit();
         //return Redirect::route('promotions.index');
     }
-    
-    
+
     function update_promotion_status($promotion_id, $status) {
         Promotion::update_promotion_status($promotion_id, $status);
         exit(0);
+    }
+
+    function submit_promotion_multiple(Request $request) {
+        
     }
 
 }

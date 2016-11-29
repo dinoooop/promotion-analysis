@@ -2,7 +2,6 @@
 
 namespace App;
 
-
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -43,7 +42,7 @@ class Dot {
         $title = strtolower($title);
         return $title;
     }
-    
+
     public static function create_array_key($key) {
         $key = trim($key);
         $key = preg_replace('/[^a-zA-Z0-9- ]/', '', $key);
@@ -52,7 +51,7 @@ class Dot {
         $key = strtolower($key);
         return $key;
     }
-    
+
     public static function get_array_key_value($array) {
         $return = [];
         foreach ($array as $key => $value) {
@@ -102,8 +101,6 @@ class Dot {
 
         return json_encode($new_array);
     }
-    
-    
 
     /**
      * 
@@ -132,14 +129,14 @@ class Dot {
         if ($date == $wrong) {
             return false;
         }
-        
+
         return true;
     }
-    
+
     public static function have_value($key, $input) {
-        return (isset($input[$key]) && $input[$key] != '')? $input[$key] : null;
+        return (isset($input[$key]) && $input[$key] != '') ? $input[$key] : null;
     }
-    
+
     /**
      * 
      * Print a custom log
@@ -157,7 +154,52 @@ class Dot {
 
         Log::info($contents);
     }
-    
-    
+
+    public static function sanitize_numeric($key, $input) {
+        if (isset($input[$key]) && is_numeric($input[$key])) {
+            return $input[$key];
+        }
+
+        return 0;
+    }
+
+    public static function sanitize_boolean($key, $input) {
+        if (!isset($input[$key])) {
+            return 0;
+        }
+
+        if (is_bool($input[$key])) {
+            return $input[$key];
+        }
+
+        $value = trim($input[$key]);
+
+        if (strtolower($value) == 'true' || $value == '1' || $value == 1) {
+            return 1;
+        }
+
+        return 0;
+    }
+
+    public static function validate_true($key, $input) {
+
+        if (!isset($input[$key])) {
+            return false;
+        }
+
+
+        if (is_array($input[$key])) {
+            if (empty($input[$key])) {
+                return false;
+            }
+        } else {
+            if (trim($input[$key]) == '') {
+                return false;
+            }
+        }
+
+
+        return true;
+    }
 
 }

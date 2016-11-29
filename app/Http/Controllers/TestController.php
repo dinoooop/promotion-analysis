@@ -17,6 +17,7 @@ use App\Redshift\Dchannel;
 use Illuminate\Support\Facades\DB;
 use App\promotions\Promotion;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Validator;
 
 class TestController extends BaseController {
 
@@ -32,26 +33,11 @@ class TestController extends BaseController {
     }
 
     function test() {
-        //$this->calendar->quarter_weeks();
-        //$this->dmaterial->generate();
-        //$this->dchannel->generate();
-        //$this->rawdata->process();
-        //echo date('Y-m-d', strtotime('2016-07-12' . "-2 weeks"));
-        //echo '<pre>', print_r(range("Q1", "Q9")), '</pre>';
-        echo date('d-m-Y', strtotime('16-01-17'));
-        
-        Config::set('database.fetch', \PDO::FETCH_ASSOC);
-        
-        $this->mockup = new Mockup;
 
-        $this->mockup->promotion_chunk();
+        echo route('promotions.index', ['cvids' => 2]);
     }
 
     function local_test() {
-        //$date = $this->calendar->init('2016-11-16', '2016-11-16');
-        $date = $this->calendar->get_quarter_info('2016-12-31');
-        echo '<pre>', print_r($date), '</pre>';
-        exit();
         
     }
 

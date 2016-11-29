@@ -15,6 +15,7 @@ use App\Merge;
 use App\Temp;
 use App\promotions\Item;
 use App\promotions\Promotion;
+use App\Multiple;
 
 class ItemsController extends Controller {
 
@@ -37,19 +38,31 @@ class ItemsController extends Controller {
     public function index() {
 
         $data = array();
-        
+
         $input = Input::get();
 
-        if (!isset($input['pid'])) {
+        $query = Item::orderBy('id', 'desc');
+
+        if (isset($input['cvids'])) {
+            $multiple = Multiple::findOrFail($input['cvids']);
+            $query->whereBetween('id', [$multiple->start_id, $multiple->end_id]);
+        }
+
+        if (isset($input['pid'])) {
+            $data['promotion'] = Promotion::findOrFail($input['pid']);
+            $query->where('promotions_id', $input['pid']);
+            $data['button_update_promotion_status'] = Temp::button_update_promotion_status($data['promotion']);
+        }
+
+        if (!isset($input['cvids']) && !isset($input['pid'])) {
             return Response::make(View::make('errors.404', ['page_404' => true]), 404);
         }
-        
-        $data['records'] = Item::where('promotions_id', $input['pid'])
-                ->orderBy('id', 'desc')
-                ->paginate(50);
 
-        $data['promotion'] = Promotion::find($input['pid']);
-        $data['button_update_promotion_status'] = Temp::button_update_promotion_status($data['promotion']);
+
+        $data['records'] = $query->paginate(50);
+
+        
+        
 
         return View::make('admin.items.index', $data);
     }
@@ -68,15 +81,15 @@ class ItemsController extends Controller {
         }
 
         $data = [];
-        
+
         $data['promotion'] = Promotion::find($input['pid']);
-        
+
         $form = $this->gform->set_form(AppForms::form_item());
         $form['form_name'] = 'pv_create_item';
 
         $data['form_create'] = $this->formHtmlJq->create_form($form);
-        
-        
+
+
 
         return View::make('admin.items.create', $data);
     }
@@ -88,31 +101,19 @@ class ItemsController extends Controller {
      */
     public function store() {
         $input = Input::all();
-        
-        if (!isset($input['promotions_id'])) {
-            return Response::make(View::make('errors.404', ['page_404' => true]), 404);
-        }
-        
-        
 
-        $input = Item::sanitize($input);
 
-        $validation = Validator::make($input, Item::$form_create_rules);
+        $status = Item::status($input);
 
-        if ($validation->passes()) {
-
-            Item::create($input);
-
-            // return Redirect::route('items.index');
-            // return redirect('admin/items?pid=' . $input['pid']);
-            // return redirect($this->merge->url('items_index', $input));
+        if ($status['status']) {
+            Item::create($status['input']);
             return Redirect::route('items.index', ['pid' => $input['promotions_id']]);
         }
 
         return Redirect::route('items.create', ['pid' => $input['promotions_id']])
                         ->withInput()
-                        ->withErrors($validation)
-                        ->with('message', 'There were validation errors.');
+                        ->withErrors($status['custom_validation'])
+                        ->with('message', 'Validation error');
     }
 
     /**
@@ -134,7 +135,7 @@ class ItemsController extends Controller {
      * @return Response
      */
     public function edit($id) {
-        
+
         $data = array();
 
         $input = Input::get();
@@ -142,7 +143,7 @@ class ItemsController extends Controller {
         if (!isset($input['pid'])) {
             return Response::make(View::make('errors.404', ['page_404' => true]), 404);
         }
-        
+
         $data['promotion'] = Promotion::find($input['pid']);
 
         $data['record'] = Item::find($id);
@@ -162,21 +163,19 @@ class ItemsController extends Controller {
     public function update($id) {
 
         $input = Input::all();
-        $input = Item::sanitize($input);
 
-        $validation = Validator::make($input, Item::$form_edit_rules);
+        $status = Item::status($input);
 
-        if ($validation->passes()) {
-
+        if ($status['status']) {
             $record = Item::find($id);
-            $record->update($input);
+            $record->update($status['input']);
             return Redirect::route('items.index', ['pid' => $input['promotions_id']]);
         }
 
         return Redirect::route('items.edit', [$id, 'pid' => $input['promotions_id']])
                         ->withInput()
-                        ->withErrors($validation)
-                        ->with('message', 'There were validation errors.');
+                        ->withErrors($status['custom_validation'])
+                        ->with('message', 'Validation error');
     }
 
     /**

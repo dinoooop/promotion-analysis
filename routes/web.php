@@ -26,7 +26,12 @@ Route::group([ 'prefix' => 'admin', 'middleware' => 'role'], function() {
     Route::resource('users', 'UsersController');
     Route::resource('promotions', 'PromotionsController');
     Route::resource('items', 'ItemsController');
+    Route::resource('multiples', 'MultiplesController');
+    
+    
+    Route::get('promotion-multiple', 'PromotionsController@promotion_multiple');
     
     Route::get('ajax/promotion-status/{id}/{status}', 'PromotionsController@update_promotion_status');
+    Route::post('submit_promotion_multiple', 'PromotionsController@submit_promotion_multiple');
 });
 

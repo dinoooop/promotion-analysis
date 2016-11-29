@@ -3,9 +3,11 @@
 namespace App\promotions;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Validator;
 use App\Dot;
 use App\Merge;
 use App\Calendar;
+
 
 class Promotion extends Model {
 
@@ -37,41 +39,89 @@ class Promotion extends Model {
         'division',
         'status'
     ];
+    protected $csv = [
+        'promotions_name',
+        'promotions_description',
+        'promotions_startdate',
+        'promotions_enddate',
+        'retailer',
+        'retailer_country_id',
+        'retailer_country',
+        'newell_status',
+        'promotions_status',
+        'promotions_type',
+        'level_of_promotions',
+        'marketing_type',
+        'annivarsaried',
+        'promotions_budget',
+        'promotions_projected_sales',
+        'promotions_expected_lift',
+        'promotions_budget_type',
+        'brand_id',
+        'brand',
+        'category',
+        'division',
+    ];
+    
     private $merge;
     private $calendar;
     public $data;
     public $promo_id;
-    public static $form_create_rules = [];
-    public static $form_edit_rules = [];
+    public static $form_create_rules = [
+        'promotions_name' => 'required',
+        'promotions_startdate' => 'required',
+        'promotions_enddate' => 'required',
+    ];
+    public static $form_edit_rules = [
+        'promotions_name' => 'required',
+        'promotions_startdate' => 'required',
+        'promotions_enddate' => 'required',
+    ];
 
-    function validate() {
+    /**
+     * 
+     * Custom validate user input to DB (form, CSV)
+     * @param array $input
+     * @return boolean
+     */
+    public static function validate($input) {
 
-        if ($this->data['start_date'] > $this->today) {
-            return false;
+        $error = [];
+
+//        if (!isset($input['retailer']) || $input['retailer'] != 'AMZ') {
+//            $error['message'][] = 'Sample custom error';
+//            $error['status'] = false;
+//            return $error;
+//        }
+
+
+        if (!Dot::validate_date($input['promotions_startdate']) || !Dot::validate_date($input['promotions_enddate'])) {
+            $error['message'][] = 'Please enter a valid date';
+            $error['status'] = false;
+            return $error;
         }
 
-        if ((!isset($this->data['material_id']) || $this->data['material_id'] == '')) {
-
-            if (!isset($this->data['retailer_id']) || $this->data['retailer_id'] == '') {
-                return false;
-            }
+        if ($input['promotions_startdate'] > $input['promotions_enddate']) {
+            $error['message'][] = 'Start date is greater than end date';
+            $error['status'] = false;
+            return $error;
         }
 
 
-        if (!Dot::validate_date($this->data['start_date']) || !Dot::validate_date($this->data['end_date'])) {
-            return false;
-        }
-
-        if ($this->data['start_date'] > $this->data['end_date']) {
-            return false;
-        }
-        return true;
+        $error['status'] = true;
+        return $error;
     }
 
+    /**
+     * 
+     * Change not exist and unexpected values to default
+     * @param type $input
+     * @return type
+     */
     public static function sanitize($input) {
         $sanitize = [
             'promotions_name' => trim($input['promotions_name']),
-            'promotions_description' => $input['promotions_description'],
+            //'promotions_description' => $input['promotions_description'],
             //'promotions_startdate' => date('Y-m-d', strtotime($input['promotions_startdate'])),
             //'promotions_enddate' => date('Y-m-d', strtotime($input['promotions_enddate'])),
             //'retailer',
@@ -82,21 +132,36 @@ class Promotion extends Model {
             //'promotions_type',
             //'level_of_promotions',
             //'marketing_type',
-            'annivarsaried' => isset($input['annivarsaried']) ? 1 : 0,
-            'promotions_budget' => (isset($input['promotions_budget']) && isset($input['promotions_budget']) != '') ? $input['promotions_budget'] : null,
-            'promotions_projected_sales' => (isset($input['promotions_projected_sales']) && $input['promotions_projected_sales'] != '') ? $input['promotions_projected_sales'] : null,
-            'promotions_expected_lift' => (isset($input['promotions_expected_lift']) && $input['promotions_expected_lift'] != '') ? $input['promotions_expected_lift'] : null,
-                //'promotions_budget_type',
-                //'brand_id',
-                //'brand',
-                //'category',
-                //'product_family',
-                //'product_line',
-                //'division',
-                //'status'
+            'annivarsaried' => Dot::sanitize_boolean('annivarsaried', $input),
+            'promotions_budget' => Dot::sanitize_numeric('promotions_budget', $input),
+            'promotions_projected_sales' => Dot::sanitize_numeric('promotions_projected_sales', $input),
+            'promotions_expected_lift' => Dot::sanitize_numeric('promotions_expected_lift', $input),
+            //'promotions_budget_type',
+            //'brand_id',
+            //'brand',
+            //'category',
+            //'product_family',
+            //'product_line',
+            //'division',
+            'status' => isset($input['status']) ? $input['status'] : 'active',
         ];
 
         return array_merge($input, $sanitize);
+    }
+
+    public static function status($input) {
+        $validation = Validator::make($input, self::$form_create_rules);
+        $custom_validation = self::validate($input);
+        if ($validation->passes() && $custom_validation['status']) {
+            $input = self::sanitize($input);
+            return ['status' => true, 'input' => $input];
+        } else {
+            return [
+                'status' => false,
+                'validation' => $validation,
+                'custom_validation' => $custom_validation
+            ];
+        }
     }
 
     public static function display_prepare($input) {
@@ -108,6 +173,17 @@ class Promotion extends Model {
     public static function update_promotion_status($promotion_id, $status) {
         self::where('id', $promotion_id)
                 ->update(['status' => $status]);
+    }
+
+    function csv_match_data($record) {
+        $row = [];
+        foreach ($this->csv as $key => $value) {
+            if (!isset($record[$key])) {
+                continue;
+            }
+            $row[$value] = $record[$key];
+        }
+        return $row;
     }
 
 }

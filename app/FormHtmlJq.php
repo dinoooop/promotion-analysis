@@ -160,11 +160,33 @@ class FormHtmlJq {
                 <?php echo '</div>'; ?>
                 <?php
                 break;
+            
+            
 
             case 'hidden':
                 ?><input type="hidden" id="<?php echo $id ?>" name="<?php echo $name; ?>" value="<?php echo $value; ?>"><?php
                 break;
 
+            case 'file_upload':
+                ?>
+                <?php echo $col; ?>
+                <div class="form-group">
+
+                    <label class="control-label" for="<?php echo $id ?>"><?php echo $label ?></label>
+                    <input 
+                        id="<?php echo $id ?>"
+                        type="file" 
+                        name="<?php echo $name; ?>" 
+                        value="<?php echo $value; ?>"
+                        >
+
+                    <?php if ($description != ''): ?>
+                        <p class="help-description"><?php echo $description; ?></p>
+                    <?php endif; ?>
+                </div>
+                <?php echo '</div>'; ?>
+                <?php
+                break;
             case 'file':
                 
                 $placeholder = ($placeholder != '') ? $placeholder : 'Upload';
@@ -188,6 +210,8 @@ class FormHtmlJq {
                 </div>
                 <?php
                 break;
+                
+                
 
             case 'clearfix':
                 echo '<div class="clearfix"></div>';

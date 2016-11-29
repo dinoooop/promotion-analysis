@@ -17,6 +17,7 @@
                     <li><a href="{{ url('admin/profile') }}" ><i class="fa fa-home"></i> Profile</a></li>
                     <li><a href="{{ url('admin/promotions') }}" ><i class="fa fa-database"></i> Manage Promotions</a></li>
                     <li><a href="{{ url('admin/promotions/create') }}" ><i class="fa fa-database"></i> Create Promotion</a></li>
+                    <li><a href="{{ url('admin/multiples') }}" ><i class="fa fa-database"></i> CSV Import</a></li>
                     @if(User::hasrole('sup_admin_cap'))
                     <!-- <li><a href="{{ url('admin/users') }}" ><i class="fa fa-users"></i> Users</a></li> -->
                     @endif
