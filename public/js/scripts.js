@@ -1,5 +1,10 @@
 $(function () {
 
+    /**
+     * 
+     * When submit a normal form
+     */
+
     $("form.normal_form").submit(function (e) {
         var $form = $(this);
         var error = $form.cu_validate_form();
@@ -13,6 +18,11 @@ $(function () {
     });
 
 
+    /**
+     * 
+     * 
+     * Alert when delete a table record (admin)
+     */
     $(".row-delete").click(function (e) {
 
         e.preventDefault();
@@ -44,6 +54,11 @@ $(function () {
 
 
 
+    /**
+     * 
+     * 
+     * Change promotion status (active, sleep)
+     */
     $(".ajax-promotion-status").click(function () {
         var id = $(this).data('pid');
         var new_status = $(this).data('status');
@@ -64,5 +79,6 @@ $(function () {
 
 
     });
+    
 
 });

@@ -79,9 +79,15 @@ class Merge {
 
         return false;
     }
+    
+    function get_csv_file_path($filename) {
+        return storage_path('app/csv/' . $filename);
+    }
 
-    function import_csv($path, $type) {
-        $records = $this->read_csv($path);
+    function import_csv($file, $type) {
+        
+        $file_path = $this->get_csv_file_path($file);
+        $records = $this->read_csv($file_path);
         
         $info = [];
         

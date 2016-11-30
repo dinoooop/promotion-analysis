@@ -163,6 +163,14 @@ class Dot {
         return 0;
     }
 
+    public static function sanitize_string($key, $input) {
+        if (isset($input[$key])) {
+            return $input[$key];
+        }
+
+        return '';
+    }
+
     public static function sanitize_boolean($key, $input) {
         if (!isset($input[$key])) {
             return 0;

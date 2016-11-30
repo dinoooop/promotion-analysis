@@ -24,6 +24,7 @@ class MultiplesController extends Controller {
     private $gform;
     private $formHtmlJq;
     private $multiple;
+    private $merge;
 
     public function __construct() {
         $this->gform = new Gform;
@@ -71,62 +72,26 @@ class MultiplesController extends Controller {
      */
     public function store(Request $request) {
 
+        $status = Multiple::status($request);
 
-        $allow_extension = ['csv', 'txt'];
-        $errors = [];
-
-        if ($request->hasFile('multiple_promotion_csv')) {
-            $title = pathinfo($request->file('multiple_promotion_csv')->getClientOriginalName())['filename'];
-            $extention = $request->multiple_promotion_csv->extension();
-            Log::info("Extention is");
-            Log::info($extention);
-
-            if (!in_array($extention, $allow_extension)) {
-                Log::info("Ext not exist");
-                $errors[] = "Please upload valid file with data";
-            }
-        } else {
-            $errors[] = "File doesn't exist";
-        }
-
-        if (empty($errors)) {
-            $file_name = date('Y-m-d-h-i-s') . rand(1000, 9999) . '.csv';
-            $path = $request->multiple_promotion_csv->storeAs('csv', $file_name);
-            $path = storage_path('app/' . $path);
-            $info = $this->merge->import_csv($path, $request->type);
-            Log::info("No errors");
+        if ($status['status']) {
+            $input = $status['input'];
+            Log::info($input);
+            $info = $this->merge->import_csv($input['file'], $input['type']);
             if (!empty($info)) {
-                $input = [
-                    'title' => $title,
-                    'description' => '',
-                    'file' => $file_name,
-                    'type' => $request->type,
-                    'start_id' => $info[0],
-                    'end_id' => end($info),
-                ];
-
-                $validation = Validator::make($input, Multiple::$form_create_rules);
-
-                if ($validation->passes()) {
-                    Log::info("Validation passed");
-
-                    Multiple::create($input);
-
-                    return Redirect::route('multiples.index');
-                } else {
-                    Log::info("Validation failed");
-                }
+                $input['start_id'] = $info[0];
+                $input['end_id'] = end($info);
+                Multiple::create($input);
+                return Redirect::route('multiples.index');
             } else {
-                $errors[] = "Import failed: No valid record found in the file";
+                $status['custom_validation']['message'][] = 'Import failed: No valid record found in the file';
             }
         }
-
-
 
         return Redirect::route('multiples.create')
                         ->withInput()
-                        ->withErrors($errors)
-                        ->with('message', 'There were validation errors.');
+                        ->withErrors($status['custom_validation'])
+                        ->with('message', 'Validation error');
     }
 
     /**
@@ -149,22 +114,7 @@ class MultiplesController extends Controller {
      */
     public function edit($id) {
 
-        $data = array();
-
-        $input = Input::get();
-
-        if (!isset($input['pid'])) {
-            return Response::make(View::make('errors.404', ['page_404' => true]), 404);
-        }
-
-        $data['promotion'] = Promotion::find($input['pid']);
-
-        $data['record'] = Multiple::find($id);
-
-        $form = $this->gform->set_form(AppForms::form_multiple(), $data['record']);
-        $form['form_name'] = 'pv_edit_multiple';
-        $data['form_edit'] = $this->formHtmlJq->create_form($form);
-        return View::make('admin.multiples.edit', $data);
+        
     }
 
     /**
@@ -174,23 +124,7 @@ class MultiplesController extends Controller {
      * @return Response
      */
     public function update($id) {
-
-        $input = Input::all();
-        $input = Multiple::sanitize($input);
-
-        $validation = Validator::make($input, Multiple::$form_edit_rules);
-
-        if ($validation->passes()) {
-
-            $record = Multiple::find($id);
-            $record->update($input);
-            return Redirect::route('multiples.index', ['pid' => $input['promotions_id']]);
-        }
-
-        return Redirect::route('multiples.edit', [$id, 'pid' => $input['promotions_id']])
-                        ->withInput()
-                        ->withErrors($validation)
-                        ->with('message', 'There were validation errors.');
+        
     }
 
     /**
@@ -204,10 +138,10 @@ class MultiplesController extends Controller {
 
         if ($model->type == 'promotions') {
             Promotion::whereBetween('id', [$model->start_id, $model->end_id])->delete();
-            unlink(storage_path('app/csv/' . $model->file));
+            unlink($this->merge->get_csv_file_path($model->file));
         } else {
             Item::whereBetween('id', [$model->start_id, $model->end_id])->delete();
-            unlink(storage_path('app/csv/' . $model->file));
+            unlink($this->merge->get_csv_file_path($model->file));
         }
 
 
