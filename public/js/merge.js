@@ -5,6 +5,13 @@ $.fn.extend({
             callback(response);
         }, 'json');
     },
-    
-
+    fieldMsg: function (msg) {
+        var $next = $(this).next();
+        var class_name = $next.attr("class");
+        if (class_name == "field-msg") {
+            $next.html(msg);
+        } else {
+            $(this).after('<p class="field-msg">' + msg + '</p>');
+        }
+    },
 });

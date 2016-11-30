@@ -79,5 +79,15 @@ class Pgquery {
                         ->distinct('material_id')
                         ->get();
     }
+    /**
+     * 
+     * Get items by material id
+     */
+    public static function get_items_material_id($material_id) {
+        return DB::connection('redshift')
+                        ->table('nwl_pos.dim_material')
+                        ->where('material_id', $material_id)
+                        ->first();
+    }
 
 }
