@@ -101,7 +101,6 @@ class AppForms {
                     'type' => 'auto_complete',
                     'name' => 'retailer',
                     'label' => 'Retailer',
-                    'list' => Stock::get('retailer'),
                 ),
                 array(
                     'type' => 'text',
@@ -177,31 +176,26 @@ class AppForms {
                     'type' => 'auto_complete',
                     'name' => 'brand',
                     'label' => 'Brand',
-                    'list' => Stock::get('brand'),
                 ),
                 array(
                     'type' => 'auto_complete',
                     'name' => 'category',
                     'label' => 'Category',
-                    'list' => Stock::get('category'),
                 ),
 //                        array(
 //                            'type' => 'auto_complete',
 //                            'name' => 'product_family',
 //                            'label' => 'Product Family',
-//                            'list' => Stock::get('product_family'),
 //                        ),
 //                        array(
 //                            'type' => 'auto_complete',
 //                            'name' => 'product_line',
 //                            'label' => 'Product Line',
-//                            'list' => Stock::get('product_line'),
 //                        ),
                 array(
                     'type' => 'auto_complete',
                     'name' => 'division',
                     'label' => 'Division',
-                    'list' => Stock::get('division'),
                 ),
 //                        array(
 //                            'type' => 'select',
@@ -235,28 +229,24 @@ class AppForms {
                     'col' => 6,
                 ),
                 array(
-                    'type' => 'text',
+                    'type' => 'auto_complete',
                     'name' => 'material_id',
                     'label' => 'Material ID',
-                //'list' => Stock::get('material_id'),
                 ),
                 array(
-                    'type' => 'text',
+                    'type' => 'auto_complete',
                     'name' => 'product_name',
                     'label' => 'Product Name',
-                //'list' => Stock::get('product_name'),
                 ),
                 array(
-                    'type' => 'text',
+                    'type' => 'auto_complete',
                     'name' => 'asin',
                     'label' => 'ASIN',
-                //'list' => Stock::get('asin'),
                 ),
                 array(
-                    'type' => 'text',
+                    'type' => 'auto_complete',
                     'name' => 'rtl_id',
                     'label' => 'Rtl ID',
-                //'list' => Stock::get('rtl_id'),
                 ),
                 array(
                     'type' => 'number',

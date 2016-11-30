@@ -43,6 +43,9 @@ class AjaxController extends Controller {
             case 'auto_populate':
                 $this->auto_populate($input);
                 break;
+            case 'auto_complete':
+                $this->auto_complete($input);
+                break;
 
             default :
                 echo Dot::json_boolean_response([]);
@@ -58,11 +61,18 @@ class AjaxController extends Controller {
                 'product_name' => $result->material_description,
                 'x_plant_material_status' => $result->x_plant_matl_status,
                 'x_plant_status_date' => date('m/d/Y', strtotime($result->x_plant_valid_from)),
+                'asin' => $result->retailer_sku
             ];
             echo Dot::json_boolean_response($row);
-        }else{
+        } else {
             echo Dot::json_boolean_response([]);
         }
+    }
+    
+    
+    function auto_complete($input) {
+        $result = Pgquery::get_distinct_column_values($input['col'], $input['term']);
+        echo Dot::json_boolean_response($result);
     }
 
 }

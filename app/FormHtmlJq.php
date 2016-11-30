@@ -244,21 +244,12 @@ class FormHtmlJq {
                 break;
 
             case 'auto_complete':
-                $list = $this->create_array_string($list)
                 ?>
                 <?php echo $col; ?>
-                <div class="form-group">
+                <div class="form-group ui-widget">
                     <label><?php echo $label; ?></label>
-                    <input id="<?php echo $id ?>" class="form-control" value="<?php echo $value; ?>" name="<?php echo $name; ?>">
+                    <input id="<?php echo $id ?>" class="form-control auto-complete" value="<?php echo $value; ?>" name="<?php echo $name; ?>" data-coll="<?php echo $name; ?>">
                 </div>
-                <script>
-                    $(function () {
-                        var availableTags = [<?php echo $list; ?>];
-                        $("#<?php echo $id ?>").autocomplete({
-                            source: availableTags
-                        });
-                    });
-                </script>
                 <?php echo '</div>'; ?>
                 <?php
                 break;
