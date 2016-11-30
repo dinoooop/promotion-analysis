@@ -52,7 +52,7 @@ class Pgquery {
             case 'material_id':
                 return DB::connection('redshift')
                                 ->table('nwl_pos.dim_material')
-                                ->where('material_id', 'ilike', '%' . $term . '%')
+                                ->where('material_id', 'ilike', $term . '%')
                                 ->distinct()
                                 ->limit(5)
                                 ->pluck('material_id');
@@ -68,7 +68,7 @@ class Pgquery {
             case 'asin':
                 return DB::connection('redshift')
                                 ->table('nwl_pos.dim_material')
-                                ->where('retailer_sku', 'ilike', '%' . $term . '%')
+                                ->where('retailer_sku', 'ilike', $term . '%')
                                 ->distinct()
                                 ->limit(5)
                                 ->pluck('retailer_sku');
@@ -76,7 +76,7 @@ class Pgquery {
             case 'rtl_id':
                 return DB::connection('redshift')
                                 ->table('nwl_pos.dim_material')
-                                ->where('retailer_sku', 'ilike', '%' . $term . '%')
+                                ->where('retailer_sku', 'ilike', $term . '%')
                                 ->distinct()
                                 ->limit(5)
                                 ->pluck('retailer_sku');

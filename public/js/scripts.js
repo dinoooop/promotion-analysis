@@ -147,7 +147,7 @@ $(function () {
                 }
             });
         },
-        minLength: 3,
+        minLength: 2,
     });
 
 
