@@ -336,9 +336,20 @@ $.fn.extend({
                     
                 }
                 break;
+            case 'pv_edit_configuration':
             case 'pv_create_configuration':
                 var value = $field.cu_getVal();
                 var required_fileds = ['promotions_type', 'level_of_promotions', 'retailer', 'baseline_weeks', 'post_weeks', 'baseline_threshold'];
+                if (required_fileds.indexOf(name) != -1) {
+                    error = $field.cu_require();
+                    $field.cu_error_switch(error);
+                }
+
+                break;
+            
+            case 'pv_edit_multiple':
+                var value = $field.cu_getVal();
+                var required_fileds = ['multiple_promotion_csv'];
                 if (required_fileds.indexOf(name) != -1) {
                     error = $field.cu_require();
                     $field.cu_error_switch(error);
@@ -379,99 +390,7 @@ $.fn.extend({
                 }
                 break;
 
-            case 'form_password_reset':
-                var value = $field.cu_getVal();
-
-
-                switch (name) {
-
-                    case 'password':
-                        error = $field.cu_require();
-                        var message = "Please enter your new password";
-                        $field.cu_error_switch(error, message);
-
-
-                        if (!error) {
-                            var password = value;
-                            var confirm_password = $form.find("[name='confirm_password']").val();
-
-                            error = (password == confirm_password) ? 0 : 1;
-                            var message = "Password not matching";
-                            $field.cu_error_switch(error, message)
-                        }
-                        break;
-
-                    case 'confirm_password':
-                        error = $field.cu_require();
-                        var message = "Please confirm your new password";
-                        $field.cu_error_switch(error, message)
-                        break;
-
-
-                }
-                break;
-
-
-            case 'form_forget_password':
-                var value = $field.cu_getVal();
-                switch (name) {
-
-                    case 'email':
-                        error = $field.cu_require();
-                        var message = "Please enter your email";
-                        $field.cu_error_switch(error, message);
-
-                        if (!error) {
-                            error = (this.IsEmail(value)) ? 0 : 1;
-                            var message = "Please enter a valid email";
-                            $field.cu_error_switch(error, message)
-                        }
-
-                        break;
-
-
-                }
-                break;
-            case 'form_post_status':
-                var value = $field.cu_getVal();
-                switch (name) {
-
-                    case 'post_content':
-                        error = $field.cu_require();
-                        var message = "Please enter your thoughts";
-                        $field.cu_error_switch(error, message);
-                        break;
-
-
-                }
-                break;
-
-            case 'parent-comment-form':
-                var value = $field.cu_getVal();
-                switch (name) {
-
-                    case 'comment':
-                        error = $field.cu_require();
-                        var message = "Please enter the comment";
-                        $field.cu_error_switch(error, message);
-                        break;
-
-
-                }
-                break;
-            case 'form_reply':
-                var value = $field.cu_getVal();
-                switch (name) {
-
-                    case 'comment':
-                        error = $field.cu_require();
-                        var message = "Please enter the comment";
-                        $field.cu_error_switch(error, message);
-                        break;
-
-
-                }
-                break;
+           
             case 'form_edit_profile':
                 var value = $field.cu_getVal();
 
@@ -501,17 +420,7 @@ $.fn.extend({
                 }
                 break;
 
-            case 'aw_form_save_filter' :
-                var value = $field.cu_getVal();
-
-                var required_fileds = ["title", "description"];
-
-                if (required_fileds.indexOf(name) != -1) {
-                    error = $field.cu_require();
-                    $field.cu_error_switch(error);
-                }
-
-                break;
+            
         }
 
 

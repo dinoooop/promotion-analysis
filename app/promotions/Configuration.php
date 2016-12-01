@@ -27,7 +27,7 @@ class Configuration extends Model {
     public static $form_create_rules = [
         'promotions_type' => 'required',
         'level_of_promotions' => 'required',
-        'retailer' => 'required|numeric',
+        'retailer' => 'required',
         'baseline_weeks' => 'required',
         'post_weeks' => 'required',
         'baseline_threshold' => 'required',

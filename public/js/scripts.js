@@ -10,10 +10,12 @@ $(function () {
         var error = $form.cu_validate_form();
 
         if (error) {
-            $form.find("[type='submit']").before('<p class="error form-error-submit">Error: Please fill the required fields with valid information.</p>');
+
+            $form.find("[type='submit']").fieldMsgError('Error: Please fill the required fields with valid information.');
             e.preventDefault();
+
         } else {
-            $(".form-error-submit").remove();
+            $form.find("[type='submit']").fieldMsgError('');
         }
     });
 
@@ -111,7 +113,9 @@ $(function () {
                     $("[name='" + value + "']").val(response.result[value]);
 
                 });
-                setTimeout(function(){$field.fieldMsg('');}, 3000);
+                setTimeout(function () {
+                    $field.fieldMsg('');
+                }, 3000);
             } else {
                 $.each(auto_populate_items, function (index, value) {
                     $("[name='" + value + "']").val('');
