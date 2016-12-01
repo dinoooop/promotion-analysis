@@ -16,6 +16,7 @@ use App\Redshift\Dsales;
 use App\Redshift\Dchannel;
 use Illuminate\Support\Facades\DB;
 use App\promotions\Promotion;
+use App\promotions\Item;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Validator;
 
@@ -31,35 +32,30 @@ class TestController extends BaseController {
         $this->dchannel = new Dchannel;
         $this->swcalc = new Swcalc;
         $this->promotion = new Promotion;
+        $this->item = new Item;
     }
 
     function test() {
-
-        $records = [[
-        'promotions_name',
-        'promotions_description',
-        'promotions_startdate',
-        'promotions_enddate',
-        'retailer',
-        'retailer_country_id',
-        'retailer_country',
-        'newell_status',
-        'promotions_status',
-        'promotions_type',
-        'level_of_promotions',
-        'marketing_type',
-        'annivarsaried',
-        'promotions_budget',
-        'promotions_projected_sales',
-        'promotions_expected_lift',
-        'promotions_budget_type',
-        'brand_id',
-        'brand',
-        'category',
-        'division',
-        ]];
-        $this->promotion->csv_validate_file($records);
+        
+        $input = [
+            0 =>[
+                0=> 2536.36,
+                1=> '',
+            ],
+            2 =>[
+                0=> 22.36,
+                1=> 300044.36,
+                2=> 300044.36,
+            ]
+        ];
+        
+        $row = $this->item->tabular_form_interpreter($input);
+        echo '<pre>', print_r($row), '</pre>';
+        exit();
+        
     }
+    
+    
 
     function local_test() {
         

@@ -139,10 +139,42 @@ class Item extends Model {
         }
         return $row;
     }
-    
+
     function csv_validate_file($records) {
-        
+
         return $this->fillable === $records;
+    }
+
+    function tabular_form_interpreter($input) {
+
+
+        $expected = [
+            0 => 'material_id', // column one
+            1 => 'promotions_budget', // column one
+            2 => 'promotions_projected_sales', // column two
+        ];
+
+        //$key is the row
+        //$j is the column
+
+        if (empty($input)) {
+            return false;
+        }
+
+        $record = [];
+
+        foreach ($input as $key => $value) {
+            $row = [];
+            for ($j = 0; $j < count($expected); $j++) {
+                if (isset($input[$key][$j]) && isset($expected[$j])) {
+                    $row[$expected[$j]] = $input[$key][$j];
+                }
+            }
+            $record[$key] = $row;
+        }
+
+
+        return $record;
     }
 
 }

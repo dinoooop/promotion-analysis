@@ -38,56 +38,55 @@
                     <?php echo $button_update_promotion_status; ?>
                 </div>
             </div>
+
+            {{ Form::open(array('route' => 'items.store', 'id' => 'pv_create_item_tbform', 'class'=>'normal_form')) }}
+            <div class="row">
+                <div class="col-sm-12">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Material Id</th>
+                                <th>Promotions Budget</th>
+                                <th>Promotions Projected Sales</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="item-content">
+                            
+                            @foreach ($records as $record)
+                            <?php $record = App\promotions\Item::display_prepare($record) ?>
+                            <tr>
+                                <td><input type="text" class="form-control" name="exist[<?php echo $record->id; ?>][0]" value="{{ $record->material_id }}"></td>
+                                <td><input type="text" class="form-control" name="exist[<?php echo $record->id; ?>][1]" value="{{ $record->promotions_budge }}"></td>
+                                <td><input type="text" class="form-control" name="exist[<?php echo $record->id; ?>][2]" value="{{ $record->promotions_projected_sales }}"></td>
+                                <td><button class="btn btn-danger remove-item-row-exist"><i class="fa fa-trash"></i></button></td>
+                            </tr>
+                            @endforeach
+                            <tr>
+                                <td><input type="text" class="form-control" name="new[0][0]" value=""></td>
+                                <td><input type="text" class="form-control" name="new[0][1]" value=""></td>
+                                <td><input type="text" class="form-control" name="new[0][2]" value=""></td>
+                                <td><button class="btn btn-danger remove-item-row"><i class="fa fa-trash"></i></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <input type="hidden" name="promotions_id" value="{{ $promotion->id }}">
+                    <input type="hidden" name="action" value="pv_create_item_tbform">
+                    <button class="btn btn-primary pull-right">Save</button>
+                    <button type="button" class="btn btn-primary add-item pull-right">+</button>    
+                </div>
+            </div>
+
+            {{ Form::close() }}
+
             @endif
 
-            @if ($records->count())
-            <table class="table table-striped table-bordered">
-                <thead>
-                    <tr>
-                        <th>Material Id</th>
-                        <th>ASIN</th>
 
-                        <th>Start date</th>
-                        <th>End date</th>
-                        <th>Product Name</th>
-                        <th>Promotions Projected Sales</th>
-                        <th>Promotions Budget Type</th>
-                        <th>Funding per unit</th>
-                        <th>Forecaseted qty</th>
-                        <th width="150">Action</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                    @foreach ($records as $record)
-                    <?php $record = App\promotions\Item::display_prepare($record) ?>
-                    <tr>
-                        <td>{{ $record->material_id }}</td>
-                        <td>{{ $record->asin }}</td>
-
-                        <td>{{ $record->promotions_startdate }}</td>
-                        <td>{{ $record->promotions_enddate }}</td>
-                        <td>{{ $record->product_name }}</td>
-                        <td>{{ $record->promotions_projected_sales }}</td>
-                        <td>{{ $record->promotions_budget_type }}</td>
-                        <td>{{ $record->funding_per_unit }}</td>
-                        <td>{{ $record->forecaseted_qty }}</td>
-
-                        <td>
-                            <a href="{{route('items.edit', array($record->id, 'pid' => $record->promotions_id))}}" class="btn btn-info"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
-                            <a class="btn btn-danger row-delete" href="{{route('items.destroy', array($record->id))}}" data-modal_id="{{$record->id}}"><i class="fa fa-trash"></i></a>
-                        </td>
-                    </tr>
-                    @endforeach
-
-                </tbody>
-
-            </table>
-
-            @else
-            <p>There are no items available under this promotion</p>
-            @endif
         </div>
     </div>
 

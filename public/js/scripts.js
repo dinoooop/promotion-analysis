@@ -153,6 +153,30 @@ $(function () {
         },
         minLength: 2,
     });
-
+    
+    /**
+     * 
+     * 
+     * 
+     * Create dynamic tabular form (items)
+     */
+    
+    var item_field_id = 0;
+    $(".add-item").click(function(){
+        item_field_id++;
+        var html = '';
+        html += '<tr>';
+        html += '<td><input type="text" class="form-control" name="new['+ item_field_id +'][0]" value=""></td>';
+        html += '<td><input type="text" class="form-control" name="new['+ item_field_id +'][1]" value=""></td>';
+        html += '<td><input type="text" class="form-control" name="new['+ item_field_id +'][2]" value=""></td>';
+        html += '<td><button class="btn btn-danger remove-item-row"><i class="fa fa-trash"></i></button></td>';
+        html += '</tr>';
+        $("tbody#item-content").append(html);
+        
+    });
+    
+    $("body").on("click", ".remove-item-row", function(){
+        $(this).parents('tr').remove();
+    });
 
 });

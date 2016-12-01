@@ -59,10 +59,11 @@ class ItemsController extends Controller {
         }
 
 
+
         $data['records'] = $query->paginate(50);
 
-        
-        
+
+
 
         return View::make('admin.items.index', $data);
     }
@@ -103,17 +104,53 @@ class ItemsController extends Controller {
         $input = Input::all();
 
 
-        $status = Item::status($input);
+        if (isset($input['action']) && $input['action'] == 'pv_create_item_tbform') {
 
-        if ($status['status']) {
-            Item::create($status['input']);
+
+            // tbform form
+            if (isset($input['new'])) {
+                $records = $this->item->tabular_form_interpreter($input['new']);
+
+                foreach ($records as $value) {
+
+                    $value['promotions_id'] = $input['promotions_id'];
+
+                    $status = Item::status($value);
+                    if ($status['status']) {
+                        Item::create($status['input']);
+                    }
+                }
+            }
+            if (isset($input['exist'])) {
+                $records = $this->item->tabular_form_interpreter($input['exist']);
+
+                foreach ($records as $key => $value) {
+
+                    $value['promotions_id'] = $input['promotions_id'];
+
+                    $status = Item::status($value);
+                    if ($status['status']) {
+                        $record = Item::find($key);
+                        $record->update($status['input']);
+                    }
+                }
+            }
+
+
             return Redirect::route('items.index', ['pid' => $input['promotions_id']]);
-        }
+        } else {
+            $status = Item::status($input);
 
-        return Redirect::route('items.create', ['pid' => $input['promotions_id']])
-                        ->withInput()
-                        ->withErrors($status['custom_validation'])
-                        ->with('message', 'Validation error');
+            if ($status['status']) {
+                Item::create($status['input']);
+                return Redirect::route('items.index', ['pid' => $input['promotions_id']]);
+            }
+
+            return Redirect::route('items.create', ['pid' => $input['promotions_id']])
+                            ->withInput()
+                            ->withErrors($status['custom_validation'])
+                            ->with('message', 'Validation error');
+        }
     }
 
     /**
