@@ -4,7 +4,7 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-
+use App\Console\Commands\HappyBirthday;
 class Kernel extends ConsoleKernel
 {
     /**
@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        Commands\HappyBirthday::class
     ];
 
     /**
@@ -24,8 +24,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+//         $schedule->command('db_change master_input_refresh')
+//                  ->everyFiveMinutes();
+        
+        $schedule->command('sms:birthday --force')->everyMinute();
     }
 
     /**

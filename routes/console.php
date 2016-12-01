@@ -49,6 +49,12 @@ Artisan::command('promo {action}', function ($action) {
     
 })->describe('Processing data');
 
+Artisan::command('printm {action}', function ($action) {    
+    $obj = new Printm;
+    $obj->$action();
+    
+})->describe('Processing data');
+
 Artisan::command('db_change {action}', function ($action) {
     $obj = new App\DBChange;
     $obj->$action();

@@ -177,7 +177,7 @@ $.fn.extend({
 
                 }
                 break;
-                
+
             case "pv_edit_item":
             case "pv_create_item":
 
@@ -208,7 +208,7 @@ $.fn.extend({
                 }
                 break;
 
-            
+
 
             case "pv_form_edit_user":
                 var value = $field.cu_getVal();
@@ -333,9 +333,18 @@ $.fn.extend({
                             break;
 
                     }
-                    break;
+                    
+                }
+                break;
+            case 'pv_create_configuration':
+                var value = $field.cu_getVal();
+                var required_fileds = ['promotions_type', 'level_of_promotions', 'retailer', 'baseline_weeks', 'post_weeks', 'baseline_threshold'];
+                if (required_fileds.indexOf(name) != -1) {
+                    error = $field.cu_require();
+                    $field.cu_error_switch(error);
                 }
 
+                break;
             case "form_login":
 
                 var value = $field.cu_getVal();

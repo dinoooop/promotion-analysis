@@ -17,26 +17,16 @@ class Printm {
     
     function get_hyphen_data() {
 
-        $str = 'promotions_startdate
-promotions_enddate
-materialid
-product_name
-asin
-rtl_id
-promotions_budget
-promotions_projected_sales
-promotions_expected_lift
-x_plant_material_status
-x_plant_status_date
-promotions_budget_type
-funding_per_unit
-forecaseted_qty
-forecasted_unit_sales
-promoted
-user_input
-validated
-percent_discount
-price_discount';
+        $str = 'promotion_type
+level_of_promotion
+retailer
+brand
+division
+category
+sub_category
+baseline_weeks
+post_weeks
+baseline_threshold';
 
         return $str;
     }
@@ -150,7 +140,9 @@ price_discount';
     }
 
     function print_array_table_schema_create() {
-        $records = refine_hyphen_array();
+        $str = $this->get_hyphen_data();
+        $ex_str = $this->refine_hyphen_array($str);
+        
         echo "\n";
         foreach ($ex_str as $key => $value) {
             echo "\$table->string('{$value}');\n";

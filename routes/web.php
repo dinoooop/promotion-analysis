@@ -27,6 +27,7 @@ Route::group([ 'prefix' => 'admin', 'middleware' => 'role'], function() {
     Route::resource('promotions', 'PromotionsController');
     Route::resource('items', 'ItemsController');
     Route::resource('multiples', 'MultiplesController');
+    Route::resource('configurations', 'ConfigurationsController');
     
     
     Route::get('promotion-multiple', 'PromotionsController@promotion_multiple');

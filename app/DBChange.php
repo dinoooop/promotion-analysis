@@ -3,6 +3,7 @@
 namespace App;
 
 use App\promotions\Promotion;
+use App\promotions\Configuration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
@@ -273,6 +274,46 @@ class DBChange {
             $table->bigInteger('end_id');
             $table->timestamps();
         });
+    }
+
+    function promotions_config_refresh() {
+        $table_name = 'promotions.promotions_config';
+        Schema::dropIfExists($table_name);
+        Schema::create($table_name, function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('promotions_type');
+            $table->string('level_of_promotions');
+            $table->string('retailer');
+            $table->string('brand')->nullable();
+            $table->string('division')->nullable();
+            $table->string('category')->nullable();
+            $table->string('sub_category')->nullable();
+            $table->integer('baseline_weeks');
+            $table->integer('post_weeks');
+            $table->decimal('baseline_threshold', 5, 2);
+            $table->timestamps();
+        });
+    }
+
+    function promotions_config_seed() {
+        $records = [
+            [
+                'promotions_type' => 'DOTD',
+                'level_of_promotions' => 'Item Level',
+                'retailer' => 'Amazon',
+//                'brand',
+//                'division',
+//                'category',
+//                'sub_category',
+                'baseline_weeks' => 4,
+                'post_weeks' => 2,
+                'baseline_threshold' => 0.25,
+            ]
+        ];
+
+        foreach ($records as $key => $record) {
+            Configuration::create($record);
+        }
     }
 
 }

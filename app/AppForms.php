@@ -361,5 +361,66 @@ class AppForms {
             ),
         );
     }
+    
+    public static function form_configuration() {
+        return array(
+            'form_name' => 'form_configuration',
+            'fields' => array(
+                array(
+                    'type' => 'select',
+                    'name' => 'promotions_type',
+                    'label' => 'Promotions Type',
+                    'options' => Stock::get('promotions_type'),
+                ),
+                array(
+                    'type' => 'select',
+                    'name' => 'level_of_promotions',
+                    'label' => 'Level of promotions',
+                    'options' => Stock::get('level_of_promotions'),
+                ),
+                 array(
+                    'type' => 'auto_complete',
+                    'name' => 'retailer',
+                    'label' => 'Retailer',
+                ),
+                array(
+                    'type' => 'auto_complete',
+                    'name' => 'brand',
+                    'label' => 'Brand',
+                ),
+                array(
+                    'type' => 'auto_complete',
+                    'name' => 'division',
+                    'label' => 'Division',
+                ),
+                array(
+                    'type' => 'auto_complete',
+                    'name' => 'category',
+                    'label' => 'Category',
+                ),
+                array(
+                    'type' => 'text',
+                    'name' => 'sub_category',
+                    'label' => 'Sub Category',
+                ),
+                array(
+                    'type' => 'number',
+                    'name' => 'baseline_weeks',
+                    'label' => 'Baseline weeks',
+                ),
+                array(
+                    'type' => 'number',
+                    'name' => 'post_weeks',
+                    'label' => 'Post weeks',
+                ),
+                array(
+                    'type' => 'number',
+                    'name' => 'baseline_threshold',
+                    'label' => 'Baseline threshold',
+                    'step' => '0.01',
+                ),
+            ),
+        );
+    }
 
 }
