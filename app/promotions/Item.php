@@ -28,7 +28,7 @@ class Item extends Model {
         'x_plant_status_date',
         'promotions_budget_type',
         'funding_per_unit',
-        'forecaseted_qty',
+        'forecasted_qty',
         'forecasted_unit_sales',
         'promoted',
         'user_input',
@@ -38,10 +38,12 @@ class Item extends Model {
         'reference',
     ];
     public static $form_create_rules = [
-        'promotions_id' => 'required'
+        'promotions_id' => 'required|integer',
+        'forecasted_qty' => 'integer'
     ];
     public static $form_edit_rules = [
-        'promotions_id' => 'required'
+        'promotions_id' => 'required|integer',
+        'forecasted_qty' => 'integer'
     ];
 
     /**
@@ -96,7 +98,7 @@ class Item extends Model {
             'promotions_expected_lift' => Dot::sanitize_numeric('promotions_expected_lift', $input),
             'forecasted_unit_sales' => Dot::sanitize_numeric('forecasted_unit_sales', $input),
             'funding_per_unit' => Dot::sanitize_numeric('funding_per_unit', $input),
-            'forecaseted_qty' => Dot::sanitize_numeric('forecaseted_qty', $input),
+            'forecasted_qty' => Dot::sanitize_numeric('forecasted_qty', $input),
             'percent_discount' => Dot::sanitize_numeric('percent_discount', $input),
             'price_discount' => Dot::sanitize_numeric('price_discount', $input),
             'promoted' => Dot::sanitize_boolean('promoted', $input),
@@ -150,8 +152,16 @@ class Item extends Model {
 
         $expected = [
             0 => 'material_id', // column one
-            1 => 'promotions_budget', // column one
-            2 => 'promotions_projected_sales', // column two
+            1 => 'asin', // column one
+            2 => 'promotions_startdate', // column one
+            3 => 'promotions_enddate', // column one
+            4 => 'promotions_budget',
+            5 => 'promotions_projected_sales',
+            6 => 'promotions_expected_lift',
+            7 => 'promotions_budget_type',
+            8 => 'funding_per_unit',
+            9 => 'forecasted_qty',
+            10 => 'forecasted_unit_sales',
         ];
 
         //$key is the row

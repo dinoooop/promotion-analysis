@@ -41,7 +41,7 @@ class ItemsController extends Controller {
 
         $input = Input::get();
 
-        $query = Item::orderBy('id', 'desc');
+        $query = Item::orderBy('id', 'asc');
 
         if (isset($input['cvids'])) {
             $multiple = Multiple::findOrFail($input['cvids']);
@@ -110,6 +110,7 @@ class ItemsController extends Controller {
             // tbform form
             if (isset($input['new'])) {
                 $records = $this->item->tabular_form_interpreter($input['new']);
+                
 
                 foreach ($records as $value) {
 
@@ -123,6 +124,8 @@ class ItemsController extends Controller {
             }
             if (isset($input['exist'])) {
                 $records = $this->item->tabular_form_interpreter($input['exist']);
+                
+                
 
                 foreach ($records as $key => $value) {
 
@@ -130,6 +133,7 @@ class ItemsController extends Controller {
 
                     $status = Item::status($value);
                     if ($status['status']) {
+                        
                         $record = Item::find($key);
                         $record->update($status['input']);
                     }

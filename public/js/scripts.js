@@ -54,6 +54,37 @@ $(function () {
         });
     });
 
+    /**
+     * 
+     * 
+     * Delete the table row (delete record from db) without any alert
+     */
+    $(".row-delete-no-alert").click(function (e) {
+
+        e.preventDefault();
+
+        var $row = $(this);
+
+        var url = $row.attr("href");
+        $row.parents("tr").remove();
+        $.ajax({
+            url: url,
+            type: 'DELETE',
+            data: {_token: appConst.token},
+            success: function (result) {
+
+            }
+        });
+    });
+
+    /**
+     * 
+     * Delete table row only
+     */
+    $("body").on("click", ".remove-item-row", function () {
+        $(this).parents('tr').remove();
+    });
+
 
 
     /**
@@ -62,22 +93,22 @@ $(function () {
      * Change promotion status (active, sleep)
      */
     $(".ajax-promotion-status").click(function () {
-        var id = $(this).data('pid');
-        var new_status = $(this).data('status');
+
+        var $this = $(this);
+        var id = $this.data('pid');
+        var new_status = $this.data('status');
         var url = appConst.url_update_promotion_status + '/' + id + '/' + new_status;
 
         if (new_status == 'active') {
-            $(this).data('status', 'sleep');
-            $(this).html("Stop Promotion");
+            $this.data('status', 'sleep');
+            $this.html("Stop Processing");
         } else {
-            $(this).data('status', 'active');
-            $(this).html("Start Promotion");
+            $this.data('status', 'active');
+            $this.html("Prepare Promotion Result");
         }
-
         $.get(url, function (response) {
-            console.log(response);
-        });
 
+        });
 
 
     });
@@ -128,7 +159,6 @@ $(function () {
     /**
      * 
      * 
-     * 
      * auto_complete
      * Form input field like retailer 
      */
@@ -153,30 +183,38 @@ $(function () {
         },
         minLength: 2,
     });
-    
+
     /**
      * 
      * 
-     * 
-     * Create dynamic tabular form (items)
+     * Create dynamic table form (items)
      */
-    
     var item_field_id = 0;
-    $(".add-item").click(function(){
+    $(".add-item").click(function () {
         item_field_id++;
-        var html = '';
-        html += '<tr>';
-        html += '<td><input type="text" class="form-control" name="new['+ item_field_id +'][0]" value=""></td>';
-        html += '<td><input type="text" class="form-control" name="new['+ item_field_id +'][1]" value=""></td>';
-        html += '<td><input type="text" class="form-control" name="new['+ item_field_id +'][2]" value=""></td>';
-        html += '<td><button class="btn btn-danger remove-item-row"><i class="fa fa-trash"></i></button></td>';
-        html += '</tr>';
-        $("tbody#item-content").append(html);
-        
+        var data = {
+            action: 'dynamic_table_form',
+            increment: item_field_id,
+        };
+        $.get(appConst.url_ajax, data, function (html) {
+            $("tbody#item-content").append(html);
+        }, 'html');
+
     });
-    
-    $("body").on("click", ".remove-item-row", function(){
-        $(this).parents('tr').remove();
+
+    /**
+     * 
+     * 
+     * Create a date picker tool input field
+     */
+    $("body").on('focus', '.date-picker-tool', function () {
+        $(this).daterangepicker({
+            singleDatePicker: true,
+            showDropdowns: true
+        }, function (start, end, label) {
+            var years = moment().diff(start, 'years');
+        });
     });
+
 
 });

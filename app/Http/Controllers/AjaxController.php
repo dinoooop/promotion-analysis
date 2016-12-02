@@ -46,6 +46,10 @@ class AjaxController extends Controller {
             case 'auto_complete':
                 $this->auto_complete($input);
                 break;
+            
+            case 'dynamic_table_form':
+                $this->dynamic_table_form($input);
+                break;
 
             default :
                 echo Dot::json_boolean_response([]);
@@ -73,6 +77,12 @@ class AjaxController extends Controller {
     function auto_complete($input) {
         $result = Pgquery::get_distinct_column_values($input['col'], $input['term']);
         echo Dot::json_boolean_response($result);
+    }
+    
+    function dynamic_table_form() {
+        $input = Input::all();
+        echo Temp::dynamic_table_form($input['increment']);
+        exit();
     }
 
 }

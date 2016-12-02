@@ -290,8 +290,8 @@ class AppForms {
                 ),
                 array(
                     'type' => 'number',
-                    'name' => 'forecaseted_qty',
-                    'label' => 'Forecaseted qty',
+                    'name' => 'forecasted_qty',
+                    'label' => 'Forecasted qty',
                 ),
                 array(
                     'type' => 'number',

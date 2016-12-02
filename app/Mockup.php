@@ -75,7 +75,7 @@ class Mockup {
             'promo_description' => $item['promotions_description'],
             'item_name' => $item['product_name'],
             'investment_d' => $item['funding_per_unit'],
-            'forecasted_units' => $item['forecaseted_qty'],
+            'forecasted_units' => $item['forecasted_qty'],
             'forecasted_d' => $item['forecasted_unit_sales'],
             'customer_name' => $promotion['retailer'],
             'level_of_promotion' => $promotion['level_of_promotions'],
@@ -185,7 +185,7 @@ class Mockup {
             'x_plant_status_date' => $record['x_plant_valid_from'],
             'promotions_budget_type', // inheritted
             'funding_per_unit', // @todo
-            'forecaseted_qty', // @todo
+            'forecasted_qty', // @todo
             'forecasted_unit_sales', // @todo
             'promoted' => 1, // @todo
             'user_input' => 0, // @todo

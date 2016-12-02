@@ -131,7 +131,7 @@ class DBChange {
             $table->date('x_plant_status_date')->nullable();
             $table->string('promotions_budget_type')->nullable();
             $table->double('funding_per_unit', 15, 8)->nullable();
-            $table->bigInteger('forecaseted_qty')->nullable();
+            $table->bigInteger('forecasted_qty')->nullable();
             $table->double('forecasted_unit_sales', 15, 8)->nullable();
             $table->boolean('promoted')->default(0);
             $table->boolean('user_input')->default(0);
@@ -160,7 +160,7 @@ class DBChange {
                 'x_plant_status_date',
                 'promotions_budget_type',
                 'funding_per_unit' => '42.84',
-                'forecaseted_qty' => 1800,
+                'forecasted_qty' => 1800,
                 'forecasted_unit_sales',
                 'promoted',
                 'user_input',
