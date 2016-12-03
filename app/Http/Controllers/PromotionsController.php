@@ -17,18 +17,21 @@ use App\promotions\Promotion;
 use App\Option;
 use App\Merge;
 use App\Multiple;
+use App\promotions\Item;
 
 class PromotionsController extends Controller {
 
     private $gform;
     private $formHtmlJq;
     private $posts;
+    private $item;
 
     public function __construct() {
         $this->gform = new Gform;
         $this->formHtmlJq = new FormHtmlJq;
         $this->posts = new Promotion;
         $this->merge = new Merge;
+        $this->item = new Item;
     }
 
     /**
@@ -78,7 +81,14 @@ class PromotionsController extends Controller {
         $status = Promotion::status($input);
 
         if ($status['status']) {
-            Promotion::create($status['input']);
+            
+            $promotion = Promotion::create($status['input']);
+            if ($input['level_of_promotions'] == 'Category') {
+                $this->item->insert_items_under_promotion($promotion, $input['category'], 'category');
+            }
+            if ($input['level_of_promotions'] == 'Brand') {
+                $this->item->insert_items_under_promotion($promotion, $input['brand'], 'brand');
+            }
             return Redirect::route('promotions.index');
         }
 
@@ -132,8 +142,14 @@ class PromotionsController extends Controller {
         $status = Promotion::status($input);
 
         if ($status['status']) {
-            $record = Promotion::find($id);
-            $record->update($status['input']);
+            $promotion = Promotion::find($id);
+            $promotion->update($status['input']);
+            if ($input['level_of_promotions'] == 'Category') {
+                $this->item->insert_items_under_promotion($promotion, $input['category'], 'category');
+            }
+            if ($input['level_of_promotions'] == 'Brand') {
+                $this->item->insert_items_under_promotion($promotion, $input['brand'], 'brand');
+            }
             return Redirect::route('promotions.index');
         }
 

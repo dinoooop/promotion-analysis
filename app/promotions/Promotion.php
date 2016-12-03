@@ -8,7 +8,6 @@ use App\Dot;
 use App\Merge;
 use App\Calendar;
 
-
 class Promotion extends Model {
 
     protected $table = 'promotions.promotions_master_input';
@@ -62,7 +61,6 @@ class Promotion extends Model {
         'category',
         'division',
     ];
-    
     private $merge;
     private $calendar;
     public $data;
@@ -71,11 +69,13 @@ class Promotion extends Model {
         'promotions_name' => 'required',
         'promotions_startdate' => 'required',
         'promotions_enddate' => 'required',
+        'level_of_promotions' => 'required',
     ];
     public static $form_edit_rules = [
         'promotions_name' => 'required',
         'promotions_startdate' => 'required',
         'promotions_enddate' => 'required',
+        'level_of_promotions' => 'required',
     ];
 
     /**
@@ -105,6 +105,23 @@ class Promotion extends Model {
             $error['message'][] = 'Start date is greater than end date';
             $error['status'] = false;
             return $error;
+        }
+
+
+        if ($input['level_of_promotions'] == 'Category') {
+            if (!Dot::validate_true('category', $input)) {
+                $error['message'][] = 'For category level of promotion you must specify the category';
+                $error['status'] = false;
+                return $error;
+            }
+        }
+        
+        if ($input['level_of_promotions'] == 'Brand') {
+            if (!Dot::validate_true('brand', $input)) {
+                $error['message'][] = 'For brand level of promotion you must specify the brand';
+                $error['status'] = false;
+                return $error;
+            }
         }
 
 
@@ -185,9 +202,9 @@ class Promotion extends Model {
         }
         return $row;
     }
-    
+
     function csv_validate_file($records) {
-        
+
         return $this->csv === $records;
     }
 

@@ -99,6 +99,18 @@ class Pgquery {
                         ->distinct('material_id')
                         ->get();
     }
+    
+    /**
+     * 
+     * Get items of brand
+     */
+    public static function get_items_brand($brand) {
+        return DB::connection('redshift')
+                        ->table('nwl_pos.dim_material')
+                        ->where('brand', $brand)
+                        ->distinct('material_id')
+                        ->get();
+    }
 
     /**
      * 

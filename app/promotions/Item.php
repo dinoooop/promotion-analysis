@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Validator;
 use App\Dot;
 use App\Merge;
 use App\Calendar;
+use App\Redshift\Pgquery;
+use App\Option;
 
 class Item extends Model {
 
@@ -185,6 +187,114 @@ class Item extends Model {
 
 
         return $record;
+    }
+
+    /**
+     * 
+     * Category level promotion may not contain items, create items
+     */
+    function insert_items_under_promotion($promotion, $param, $type) {
+
+        if ($this->have_child_items($promotion)) {
+            return true;
+        }
+
+        if ($type == 'category') {
+            $records = Pgquery::get_items_category($param);
+        }
+        
+        if ($type == 'brand') {
+            $records = Pgquery::get_items_brand($param);
+        }
+        
+        foreach ($records as $key => $record) {
+            $input = $this->prepare_redshift_item($promotion, $record);
+            $status = self::status($input);
+            if ($status['status']) {
+                self::create($input);
+            }
+        }
+
+        $this->set_have_child_items($promotion, $type);
+    }
+
+    /**
+     * 
+     * Check wheather the child are availbale for a category level of promotion
+     * @return boolean
+     */
+    function have_child_items($promotion) {
+        $mata_key = 'have_child_items_' . $promotion->id;
+        $option = Option::get($mata_key);
+
+        if ($option) {
+
+            if (isset($option['category']) && $option['category'] == $promotion->category) {
+                // child item exist for the category
+                return true;
+            }
+
+            if (isset($option['brand']) && $option['brand'] == $promotion->brand) {
+                // child item exist for the brand
+                return true;
+            }
+        }
+        // child item doesn't exist
+        return false;
+    }
+
+    /**
+     * 
+     * Set or change option have_child_items_{n} value
+     */
+    function set_have_child_items($promotion, $type) {
+        $mata_key = 'have_child_items_' . $promotion->id;
+        if ($type == 'category') {
+            $value = [
+                'category' => $promotion->category
+            ];
+        }
+        if ($type == 'brand') {
+            $value = [
+                'brand' => $promotion->brand
+            ];
+        }
+
+        Option::add($mata_key, $value);
+    }
+
+    /**
+     * 
+     * 
+     * Prepare records from dim_material for promotions_child_input table
+     * @param array $record
+     */
+    function prepare_redshift_item($promotion, $record) {
+
+        return [
+            'promotions_id' => $promotion->id,
+            'promotions_startdate' => $promotion->promotions_startdate,
+            'promotions_enddate' => $promotion->promotions_enddate,
+            'material_id' => $record->material_id,
+            'product_name' => $record->material_description,
+            'asin' => $record->retailer_sku,
+            'rtl_id' => $record->retailer_upc,
+            'promotions_budget', // inheritted
+            'promotions_projected_sales', // inheritted
+            'promotions_expected_lift', // inheritted
+            'x_plant_material_status' => $record->x_plant_matl_status,
+            'x_plant_status_date' => $record->x_plant_valid_from,
+            'promotions_budget_type', // inheritted
+            'funding_per_unit', // @todo
+            'forecasted_qty', // @todo
+            'forecasted_unit_sales', // @todo
+            'promoted' => 1, // @todo
+            'user_input' => 0, // @todo
+            'validated' => 1, // @todo
+            'percent_discount', // @todo
+            'price_discount', // @todo
+            'reference', // @todo
+        ];
     }
 
 }

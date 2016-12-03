@@ -143,57 +143,10 @@ class Mockup {
         //$this->set_have_child_items(1);
     }
 
-    /**
-     * 
-     * Check wheather the child are availbale for a category level of promotion
-     * @return boolean
-     */
-    function have_child_items() {
-        $mata_key = 'have_child_items_' . $this->promotion->id;
-        return Option::get($mata_key);
-    }
+   
 
-    /**
-     * 
-     * Set or change option have_child_items_{n} value
-     */
-    function set_have_child_items($value) {
-        $mata_key = 'have_child_items_' . $this->promotion->id;
-        Option::add($mata_key, $value);
-    }
+  
 
-    /**
-     * 
-     * 
-     * Prepare records from dim_material for promotions_child_input table
-     * @param array $record
-     */
-    function prepare_redshift_item($record) {
-
-        return [
-            'promotions_id' => $this->promotion->id,
-            'promotions_startdate' => $this->promotion->promotions_startdate,
-            'promotions_enddate' => $this->promotion->promotions_enddate,
-            'material_id' => $record['material_id'],
-            'product_name' => $record['material_description'],
-            'asin' => $record['retailer_sku'],
-            'rtl_id' => $record['retailer_upc'],
-            'promotions_budget', // inheritted
-            'promotions_projected_sales', // inheritted
-            'promotions_expected_lift', // inheritted
-            'x_plant_material_status' => $record['x_plant_matl_status'],
-            'x_plant_status_date' => $record['x_plant_valid_from'],
-            'promotions_budget_type', // inheritted
-            'funding_per_unit', // @todo
-            'forecasted_qty', // @todo
-            'forecasted_unit_sales', // @todo
-            'promoted' => 1, // @todo
-            'user_input' => 0, // @todo
-            'validated' => 1, // @todo
-            'percent_discount', // @todo
-            'price_discount', // @todo
-            'reference', // @todo
-        ];
-    }
+   
 
 }
