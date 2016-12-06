@@ -29,7 +29,7 @@ class Invoice {
         DB::statement('CREATE SCHEMA IF NOT EXISTS nwl_pcm');
     }
 
-    function create_table() {
+    function metric_invoice_sales_refresh() {
         $table_name = 'nwl_sap_sales.metric_invoice_sales';
         Schema::dropIfExists($table_name);
         Schema::create($table_name, function (Blueprint $table) {
@@ -54,6 +54,10 @@ class Invoice {
             $table->string('standard_cost_usd')->nullable();
             $table->string('freight')->nullable();
         });
+        
+    }
+    
+    function sap_material_additional_refresh() {
         $table_name = 'nwl_pcm.sap_material_additional';
         Schema::dropIfExists($table_name);
         Schema::create($table_name, function (Blueprint $table) {
@@ -69,12 +73,15 @@ class Invoice {
             $table->string('length')->nullable();
             $table->string('width')->nullable();
             $table->string('height')->nullable();
+            $table->string('dim_unit')->nullable();
             $table->string('volume')->nullable();
+            $table->string('vol_unit')->nullable();
             $table->string('gross_weight')->nullable();
             $table->string('weight_uom')->nullable();
             $table->string('metric_length')->nullable();
-            $table->string('metric_weight')->nullable();
+            $table->string('metric_width')->nullable();
             $table->string('metric_height')->nullable();
+            $table->string('metric_dim_unit')->nullable();
             $table->string('metric_volume')->nullable();
             $table->string('metric_vol_unit')->nullable();
             $table->string('metric_gross_weight')->nullable();
@@ -91,13 +98,13 @@ class Invoice {
         $material_id = 1954840;
         $total_records = 1764;
         $limit = 100;
-        
+
 
         $max_page = ceil($total_records / $limit);
         echo "Max pages = {$max_page} \n";
 
         for ($page_num = 0; $page_num <= $max_page; $page_num++) {
-            
+
             $offset = $limit * $page_num;
             $records = DB::connection('redshift')->select("SELECT * FROM nwl_sap_sales.metric_invoice_sales WHERE material_number={$material_id} LIMIT {$limit} OFFSET {$offset}");
 
@@ -105,15 +112,16 @@ class Invoice {
                 $record = (array) $record;
                 DB::table('nwl_sap_sales.metric_invoice_sales')->insert($record);
             }
-            
+
             echo "$page_num \t";
         }
     }
+
     function sap_material_additional_seed() {
         $material_id = 1954840;
         $total_records = 1;
         $limit = 100;
-        
+
 
         $max_page = ceil($total_records / $limit);
         echo "Max pages = {$max_page} \n";
@@ -127,7 +135,7 @@ class Invoice {
                 $record = (array) $record;
                 DB::table('nwl_pcm.sap_material_additional')->insert($record);
             }
-            
+
             echo "$page_num \t";
         }
     }

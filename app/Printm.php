@@ -17,33 +17,36 @@ class Printm {
     
     function get_hyphen_data() {
 
-        $str = 'material
-division
-ean_upc    
-ean_upc_category
-ean_upc_category_text      
-alt_uom
-alt_uom_text
-numerator
-denominator
-length
-width
-height
-volume
-gross_weight
-weight_uom
-metric_length
-metric_weight
-metric_height
-metric_volume
-metric_vol_unit
-metric_gross_weight
-metric_net_weight
-metric_weight_uom
-insert_ts     
-insert_pid
-update_ts     
-update_pid';
+        $str = 'material 
+ division 
+    ean_upc     
+ ean_upc_category 
+       ean_upc_category_text       
+ alt_uom 
+ alt_uom_text 
+ numerator 
+ denominator 
+ length 
+ width  
+ height 
+ dim_unit 
+  volume   
+ vol_unit 
+ gross_weight 
+ weight_uom 
+ metric_length 
+ metric_width 
+ metric_height 
+ metric_dim_unit 
+ metric_volume 
+ metric_vol_unit 
+ metric_gross_weight 
+ metric_net_weight 
+ metric_weight_uom 
+      insert_ts      
+      insert_pid      
+      update_ts      
+      update_pid';
 
         return $str;
     }
