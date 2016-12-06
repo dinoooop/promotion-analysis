@@ -103,10 +103,11 @@ class Invoice {
 
             foreach ($records as $key => $record) {
                 $record = (array) $record;
-                $keys = array_keys($record);
-                $values = array_values($record);
-                $implode = implode(', ', $keys);
-                DB::connection('redshift')->insert("insert into nwl_sap_sales.metric_invoice_sales ({$implode}) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", $values);
+//                $keys = array_keys($record);
+//                $values = array_values($record);
+//                $implode = implode(', ', $keys);
+//                DB::insert("insert into nwl_sap_sales.metric_invoice_sales ({$implode}) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", $values);
+                DB::table('nwl_sap_sales.metric_invoice_sales')->insert($record);
             }
             
             echo "$page_num \t";
