@@ -36,6 +36,15 @@ class Invoice {
         DB::statement('CREATE SCHEMA IF NOT EXISTS nwl_sap_sales');
         DB::statement('CREATE SCHEMA IF NOT EXISTS nwl_pcm');
     }
+    
+    function statement() {
+        $table_name_old = 'nwl_pcm.sap_material_additional_2';
+        $table_name_new = 'nwl_pcm.sap_material_additional';
+        $table_name_new_no_schema = 'sap_material_additional';
+        Schema::dropIfExists($table_name_new);
+        DB::statement("ALTER TABLE {$table_name_old} RENAME TO {$table_name_new_no_schema}");
+        
+    }
 
     function dim_material_refresh() {
         $table_name = 'nwl_sap_sales.dim_material';
@@ -90,8 +99,8 @@ class Invoice {
         }
     }
 
-    function metric_invoice_sales_refresh() {
-        $table_name = 'nwl_sap_sales.metric_invoice_sales';
+    function mis_refresh() {
+        $table_name = 'nwl_sap_sales.metric_invoice_sales_2';
         Schema::dropIfExists($table_name);
         Schema::create($table_name, function (Blueprint $table) {
             $table->string('insert_ts')->nullable();
@@ -109,15 +118,17 @@ class Invoice {
             $table->string('global_region')->nullable();
             $table->string('currency')->nullable();
             $table->string('dollars_local')->nullable();
-            $table->string('dollars_usd')->nullable();
-            $table->string('units')->nullable();
+            $table->double('dollars_usd', 15, 8)->nullable();
+            $table->double('units', 15, 8)->nullable();
             $table->string('standard_cost_local')->nullable();
             $table->string('standard_cost_usd')->nullable();
             $table->string('freight')->nullable();
         });
     }
+    
+    
 
-    function metric_invoice_sales_seed() {
+    function mis_seed() {
         $material_id = 1954840;
         $total_records = 1764;
         $limit = 100;
@@ -129,19 +140,21 @@ class Invoice {
         for ($page_num = 0; $page_num <= $max_page; $page_num++) {
 
             $offset = $limit * $page_num;
-            $records = DB::connection('redshift')->select("SELECT * FROM nwl_sap_sales.metric_invoice_sales WHERE material_number={$material_id} LIMIT {$limit} OFFSET {$offset}");
+            $records = DB::connection('redshift')->select("SELECT * FROM nwl_sap_sales.metric_invoice_sales WHERE material_number='{$material_id}' LIMIT {$limit} OFFSET {$offset}");
 
             foreach ($records as $key => $record) {
                 $record = (array) $record;
-                DB::table('nwl_sap_sales.metric_invoice_sales')->insert($record);
+                $record['dollars_usd'] = floatval($record['dollars_usd']);
+                $record['units'] = floatval($record['units']);
+                DB::table('nwl_sap_sales.metric_invoice_sales_2')->insert($record);
             }
 
             echo "$page_num \t";
         }
     }
 
-    function sap_material_additional_refresh() {
-        $table_name = 'nwl_pcm.sap_material_additional';
+    function sma_refresh() {
+        $table_name = 'nwl_pcm.sap_material_additional_2';
         Schema::dropIfExists($table_name);
         Schema::create($table_name, function (Blueprint $table) {
             $table->string('material')->nullable();
@@ -151,7 +164,7 @@ class Invoice {
             $table->string('ean_upc_category_text')->nullable();
             $table->string('alt_uom')->nullable();
             $table->string('alt_uom_text')->nullable();
-            $table->string('numerator')->nullable();
+            $table->double('numerator', 15, 8)->nullable();
             $table->string('denominator')->nullable();
             $table->string('length')->nullable();
             $table->string('width')->nullable();
@@ -177,7 +190,7 @@ class Invoice {
         });
     }
 
-    function sap_material_additional_seed() {
+    function sma_seed() {
         $material_id = 1954840;
         $total_records = 1;
         $limit = 100;
@@ -189,11 +202,11 @@ class Invoice {
         for ($page_num = 0; $page_num <= $max_page; $page_num++) {
             $offset = $limit * $page_num;
 
-            $records = DB::connection('redshift')->select("SELECT * FROM nwl_pcm.sap_material_additional WHERE material={$material_id} LIMIT {$limit} OFFSET {$offset}");
+            $records = DB::connection('redshift')->select("SELECT * FROM nwl_pcm.sap_material_additional WHERE material='{$material_id}' LIMIT {$limit} OFFSET {$offset}");
 
             foreach ($records as $key => $record) {
                 $record = (array) $record;
-                DB::table('nwl_pcm.sap_material_additional')->insert($record);
+                DB::table('nwl_pcm.sap_material_additional_2')->insert($record);
             }
 
             echo "$page_num \t";

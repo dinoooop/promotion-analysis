@@ -99,7 +99,7 @@ class Pgquery {
                         ->distinct('material_id')
                         ->get();
     }
-    
+
     /**
      * 
      * Get items of brand
@@ -122,8 +122,8 @@ class Pgquery {
                         ->where('material_id', $material_id)
                         ->first();
     }
-    
-    public static function get_invoice() {
+
+    public static function get_invoice($material_id, $date) {
         $sql = "SELECT
 sum(mis.dollars_usd) invoice_sales,
 sum(mis.units) invoice_units,
@@ -135,11 +135,12 @@ INNER JOIN nwl_sap_sales.dim_material dm
 ON (dm.material = mis.material_number)
 INNER JOIN nwl_pcm.sap_material_additional sma
 ON (sma.material = mis.material_number) OR (sma.ean_upc = dm.upc_number)
-WHERE mis.material_number = 1954840
+WHERE mis.material_number = '1954840'
 AND mis.invoice_date = '2016-07-12'
 GROUP BY dm.material, mis.invoice_date";
         
-        $records = DB::connection('redshift')->select($sql);
+        $return = DB::connection('redshift')->select($sql);
+        return $return[0];
     }
 
 }

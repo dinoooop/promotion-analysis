@@ -17,28 +17,23 @@ class Printm {
     
     function get_hyphen_data() {
 
-        $str = 'insert_ts      
-      insert_pid      
- division 
- material 
-        material_description        
-   upc_number   
- brand_code 
- brand_description 
- subbrand_code 
- subbrand_description 
- uom 
-   prod_hierarchy   
-     segment      
-         sub_segment         
-   business_team   
-     product_family      
-   product_line    
- new_segment 
- new_sub_segment 
- new_business_team 
-  new_operating_model   
- new_portfolio';
+        $str = 'promo_child_id
+material_id
+asin
+rtl_id
+product_name
+week
+quarter
+date_day
+ordered_amount
+ordered_units
+pos_sales
+pos_units
+calculated_daily_pos_sales
+calculated_daliy_pos_units
+invoice_amounts
+invoice_units
+invoice_cost';
 
         return $str;
     }

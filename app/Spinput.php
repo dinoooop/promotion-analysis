@@ -55,7 +55,9 @@ class Spinput extends Model {
             return false;
         }
         
+        $this->promotions_id = $input['promotions_id'];
         $this->promo_child_id = $input['promo_child_id'];
+        
 
         $this->material_id = isset($this->data['material_id']) ? $this->data['material_id'] : '';
         $this->retailer_id = isset($this->data['retailer_id']) ? $this->data['retailer_id'] : '';

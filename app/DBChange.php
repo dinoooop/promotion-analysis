@@ -323,10 +323,10 @@ class DBChange {
         Schema::create($table_name, function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('promo_child_id');
-            $table->double('material_id', 15, 8)->nullable();
-            $table->double('asin', 15, 8)->nullable();
-            $table->double('rtl_id', 15, 8)->nullable();
-            $table->double('product_name', 15, 8)->nullable();
+            $table->string('material_id')->nullable();
+            $table->string('asin')->nullable();
+            $table->string('rtl_id')->nullable();
+            $table->string('product_name')->nullable();
             $table->date('week');
             $table->date('quarter');
             $table->date('date_day');
