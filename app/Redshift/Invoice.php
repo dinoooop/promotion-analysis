@@ -94,6 +94,7 @@ class Invoice {
                 
         $records = DB::connection('redshift')->select("SELECT * FROM nwl_sap_sales.metric_invoice_sales LIMIT {$limit} OFFSET {$offset}");
         foreach ($records as $key => $record) {
+            $record = (array)$record;
             $keys = array_keys($record);
             $implode = implode(', ', $keys);
             DB::connection('redshift')->insert("insert into users ({$implode}) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", $record);
