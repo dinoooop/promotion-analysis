@@ -5,8 +5,8 @@
  * 
  * Create schema nwl_sap_sales
  * Create schema nwl_pcm
- * Create metric_invoice_sales table similar to redshift
- * Create sap_material_additional table similar to redshift
+ * Create nwl_sap_sales.metric_invoice_sales table similar to redshift
+ * Create nwl_pcm.sap_material_additional table similar to redshift
  * 
  */
 
@@ -86,20 +86,30 @@ class Invoice {
             $table->string('update_pid')->nullable();
         });
     }
-    
+
     function metric_invoice_sales_seed() {
-        $limit = 5;
-        $page_num = 0;
-        $offset = ($limit * $page_num) + 1;
-                
-        $records = DB::connection('redshift')->select("SELECT * FROM nwl_sap_sales.metric_invoice_sales LIMIT {$limit} OFFSET {$offset}");
-        foreach ($records as $key => $record) {
-            $record = (array)$record;
-            $keys = array_keys($record);
-            $implode = implode(', ', $keys);
-            DB::connection('redshift')->insert("insert into users ({$implode}) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", $record);
-        }
+        $material_id = 1954840;
+        $total_records = 1764;
+        $limit = 100;
         
+
+        $max_page = ceil($total_records / $limit);
+
+
+        for ($page_num = 0; $page_num <= $max_page; $page_num++) {
+            $offset = ($limit * $page_num) + 1;
+
+            $records = DB::connection('redshift')->select("SELECT * FROM nwl_sap_sales.metric_invoice_sales WHERE material_number={$material_id} LIMIT {$limit} OFFSET {$offset}");
+
+            foreach ($records as $key => $record) {
+                $record = (array) $record;
+                $keys = array_keys($record);
+                $implode = implode(', ', $keys);
+                DB::connection('redshift')->insert("insert into nwl_sap_sales.metric_invoice_sales ({$implode}) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", $record);
+            }
+            
+            echo "$page_num \t";
+        }
     }
 
 }
