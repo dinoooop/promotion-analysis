@@ -94,7 +94,7 @@ class Invoice {
         
 
         $max_page = ceil($total_records / $limit);
-
+        echo "Max pages = {$max_page} \n";
 
         for ($page_num = 0; $page_num <= $max_page; $page_num++) {
             $offset = ($limit * $page_num) + 1;
@@ -103,11 +103,30 @@ class Invoice {
 
             foreach ($records as $key => $record) {
                 $record = (array) $record;
-//                $keys = array_keys($record);
-//                $values = array_values($record);
-//                $implode = implode(', ', $keys);
-//                DB::insert("insert into nwl_sap_sales.metric_invoice_sales ({$implode}) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", $values);
                 DB::table('nwl_sap_sales.metric_invoice_sales')->insert($record);
+            }
+            
+            echo "$page_num \t";
+        }
+    }
+    function sap_material_additional_seed() {
+        $material_id = 1954840;
+        $total_records = DB::connection('redshift')->select("SELECT COUNT(*) FROM nwl_pcm.sap_material_additional WHERE material={$material_id}");
+        $limit = 100;
+        
+
+        $max_page = ceil($total_records / $limit);
+        echo "Max pages = {$max_page} \n";
+
+        for ($page_num = 0; $page_num <= $max_page; $page_num++) {
+            $offset = ($limit * $page_num) + 1;
+
+            
+            $records = DB::connection('redshift')->select("SELECT * FROM nwl_pcm.sap_material_additional WHERE material={$material_id} LIMIT {$limit} OFFSET {$offset}");
+
+            foreach ($records as $key => $record) {
+                $record = (array) $record;
+                DB::table('nwl_pcm.sap_material_additional')->insert($record);
             }
             
             echo "$page_num \t";

@@ -37,7 +37,7 @@ class TestController extends BaseController {
 
     function test() {
         
-        echo '<pre>', print_r($this->calendar->init('2016-10-11', '2016-10-11')), '</pre>';
+        echo ceil(0.01);
         exit();
         
     }
