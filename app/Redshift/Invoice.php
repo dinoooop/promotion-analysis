@@ -111,7 +111,7 @@ class Invoice {
     }
     function sap_material_additional_seed() {
         $material_id = 1954840;
-        $total_records = DB::connection('redshift')->select("SELECT COUNT(*) FROM nwl_pcm.sap_material_additional WHERE material={$material_id}");
+        $total_records = 1;
         $limit = 100;
         
 
