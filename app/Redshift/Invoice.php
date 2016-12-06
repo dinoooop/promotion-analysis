@@ -87,11 +87,15 @@ class Invoice {
         });
     }
     
-    function seed() {
-        
-        
-        $records = DB::connection('redshift')->select("SELECT * FROM nwl_sap_sales.metric_invoice_sales  OFFSET 1 LIMIT 100");
+    function metric_invoice_sales_seed() {
+        $limit = 5;
+        $page_num = 0;
+        $offset = ($limit * $page_num) + 1;
+                
+        $records = DB::connection('redshift')->select("SELECT * FROM nwl_sap_sales.metric_invoice_sales LIMIT {$limit} OFFSET {$offset}");
         foreach ($records as $key => $record) {
+            echo '<pre>', print_r($record), '</pre>';
+            exit();
             $keys = array_keys($record);
             $implode = implode(', ', $keys);
             DB::connection('redshift')->insert("insert into users ({$implode}) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", $record);
