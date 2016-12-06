@@ -122,5 +122,24 @@ class Pgquery {
                         ->where('material_id', $material_id)
                         ->first();
     }
+    
+    public static function get_invoice() {
+        $sql = "SELECT
+sum(mis.dollars_usd) invoice_sales,
+sum(mis.units) invoice_units,
+dm.material,
+date(mis.invoice_date),
+avg(sma.numerator) invoice_numerator
+FROM nwl_sap_sales.metric_invoice_sales mis
+INNER JOIN nwl_sap_sales.dim_material dm
+ON (dm.material = mis.material_number)
+INNER JOIN nwl_pcm.sap_material_additional sma
+ON (sma.material = mis.material_number) OR (sma.ean_upc = dm.upc_number)
+WHERE mis.material_number = 1954840
+AND mis.invoice_date = '2016-07-12'
+GROUP BY dm.material, mis.invoice_date";
+        
+        $records = DB::connection('redshift')->select($sql);
+    }
 
 }
