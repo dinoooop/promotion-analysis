@@ -131,9 +131,6 @@ class RawData {
     }
     
     
-    function create_passe($param) {
-        // Create schema nwl_sap_sales
-        Schema::dropIfExists('nwl_sap_sales.metric_invoice_sales');
-    }
+    
 
 }
