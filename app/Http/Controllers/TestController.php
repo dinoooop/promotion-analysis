@@ -37,20 +37,7 @@ class TestController extends BaseController {
 
     function test() {
         
-        $input = [
-            0 =>[
-                0=> 2536.36,
-                1=> '',
-            ],
-            2 =>[
-                0=> 22.36,
-                1=> 300044.36,
-                2=> 300044.36,
-            ]
-        ];
-        
-        $row = $this->item->tabular_form_interpreter($input);
-        echo '<pre>', print_r($row), '</pre>';
+        echo '<pre>', print_r($this->calendar->init('2016-10-11', '2016-10-11')), '</pre>';
         exit();
         
     }

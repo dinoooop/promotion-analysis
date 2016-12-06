@@ -8,6 +8,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 use App\Redshift\Dmaterial;
+use App\promotions\Item;
 
 class DBChange {
 
@@ -314,6 +315,93 @@ class DBChange {
         foreach ($records as $key => $record) {
             Configuration::create($record);
         }
+    }
+
+    function promotions_preperation_refresh() {
+        $table_name = 'promotions.promotions_preperation';
+        Schema::dropIfExists($table_name);
+        Schema::create($table_name, function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->bigInteger('promo_child_id');
+            $table->double('material_id', 15, 8)->nullable();
+            $table->double('asin', 15, 8)->nullable();
+            $table->double('rtl_id', 15, 8)->nullable();
+            $table->double('product_name', 15, 8)->nullable();
+            $table->date('week');
+            $table->date('quarter');
+            $table->date('date_day');
+            $table->double('ordered_amount', 15, 8)->nullable();
+            $table->double('ordered_units', 15, 8)->nullable();
+            $table->double('pos_sales', 15, 8)->nullable();
+            $table->double('pos_units', 15, 8)->nullable();
+            $table->double('calculated_daily_pos_sales', 15, 8)->nullable();
+            $table->double('calculated_daliy_pos_units', 15, 8)->nullable();
+            $table->double('invoice_amounts', 15, 8)->nullable();
+            $table->double('invoice_units', 15, 8)->nullable();
+            $table->double('invoice_cost', 15, 8)->nullable();
+        });
+    }
+
+    function promo_week_refresh() {
+        $table_name = 'promotions.promo_week';
+        Schema::dropIfExists($table_name);
+        Schema::create($table_name, function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->bigInteger('promo_child_id');
+            $table->date('week');
+            $table->date('quarter');
+            $table->double('ordered_amount', 15, 8)->nullable();
+            $table->integer('ordered_units')->nullable();
+            $table->double('pos_sales', 15, 8)->nullable();
+            $table->integer('pos_units')->nullable();
+            $table->double('quarter_ordered_amount', 15, 8)->nullable();
+            $table->double('normalized_ordered_amount', 15, 8)->nullable();
+            $table->double('quarter_ordered_units', 15, 8)->nullable();
+            $table->double('normalized_ordered_units', 15, 8)->nullable();
+            $table->double('quarter_pos_sales', 15, 8)->nullable();
+            $table->double('normalized_pos_sales', 15, 8)->nullable();
+            $table->double('quarter_pos_units', 15, 8)->nullable();
+            $table->double('normalized_pos_units', 15, 8)->nullable();
+        });
+    }
+
+    function promo_pod_refresh() {
+        $table_name = 'promotions.promotions_results';
+        Schema::dropIfExists($table_name);
+        Schema::create($table_name, function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->bigInteger('promo_child_id');
+            $table->string('material_id')->nullable();
+            $table->string('asin')->nullable();
+            $table->string('rtl_id')->nullable();
+            $table->string('product_name')->nullable();
+            $table->double('daily_baseline_pos_sales', 15, 8)->nullable();
+            $table->double('daily_baseline_pos_units', 15, 8)->nullable();
+            $table->double('daily_baseline_ordered_amount', 15, 8)->nullable();
+            $table->double('daily_baseline_ordered_units', 15, 8)->nullable();
+            $table->double('daily_during_pos_sales', 15, 8)->nullable();
+            $table->double('daily_during_pos_units', 15, 8)->nullable();
+            $table->double('daily_during_ordered_amount', 15, 8)->nullable();
+            $table->double('daily_during_ordered_units', 15, 8)->nullable();
+            $table->double('daily_post_pos_sales', 15, 8)->nullable();
+            $table->double('daily_post_pos_units', 15, 8)->nullable();
+            $table->double('daily_post_ordered_amount', 15, 8)->nullable();
+            $table->double('daily_post_ordered_units', 15, 8)->nullable();
+            $table->double('during_incremental_ordered_amount', 15, 8)->nullable();
+            $table->double('during_incremental_ordered_units', 15, 8)->nullable();
+            $table->double('during_incremental_pos_sales', 15, 8)->nullable();
+            $table->double('during_incremental_pos_units', 15, 8)->nullable();
+            $table->double('post_incremental_ordered_amount', 15, 8)->nullable();
+            $table->double('post_incremental_ordered_units', 15, 8)->nullable();
+            $table->double('post_incremental_pos_sales', 15, 8)->nullable();
+            $table->double('post_incremental_pos_units', 15, 8)->nullable();
+            $table->double('during_lift_ordered_amount', 15, 8)->nullable();
+            $table->double('during_lift_ordered_units', 15, 8)->nullable();
+            $table->double('post_lift_ordered_amount', 15, 8)->nullable();
+            $table->double('post_lift_ordered_units', 15, 8)->nullable();
+            $table->double('calculated_investment_amount', 15, 8)->nullable();
+            $table->integer('no_of_promotion_days');
+        });
     }
 
 }

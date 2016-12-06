@@ -33,7 +33,7 @@ class Spinput extends Model {
     private $merge;
     private $calendar;
     public $data;
-    public $promo_id;
+    public $promo_child_id;
 
     function set_vars($input) {
 
@@ -43,7 +43,7 @@ class Spinput extends Model {
         $this->today = date("Y-m-d");
         
         // The data required for calculations
-        $this->data = $this->sanitize($input);
+        $this->data = $input;
         
         
         $this->year = date('Y', strtotime($this->data['start_date']));
@@ -55,17 +55,17 @@ class Spinput extends Model {
             return false;
         }
         
-        $this->promo_id = $input['promo_id'];
+        $this->promo_child_id = $input['promo_child_id'];
 
         $this->material_id = isset($this->data['material_id']) ? $this->data['material_id'] : '';
         $this->retailer_id = isset($this->data['retailer_id']) ? $this->data['retailer_id'] : '';
+        $this->asin = isset($this->data['asin']) ? $this->data['asin'] : '';
+        
 
-        $this->retailer_sku = isset($this->data['retailer_sku']) ? $this->data['retailer_sku'] : '';
-
-        $this->is_single_day_promo = ($this->data['start_date'] == $this->data['end_date']);
+        $this->is_single_day = ($this->data['start_date'] == $this->data['end_date']);
         
         $this->calendar_dates = $this->calendar->init($this->data['start_date'], $this->data['end_date']);
-        
+        $this->number_weeks_post_promotion = $this->merge->admin_settings('number_weeks_post_promotion');
         
         echo "Promotion start date - {$this->data['start_date']} \n";
         echo "Promotion end date   - {$this->data['end_date']} \n";
@@ -99,33 +99,17 @@ class Spinput extends Model {
             return false;
         }
         
+        if (!$this->calendar->is_avail_post_week($this->data['end_date'])) {
+            echo "Future promotion since post week not available \n";
+            return false;
+        }
+        
         return true;
     }
     
     
 
-    function sanitize($input) {
-        return [
-            'material_id' => $input['material_id'],
-            'retailer_id' => $input['retailer_id'],
-            'promotions_name' => $input['promotions_name'],
-            'promotion_type' => $input['promotion_type'],
-            'start_date' => date('Y-m-d', strtotime($input['start_date'])),
-            'end_date' => date('Y-m-d', strtotime($input['end_date'])),
-            'retailer_id' => $input['retailer_id'],
-            'material_id' => $input['material_id'],
-            'promo_description' => $input['promo_description'],
-            'item_name' => $input['item_name'],
-            'investment_d' => $this->merge->refine_dollar($input['investment_d']),
-            'forecasted_units' => $input['forecasted_units'],
-            'forecasted_d' => $this->merge->refine_dollar($input['forecasted_d']),
-            'customer_name' => $input['customer_name'],
-            'level_of_promotion' => $input['level_of_promotion'],
-            'discount_price_d' => $this->merge->refine_dollar($input['discount_price_d']),
-            'discount_p' => $this->merge->refine_dollar($input['discount_p']),
-            'comments' => $input['comments'],
-        ];
-    }
+    
 
     function create_record($data) {
         $spinput = self::create($data);

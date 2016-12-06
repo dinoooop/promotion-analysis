@@ -119,5 +119,21 @@ class RawData {
         Spod::truncate();
         //Spinput::truncate();
     }
+    
+    function next_commit_db_change() {
+        
+        Schema::dropIfExists('promo_input');
+        
+        Schema::dropIfExists('promo_items');
+        Schema::dropIfExists('promo_date');
+        Schema::dropIfExists('promo_week');
+        Schema::dropIfExists('promo_pod');
+    }
+    
+    
+    function create_passe($param) {
+        // Create schema nwl_sap_sales
+        Schema::dropIfExists('nwl_sap_sales.metric_invoice_sales');
+    }
 
 }

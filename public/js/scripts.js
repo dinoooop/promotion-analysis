@@ -217,4 +217,18 @@ $(function () {
     });
 
 
+//    $("name=['level_of_promotions']").change(function () {
+//        var $this = $(this);
+//        var val = $this.val();
+//        var data = {
+//            action: 'change_level_of_promotions',
+//            val: val,
+//        };
+//        
+//        $.get(appConst.url_ajax, data, function (html) {
+//            $this.after(html);
+//        }, 'html');
+//    });
+
+
 });

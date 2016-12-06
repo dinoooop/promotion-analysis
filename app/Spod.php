@@ -12,140 +12,169 @@ use Illuminate\Support\Facades\Log;
 
 class Spod extends Model {
 
-    protected $table = 'promo_pod';
+    protected $table = 'promotions.promotions_results';
     public $timestamps = false;
     protected $guarded = array('id');
     protected $fillable = [
-        'promo_id',
-        'year',
-        'ordered_amount_during',
-        'wkly_baseline',
-        'baseline',
-        'incremental_d',
-        'incremental_p',
-        'wkly_avg_ordered_amount_post_2_wks',
-        'wkly_pull_forward_halo_d',
-        'pull_forward_halo_d',
-        'pull_forward_halo_p',
-        'pos_during',
-        'cogs_during',
-        'ppm_p_during',
-        'pos_during_baseline_period',
-        'cogs_during_baseline_period',
-        'ppm_p_baseline',
-        'ordered_qty_during',
-        'investment_unit',
-        'funding_source',
-        'investment',
-        'roi',
-        'forecast_qty',
-        'fcst_investment',
-        'discount_amount',
+        'promo_child_id',
+        'material_id',
+        'asin',
+        'rtl_id',
+        'product_name',
+        'daily_baseline_pos_sales',
+        'daily_baseline_pos_units',
+        'daily_baseline_ordered_amount',
+        'daily_baseline_ordered_units',
+        'daily_during_pos_sales',
+        'daily_during_pos_units',
+        'daily_during_ordered_amount',
+        'daily_during_ordered_units',
+        'daily_post_pos_sales',
+        'daily_post_pos_units',
+        'daily_post_ordered_amount',
+        'daily_post_ordered_units',
+        'during_incremental_ordered_amount',
+        'during_incremental_ordered_units',
+        'during_incremental_pos_sales',
+        'during_incremental_pos_units',
+        'post_incremental_ordered_amount',
+        'post_incremental_ordered_units',
+        'post_incremental_pos_sales',
+        'post_incremental_pos_units',
+        'during_lift_ordered_amount',
+        'during_lift_ordered_units',
+        'post_lift_ordered_amount',
+        'post_lift_ordered_units',
+        'calculated_investment_amount',
+        'no_of_promotion_days',
     ];
+    private $spinput;
+    private $sdcalc;
+    private $swcalc;
+    private $calendar;
+    private $merge;
 
-    function set_vars($input) {
+    function inject($spinput, $sdcalc, $swcalc) {
         $this->calendar = new Calendar;
         $this->merge = new Merge;
 
-        $this->swcalc = $input;
-
-        $this->promo_id = $this->swcalc->sdcalc->spinput->promo_id;
-        $this->promo_start_date = $this->swcalc->sdcalc->spinput->data['start_date'];
-        $this->promo_end_date = $this->swcalc->sdcalc->spinput->data['end_date'];
-        $this->promo_start_week = $this->calendar->get_week_sat($this->promo_start_date);
-        $this->promo_end_week = $this->calendar->get_week_sat($this->promo_end_date);
-        $this->is_single_day = ($this->promo_start_date == $this->promo_end_date);
+        $this->spinput = $spinput;
+        $this->sdcalc = $sdcalc;
+        $this->swcalc = $swcalc;
         
-        if(!$this->is_single_day){
+        
+        if ($this->spinput->is_single_day) {
+            // Number of days based denominator for single day it is 7
+            $this->nod_based_denominator = 7;
+            $this->number_of_promotion_days = 1;
+        } else {
             $this->date_difference = $this->calendar->date_difference($this->promo_start_date, $this->promo_end_date);
+            $this->nod_based_denominator = $this->date_difference;
+            $this->number_of_promotion_days = $this->date_difference;
         }
-        
-        // Number of days based denominator for single day it is 7
-        $this->nod_based_denominator = $this->is_single_day ? 7 : $this->date_difference;
-        
-        $this->weekly_baseline_date = $this->swcalc->sdcalc->spinput->weekly_baseline_date;
+
+        $this->weekly_baseline_date = $this->sdcalc->weekly_baseline_date;
         $this->weekly_baseline_start_week = $this->calendar->get_week_sat($this->weekly_baseline_date);
         $this->weekly_baseline_end_week = date('Y-m-d', strtotime($this->promo_start_week . '-1 weeks'));
 
-        $this->post_weekly_baseline_date = $this->swcalc->sdcalc->spinput->post_weekly_baseline_date;
+        $this->post_weekly_baseline_date = $this->sdcalc->post_weekly_baseline_date;
         $this->post_weekly_baseline_start_week = date('Y-m-d', strtotime($this->promo_start_week . '+1 weeks'));
         $this->post_weekly_baseline_end_week = $this->calendar->get_week_sat($this->post_weekly_baseline_date);
+
         
-        // Setting DB values
-        $this->ordered_amount_during = $this->get_sum_promo_period('ordered_amount');
-        $this->wkly_baseline = $this->get_avg_prior_promo_period('normalized_ordered_amount');
-        $this->baseline = $this->wkly_baseline / $this->nod_based_denominator;
-        $this->incremental_d = $this->ordered_amount_during - $this->baseline;
-        $this->incremental_p = $this->merge->safe_division($this->ordered_amount_during - $this->baseline, $this->baseline);
-        $this->wkly_avg_ordered_amount_post_2_wks = $this->get_avg_post_promo_period('normalized_ordered_amount');
-        $this->wkly_pull_forward_halo_d = $this->wkly_avg_ordered_amount_post_2_wks - $this->wkly_baseline;
-        $this->pull_forward_halo_d = $this->wkly_pull_forward_halo_d * 2;
-        $this->pull_forward_halo_p = $this->merge->safe_division($this->wkly_avg_ordered_amount_post_2_wks - $this->wkly_baseline, $this->wkly_baseline) * 100;
-        $this->pos_during = $this->get_sum_promo_period('pos_sales');
-        $this->cogs_during = $this->get_sum_promo_period('pos_shipped_cog_sold');
-        $this->ppm_p_during = $this->merge->safe_division($this->pos_during - $this->cogs_during, $this->pos_during) * 100;
-        $this->pos_during_baseline_period = $this->get_avg_prior_promo_period('pos_sales') / 7;
-        $this->cogs_during_baseline_period = $this->get_avg_prior_promo_period('pos_shipped_cog_sold') / 7;
-        $this->ppm_p_baseline = $this->merge->safe_division($this->pos_during_baseline_period - $this->cogs_during_baseline_period, $this->pos_during_baseline_period) * 100;
-        $this->ordered_qty_during = $this->get_sum_promo_period('ordered_units');
-        $this->investment_unit = $this->swcalc->sdcalc->spinput->data['investment_d'];
-        $this->funding_source = $this->swcalc->sdcalc->spinput->data['investment_d'];
-        $this->investment = $this->investment_unit * $this->ordered_qty_during;
-        $this->roi = $this->merge->safe_division($this->incremental_d + $this->pull_forward_halo_d, $this->investment);
-        $this->forecast_qty = $this->swcalc->sdcalc->spinput->data['forecasted_units'];
-        $this->fcst_investment = $this->investment_unit * $this->forecast_qty;
-        $this->discount_amount = $this->swcalc->sdcalc->spinput->data['investment_d'];
     }
 
     function create_record() {
-
-        $row = [
-            'promo_id' => $this->promo_id,
-            'year' => $this->swcalc->sdcalc->spinput->year,
-            'ordered_amount_during' => $this->ordered_amount_during,
-            'wkly_baseline' => $this->wkly_baseline,
-            'baseline' => $this->baseline,
-            'incremental_d' => $this->incremental_d,
-            'incremental_p' => $this->incremental_p,
-            'wkly_avg_ordered_amount_post_2_wks' => $this->wkly_avg_ordered_amount_post_2_wks,
-            'wkly_pull_forward_halo_d' => $this->wkly_pull_forward_halo_d,
-            'pull_forward_halo_d' => $this->pull_forward_halo_d,
-            'pull_forward_halo_p' => $this->pull_forward_halo_p,
-            'pos_during' => $this->pos_during,
-            'cogs_during' => $this->cogs_during,
-            'ppm_p_during' => $this->ppm_p_during,
-            'pos_during_baseline_period' => $this->pos_during_baseline_period,
-            'cogs_during_baseline_period' => $this->cogs_during_baseline_period,
-            'ppm_p_baseline' => $this->ppm_p_baseline,
-            'ordered_qty_during' => $this->ordered_qty_during,
-            'investment_unit' => $this->investment_unit,
-            'funding_source' => $this->funding_source,
-            'investment' => $this->investment,
-            'roi' => $this->roi,
-            'forecast_qty' => $this->forecast_qty,
-            'fcst_investment' => $this->fcst_investment,
-            'discount_amount' => $this->discount_amount,
-        ];
-
+        $row = [];
+        $row['promo_child_id'] = $this->spinput->promo_child_id;
+        $row['material_id'] = $this->spinput->material_id;
+        $row['rtl_id'] = $this->spinput->retailer_id;
+        $row['asin'] = $this->spinput->asin;        
+        $row['product_name'] = $this->spinput->data['product_name'];
+        
+        // Basilene days (Normalized)
+        $row['daily_baseline_pos_sales'] = $this->swcalc->get_avg_column('normalized_pos_sales', $this->spinput->calendar_dates['baseline']['start_week'], $this->spinput->calendar_dates['baseline']['end_week']);
+        $row['daily_baseline_pos_units'] = $this->swcalc->get_avg_column('normalized_pos_units', $this->spinput->calendar_dates['baseline']['start_week'], $this->spinput->calendar_dates['baseline']['end_week']);
+        $row['daily_baseline_ordered_amount'] = $this->swcalc->get_avg_column('normalized_ordered_amount', $this->spinput->calendar_dates['baseline']['start_week'], $this->spinput->calendar_dates['baseline']['end_week']);
+        $row['daily_baseline_ordered_units'] = $this->swcalc->get_avg_column('normalized_ordered_units', $this->spinput->calendar_dates['baseline']['start_week'], $this->spinput->calendar_dates['baseline']['end_week']);
+        // Promotion  days
+        $row['daily_during_pos_sales'] = $this->swcalc->get_avg_column('pos_sales', $this->spinput->calendar_dates['during']['start_week'], $this->spinput->calendar_dates['during']['end_week']);
+        $row['daily_during_pos_units'] = $this->swcalc->get_avg_column('pos_units', $this->spinput->calendar_dates['during']['start_week'], $this->spinput->calendar_dates['during']['end_week']);
+        $row['daily_during_ordered_amount'] = $this->swcalc->get_avg_column('ordered_amount', $this->spinput->calendar_dates['during']['start_week'], $this->spinput->calendar_dates['during']['end_week']);
+        $row['daily_during_ordered_units'] = $this->swcalc->get_avg_column('ordered_units', $this->spinput->calendar_dates['during']['start_week'], $this->spinput->calendar_dates['during']['end_week']);
+        // Post days
+        $row['daily_post_pos_sales'] = $this->swcalc->get_avg_column('pos_sales', $this->spinput->calendar_dates['post']['start_week'], $this->spinput->calendar_dates['post']['end_week']);
+        $row['daily_post_pos_units'] = $this->swcalc->get_avg_column('pos_units', $this->spinput->calendar_dates['post']['start_week'], $this->spinput->calendar_dates['post']['end_week']);
+        $row['daily_post_ordered_amount'] = $this->swcalc->get_avg_column('ordered_amount', $this->spinput->calendar_dates['post']['start_week'], $this->spinput->calendar_dates['post']['end_week']);
+        $row['daily_post_ordered_units'] = $this->swcalc->get_avg_column('ordered_units', $this->spinput->calendar_dates['post']['start_week'], $this->spinput->calendar_dates['post']['end_week']);
+        
+        //Others
+        $row['during_incremental_ordered_amount'] = $this->calc('during_incremental_ordered_amount', $row);
+        $row['during_incremental_ordered_units'] = $this->calc('during_incremental_ordered_units', $row);
+        $row['during_incremental_pos_sales'] = $this->calc('during_incremental_pos_sales', $row);
+        $row['during_incremental_pos_units'] = $this->calc('during_incremental_pos_units', $row);
+        $row['post_incremental_ordered_amount'] = $this->calc('post_incremental_ordered_amount', $row);
+        $row['post_incremental_ordered_units'] = $this->calc('post_incremental_ordered_units', $row);
+        $row['post_incremental_pos_sales'] = $this->calc('post_incremental_pos_sales', $row);
+        $row['post_incremental_pos_units'] = $this->calc('post_incremental_pos_units', $row);
+        $row['during_lift_ordered_amount'] = $this->calc('during_lift_ordered_amount', $row);
+        $row['during_lift_ordered_units'] = $this->calc('during_lift_ordered_units', $row);
+        $row['post_lift_ordered_amount'] = $this->calc('post_lift_ordered_amount', $row);
+        $row['post_lift_ordered_units'] = $this->calc('post_lift_ordered_units', $row);
+        $row['no_of_promotion_days'] = $this->number_of_promotion_days;
+        echo "Inserting output for child item id {$this->spinput->promo_child_id} \n";
         self::create($row);
     }
-
-    function get_sum_promo_period($column) {
-        return Sdcalc::whereBetween('date_day', [$this->promo_start_date, $this->promo_end_date])
-                        ->where('promo_id', $this->promo_id)
-                        ->sum($column);
+    
+    function calc($key, $row) {
+        switch ($key){
+            case 'during_incremental_ordered_amount':
+                return ($row['daily_during_ordered_amount'] - $row['daily_baseline_ordered_amount'] ) * $this->number_of_promotion_days;
+                break;
+            case 'during_incremental_ordered_units':
+                return ($row['daily_during_ordered_units'] - $row['daily_baseline_ordered_units'] ) * $this->number_of_promotion_days;
+                break;
+            
+            case 'during_incremental_pos_sales':
+                return ($row['daily_during_pos_sales'] - $row['daily_baseline_pos_sales'] ) * $this->number_of_promotion_days;
+                break;
+            
+            case 'during_incremental_pos_units':
+                return ($row['daily_during_pos_units'] - $row['daily_baseline_pos_units'] ) * $this->number_of_promotion_days;
+                break;
+            
+            case 'post_incremental_ordered_amount':
+                return ($row['daily_post_ordered_amount'] - $row['daily_baseline_ordered_amount'] ) * 7 * $this->spinput->number_weeks_post_promotion;
+                break;
+            
+            case 'post_incremental_ordered_units':
+                return ($row['daily_post_ordered_units'] - $row['daily_baseline_ordered_units'] ) * 7 * $this->spinput->number_weeks_post_promotion;
+                break;
+            case 'post_incremental_pos_sales':
+                return ($row['daily_post_pos_sales'] - $row['daily_baseline_pos_sales'] ) * 7 * $this->spinput->number_weeks_post_promotion;
+                break;
+            case 'post_incremental_pos_units':
+                return ($row['daily_post_pos_units'] - $row['daily_baseline_pos_units'] ) * 7 * $this->spinput->number_weeks_post_promotion;
+                break;
+            
+            case 'during_lift_ordered_amount':
+                return $this->merge->safe_division($row['daily_during_ordered_amount'], $row['daily_baseline_ordered_amount'] ) - 1;
+                return $this->merge->safe_division($row['daily_during_ordered_amount'], $row['daily_baseline_ordered_amount'] ) - 1;
+                break;
+            
+            case 'during_lift_ordered_units':
+                return $this->merge->safe_division($row['daily_during_ordered_units'], $row['daily_baseline_ordered_units'] ) - 1;
+                break;
+            case 'post_lift_ordered_amount':
+                return $this->merge->safe_division($row['daily_post_ordered_amount'], $row['daily_baseline_ordered_amount'] ) - 1;
+                break;
+            case 'post_lift_ordered_units':
+                return $this->merge->safe_division($row['daily_post_ordered_units'], $row['daily_baseline_ordered_units'] ) - 1;
+                break;
+        }
+        return false;
     }
 
-    function get_avg_prior_promo_period($column) {
-        return Swcalc::whereBetween('week', [$this->weekly_baseline_start_week, $this->weekly_baseline_end_week])
-                        ->where('promo_id', $this->promo_id)
-                        ->avg($column);
-    }
 
-    function get_avg_post_promo_period($column) {
-        return Swcalc::whereBetween('week', [$this->post_weekly_baseline_start_week, $this->post_weekly_baseline_end_week])
-                        ->where('promo_id', $this->promo_id)
-                        ->avg($column);
-    }
 
 }

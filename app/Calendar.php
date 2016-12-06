@@ -57,14 +57,14 @@ class Calendar {
 
     function get_week_sat($date) {
         if (!$this->is_week($date)) {
-            $date = date('Y-m-d', strtotime($date . 'next sat'));
+            $date = date('Y-m-d', strtotime($date . ' next sat'));
         }
         return $date;
     }
 
     function get_week_sun($date) {
         if (!$this->is_week($date, 'Sun')) {
-            $date = date('Y-m-d', strtotime($date . 'previous sun'));
+            $date = date('Y-m-d', strtotime($date . ' previous sun'));
         }
         return $date;
     }

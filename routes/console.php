@@ -61,3 +61,9 @@ Artisan::command('db_change {action}', function ($action) {
     
 })->describe('Custom database changes');
 
+Artisan::command('promo_invoice {action}', function ($action) {
+    $obj = new App\Redshift\Invoice();
+    $obj->$action();
+    
+})->describe('Create database similar to redshift');
+

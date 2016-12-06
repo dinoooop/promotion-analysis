@@ -17,16 +17,33 @@ class Printm {
     
     function get_hyphen_data() {
 
-        $str = 'promotion_type
-level_of_promotion
-retailer
-brand
+        $str = 'material
 division
-category
-sub_category
-baseline_weeks
-post_weeks
-baseline_threshold';
+ean_upc    
+ean_upc_category
+ean_upc_category_text      
+alt_uom
+alt_uom_text
+numerator
+denominator
+length
+width
+height
+volume
+gross_weight
+weight_uom
+metric_length
+metric_weight
+metric_height
+metric_volume
+metric_vol_unit
+metric_gross_weight
+metric_net_weight
+metric_weight_uom
+insert_ts     
+insert_pid
+update_ts     
+update_pid';
 
         return $str;
     }
@@ -145,8 +162,13 @@ baseline_threshold';
         
         echo "\n";
         foreach ($ex_str as $key => $value) {
-            echo "\$table->string('{$value}');\n";
+            //echo "\$table->double('{$value}', 15, 8);\n";
+            echo "\$table->string('{$value}')->nullable();\n";
+            // echo "'{$value}' => \$this->promotion['{$value}'],\n";
+            // echo "'{$value}' => \$this->get_from_item('{$value}'),\n";
+            
         }
+        
         echo "\n";
     }
 

@@ -10,28 +10,29 @@ use Illuminate\Support\Facades\Log;
 
 class Swcalc extends Model {
 
-    protected $table = 'promo_week';
+    protected $table = 'promotions.promo_week';
     public $timestamps = false;
     protected $guarded = array('id');
     protected $fillable = [
-        'promo_id',
+        'promo_child_id',
         'week',
         'quarter',
-        'pos_sales',
-        'pos_qty',
         'ordered_amount',
         'ordered_units',
-        'pos_shipped_cog_sold',
-        'ordered_cogs',
-        'wkly_avg_oa_quarterly',
+        'pos_sales',
+        'pos_units',
+        'quarter_ordered_amount',
         'normalized_ordered_amount',
-        'avg_weekly_ordered_units_quarterly',
+        'quarter_ordered_units',
         'normalized_ordered_units',
-        'normalized_ordered_cogs',
+        'quarter_pos_sales',
+        'normalized_pos_sales',
+        'quarter_pos_units',
+        'normalized_pos_units',
     ];
     private $merge;
 
-    function set_vars($spinput, $sdcalc) {
+    function inject($spinput, $sdcalc) {
         $this->merge = new Merge;
         $this->calendar = new Calendar;
         $this->spinput = $spinput;
@@ -40,32 +41,19 @@ class Swcalc extends Model {
     }
 
     function basic_week_data() {
-        // SELECT SUM(pos_sales) FROM promo_week WHERE promo_id = 3
-        $select = [
-            'promo_id',
-            'week',
-            'quarter',
-            'pos_sales',
-            'pos_qty',
-            'ordered_amount',
-            'ordered_units',
-            'pos_shipped_cog_sold',
-            'ordered_cogs'
-        ];
+        // SELECT SUM(pos_sales) FROM promo_week WHERE promo_child_id = 3
 
         $raw = [
-            'pos_sales',
-            'pos_qty',
             'ordered_amount',
             'ordered_units',
-            'pos_shipped_cog_sold',
-            'ordered_cogs'
+            'pos_sales',
+            'pos_units',
         ];
 
         $sum_raw_select = $this->merge->create_sum_select_raw($raw);
 
         $records = Sdcalc::selectRaw("week, $sum_raw_select")
-                        ->where('promo_id', $this->spinput->promo_id)
+                        ->where('promo_child_id', $this->spinput->promo_child_id)
                         ->groupBy('week')
                         ->get()->toArray();
         return $records;
@@ -74,11 +62,13 @@ class Swcalc extends Model {
     function basic_quarter_data() {
         $raw = [
             'ordered_amount',
-            'ordered_units'
+            'ordered_units',
+            'pos_sales',
+            'pos_units',
         ];
         $sum_raw_select = $this->merge->create_sum_select_raw($raw);
         $records = Sdcalc::selectRaw($sum_raw_select)
-                ->where('promo_id', $this->spinput->promo_id)
+                ->where('promo_child_id', $this->spinput->promo_child_id)
                 ->groupBy('quarter')
                 ->first();
         return $records;
@@ -89,27 +79,34 @@ class Swcalc extends Model {
 
 
         foreach ($records_week as $key => $record) {
-            $raw = array();
 
+            $raw = [];
 
-            $raw['promo_id'] = $this->spinput->promo_id;
+            $raw['promo_child_id'] = $this->spinput->promo_child_id;
             $raw['week'] = $record['week'];
             $raw['quarter'] = $this->calendar->get_quarter_id($record['week']);
-            $raw['pos_sales'] = $record['pos_sales'];
-            $raw['pos_qty'] = $record['pos_qty'];
+
             $raw['ordered_amount'] = $record['ordered_amount'];
             $raw['ordered_units'] = $record['ordered_units'];
-            $raw['pos_shipped_cog_sold'] = $record['pos_shipped_cog_sold'];
-            $raw['ordered_cogs'] = $record['ordered_cogs'];
+            $raw['pos_sales'] = $record['pos_sales'];
+            $raw['pos_units'] = $record['pos_units'];
 
+            // Normalize the data
             $records_quarter = $this->basic_quarter_data();
             $quarter = $this->calendar->get_quarter_info($raw['quarter']);
 
-            $raw['wkly_avg_oa_quarterly'] = $records_quarter['ordered_amount'] / $quarter['week_count'];
+
+            $raw['quarter_ordered_amount'] = $records_quarter['ordered_amount'] / $quarter['week_count'];
             $raw['normalized_ordered_amount'] = $this->calc('normalized_ordered_amount', $raw);
-            $raw['avg_weekly_ordered_units_quarterly'] = $records_quarter['ordered_units'] / $quarter['week_count'];
+            $raw['quarter_ordered_units'] = $records_quarter['ordered_units'] / $quarter['week_count'];
             $raw['normalized_ordered_units'] = $this->calc('normalized_ordered_units', $raw);
-            $raw['normalized_ordered_cogs'] = $this->calc('normalized_ordered_cogs', $raw);
+
+            $raw['quarter_pos_sales'] = $records_quarter['pos_sales'] / $quarter['week_count'];
+            $raw['normalized_pos_sales'] = $this->calc('normalized_pos_sales', $raw);
+            $raw['quarter_pos_units'] = $records_quarter['pos_units'] / $quarter['week_count'];
+            $raw['normalized_pos_units'] = $this->calc('normalized_pos_units', $raw);
+
+
             self::create($raw);
         }
     }
@@ -117,25 +114,45 @@ class Swcalc extends Model {
     function calc($find, $input) {
         switch ($find) {
             case 'normalized_ordered_amount':
-                if ($input['ordered_amount'] > (1 + $this->merge->admin_settings('baseline_normalization_thresholds')) * $input['wkly_avg_oa_quarterly']) {
-                    return $input['wkly_avg_oa_quarterly'];
+                if ($input['ordered_amount'] > (1 + $this->merge->admin_settings('baseline_normalization_thresholds')) * $input['quarter_ordered_amount']) {
+                    return $input['quarter_ordered_amount'];
                 } else {
                     return $input['ordered_amount'];
                 }
                 break;
             case 'normalized_ordered_units':
-                if ($input['ordered_units'] > (1 + $this->merge->admin_settings('baseline_normalization_thresholds')) * $input['avg_weekly_ordered_units_quarterly']) {
-                    return $input['avg_weekly_ordered_units_quarterly'];
+                if ($input['ordered_units'] > (1 + $this->merge->admin_settings('baseline_normalization_thresholds')) * $input['quarter_ordered_units']) {
+                    return $input['quarter_ordered_units'];
                 } else {
                     return $input['ordered_units'];
                 }
                 break;
-            case 'normalized_ordered_cogs':
-                return ($input['normalized_ordered_units'] * $input['pos_shipped_cog_sold']) / $input['pos_qty'];
+
+            case 'normalized_pos_sales':
+                if ($input['pos_sales'] > (1 + $this->merge->admin_settings('baseline_normalization_thresholds')) * $input['quarter_pos_sales']) {
+                    return $input['quarter_pos_sales'];
+                } else {
+                    return $input['pos_sales'];
+                }
+                break;
+
+            case 'normalized_pos_units':
+                if ($input['pos_units'] > (1 + $this->merge->admin_settings('baseline_normalization_thresholds')) * $input['quarter_pos_units']) {
+                    return $input['quarter_pos_units'];
+                } else {
+                    return $input['pos_units'];
+                }
                 break;
         }
 
         return false;
     }
+
+    function get_avg_column($column, $start_date, $end_date) {
+        return self::whereBetween('week', [$start_date, $end_date])
+                        ->where('promo_child_id', $this->spinput->promo_child_id)
+                        ->avg($column);
+    }
+
 
 }

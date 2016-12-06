@@ -36,62 +36,73 @@ class Mockup {
     }
 
     function item_chunk() {
-        
-        // Validation 1
-        if(!$this->calendar->is_avail_post_week($this->promotion->promotions_enddate)){
-            echo "Future promotion since post week not available \n";
-            return false;
-        }
-
-        if ($this->promotion->level_of_promotions == 'Category') {
-            echo "Executing a category level promotion \n";
-            
-            if($this->promotion->category == ''){
-                return false;
-            }
-            $this->insert_items_under_promotion();
-        }
 
         Item::where('promotions_id', $this->promotion->id)->orderBy('id')->chunk(100, function ($items) {
             echo "Promotion id {$this->promotion->id} count child items {$items->count()} \n";
             foreach ($items as $item) {
-                $input = $this->set_input_array($item);
+                $this->item = $item;
+                $input = $this->set_input_array();
                 $this->process($input);
             }
         });
     }
 
-    function set_input_array($item) {
-        $promotion = $this->promotion;
-        // required
+    function set_input_array() {
+
         return [
-            'promo_id' => $item['id'], // Let's take child input table id as promo id
-            'promotions_name' => $promotion['promotions_name'],
-            'promotion_type' => $promotion['promotions_type'],
-            'start_date' => $item['promotions_startdate'],
-            'end_date' => $item['promotions_enddate'],
-            'retailer_id' => $item['rtl_id'],
-            'material_id' => $item['material_id'],
-            'promo_description' => $item['promotions_description'],
-            'item_name' => $item['product_name'],
-            'investment_d' => $item['funding_per_unit'],
-            'forecasted_units' => $item['forecasted_qty'],
-            'forecasted_d' => $item['forecasted_unit_sales'],
-            'customer_name' => $promotion['retailer'],
-            'level_of_promotion' => $promotion['level_of_promotions'],
-            'discount_price_d' => $item['price_discount'],
-            'discount_p' => $item['percent_discount'],
-            'comments' => $item['reference'],
+            'promotions_id' => $this->promotion['id'],
+            'promo_child_id' => $this->item['id'],
+            //master
+            'annivarsaried' => $this->promotion['annivarsaried'],
+            'brand' => $this->promotion['brand'],
+            'brand_id' => $this->promotion['brand_id'],
+            'category' => $this->promotion['category'],
+            'division' => $this->promotion['division'],
+            'level_of_promotions' => $this->promotion['level_of_promotions'],
+            'marketing_type' => $this->promotion['marketing_type'],
+            'newell_status' => $this->promotion['newell_status'],
+            'product_family' => $this->promotion['product_family'],
+            'product_line' => $this->promotion['product_line'],
+            'promotions_description' => $this->promotion['promotions_description'],
+            'promotions_status' => $this->promotion['promotions_status'],
+            'promotions_type' => $this->promotion['promotions_type'],
+            'retailer' => $this->promotion['retailer'],
+            'retailer_country' => $this->promotion['retailer_country'],
+            'retailer_country_id' => $this->promotion['retailer_country_id'],
+            'status' => $this->promotion['status'],
+            //child
+            'asin' => $this->item['asin'],
+            'forecaseted_qty' => $this->item['forecaseted_qty'],
+            'forecasted_unit_sales' => $this->item['forecasted_unit_sales'],
+            'funding_per_unit' => $this->item['funding_per_unit'],
+            'material_id' => $this->item['material_id'],
+            'percent_discount' => $this->item['percent_discount'],
+            'price_discount' => $this->item['price_discount'],
+            'product_name' => $this->item['product_name'],
+            'promoted' => $this->item['promoted'],
+            'reference' => $this->item['reference'],
+            'retailer_id' => $this->item['rtl_id'],
+            'user_input' => $this->item['user_input'],
+            'validated' => $this->item['validated'],
+            'x_plant_material_status' => $this->item['x_plant_material_status'],
+            'x_plant_status_date' => $this->item['x_plant_status_date'],
+            // common
+            'start_date' => $this->get_from_item('promotions_startdate'),
+            'end_date' => $this->get_from_item('promotions_enddate'),
+            'promotions_budget' => $this->get_from_item('promotions_budget'),
+            'promotions_budget_type' => $this->get_from_item('promotions_budget_type'),
+            'promotions_expected_lift' => $this->get_from_item('promotions_expected_lift'),
+            'promotions_projected_sales' => $this->get_from_item('promotions_projected_sales'),
         ];
     }
 
-    function get_from_item($key, $promotion, $item) {
-        if (!isset($item[$key]) || $item[$key] == '' || $item[$key] == null) {
-            if (isset($promotion[$key])) {
-                return $promotion[$key];
+    function get_from_item($key) {
+        if (!isset($this->item[$key]) || $this->item[$key] == '' || $this->item[$key] == null) {
+            if (isset($this->promotion[$key])) {
+                return $this->promotion[$key];
             }
         } else {
-            return $item[$key];
+            return $this->item[$key];
         }
 
         return 0;
@@ -107,46 +118,20 @@ class Mockup {
             return false;
         }
 
-        echo "Executing the promotion with id {$this->spinput->promo_id} \n";
-        
+        echo "Executing the promotion with id {$this->spinput->promo_child_id} \n";
+
         $this->sdcalc = new Sdcalc;
         $this->swcalc = new Swcalc;
         $this->spod = new Spod;
         $this->sdcalc->inject($this->spinput);
-        
+//        
         if ($this->sdcalc->record_count) {
-            $this->swcalc->set_vars($this->spinput, $this->sdcalc);
+            $this->swcalc->inject($this->spinput, $this->sdcalc);
         }
-        
-        echo "Promotion {$this->spinput->promo_id} completed ------------------------------------------\n";
+        $this->spod->inject($this->spinput, $this->sdcalc, $this->swcalc);
+        $this->spod->create_record();
+//        
+        echo "Promotion {$this->spinput->promo_child_id} completed ------------------------------------------\n";
     }
-
-    /**
-     * 
-     * Category level promotion may not contain items, create items
-     */
-    function insert_items_under_promotion() {
-
-        if ($this->have_child_items()) {
-            echo "Items already exist";
-            return true;
-        }
-
-        $records = Pgquery::get_items_category($this->promotion->category);
-
-        echo "Found " . count($records) . " number of items for the category {$this->promotion->category} \n";
-        foreach ($records as $key => $record) {
-            $item = $this->prepare_redshift_item($record);
-            Item::create($item);
-        }
-        
-        //$this->set_have_child_items(1);
-    }
-
-   
-
-  
-
-   
 
 }
