@@ -97,8 +97,8 @@ class Invoice {
         echo "Max pages = {$max_page} \n";
 
         for ($page_num = 0; $page_num <= $max_page; $page_num++) {
-            $offset = ($limit * $page_num) + 1;
-
+            
+            $offset = $limit * $page_num;
             $records = DB::connection('redshift')->select("SELECT * FROM nwl_sap_sales.metric_invoice_sales WHERE material_number={$material_id} LIMIT {$limit} OFFSET {$offset}");
 
             foreach ($records as $key => $record) {
@@ -119,9 +119,8 @@ class Invoice {
         echo "Max pages = {$max_page} \n";
 
         for ($page_num = 0; $page_num <= $max_page; $page_num++) {
-            $offset = ($limit * $page_num) + 1;
+            $offset = $limit * $page_num;
 
-            
             $records = DB::connection('redshift')->select("SELECT * FROM nwl_pcm.sap_material_additional WHERE material={$material_id} LIMIT {$limit} OFFSET {$offset}");
 
             foreach ($records as $key => $record) {
