@@ -270,10 +270,10 @@ AND ms.date_day BETWEEN '{$start_date}' AND '{$end_date}'";
         return [
             'promotions_name' => 'Prime Day, 7/12/16',
             'promotion_type' => 'Best Deal',
-            'start_date' => '07/12/2016', // July 12
-            'end_date' => '07/12/2016', // July 12
-//            'start_date' => '2016-06-24',
-//            'end_date' => '2016-07-02',
+            'promotions_startdate' => '07/12/2016', // July 12
+            'promotions_enddate' => '07/12/2016', // July 12
+//            'promotions_startdate' => '2016-06-24',
+//            'promotions_enddate' => '2016-07-02',
             'retailer_id' => 'B01ABQBYSO',
             'material_id' => '1954840',
             'promo_description' => '',

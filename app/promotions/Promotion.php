@@ -93,8 +93,8 @@ class Promotion extends Model {
 //            $error['status'] = false;
 //            return $error;
 //        }
-
-
+        
+        
         if (!Dot::validate_date($input['promotions_startdate']) || !Dot::validate_date($input['promotions_enddate'])) {
             $error['message'][] = 'Please enter a valid date';
             $error['status'] = false;

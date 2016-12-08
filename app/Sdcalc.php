@@ -79,7 +79,7 @@ class Sdcalc extends Model {
             }
         }
         
-        $this->set_invoice_price();
+        
     }
 
     function calc($find, $input) {

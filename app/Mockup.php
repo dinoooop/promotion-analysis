@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use App\promotions\Promotion;
 use App\promotions\Item;
 use App\Redshift\Pgquery;
+use App\Merge;
 
 class Mockup {
 
@@ -21,18 +22,38 @@ class Mockup {
     private $swcalc;
     private $promotion;
     private $calendar;
+    private $merge;
 
     function __construct() {
         $this->calendar = new Calendar;
+        $this->merge = new Merge;
     }
 
     function promotion_chunk() {
-        Promotion::where('status', 'Active')->orderBy('id')->chunk(100, function ($promotions) {
+        // Promotion status => active, completed
+        Promotion::whereRaw("status ='active' AND newell_status = 'Approved'")->orderBy('id')->chunk(100, function ($promotions) {
             foreach ($promotions as $promotion) {
                 $this->promotion = $promotion;
-                $this->item_chunk();
+                $this->merge->reset_records($this->promotion->id);
+                if ($this->run_validity()) {
+                    $this->item_chunk();
+                    Promotion::update_promotion_status($this->promotion->id, 'completed');
+                }
             }
         });
+    }
+
+    /**
+     * 
+     * Check the validity of a promotion (not to insert into promotion table) to run calculation
+     */
+    function run_validity() {
+        if (!$this->calendar->is_avail_post_week($this->promotion)) {
+            echo "Future promotion since post week not available \n";
+            return false;
+        }
+        
+        return true;
     }
 
     function item_chunk() {
@@ -87,8 +108,8 @@ class Mockup {
             'x_plant_material_status' => $this->item['x_plant_material_status'],
             'x_plant_status_date' => $this->item['x_plant_status_date'],
             // common
-            'start_date' => $this->get_from_item('promotions_startdate'),
-            'end_date' => $this->get_from_item('promotions_enddate'),
+            'promotions_startdate' => $this->get_from_item('promotions_startdate'),
+            'promotions_enddate' => $this->get_from_item('promotions_enddate'),
             'promotions_budget' => $this->get_from_item('promotions_budget'),
             'promotions_budget_type' => $this->get_from_item('promotions_budget_type'),
             'promotions_expected_lift' => $this->get_from_item('promotions_expected_lift'),
@@ -124,14 +145,16 @@ class Mockup {
         $this->swcalc = new Swcalc;
         $this->spod = new Spod;
         $this->sdcalc->inject($this->spinput);
-//        
+        $this->sdcalc->set_invoice_price();
+
         if ($this->sdcalc->record_count) {
             $this->swcalc->inject($this->spinput, $this->sdcalc);
         }
         $this->spod->inject($this->spinput, $this->sdcalc, $this->swcalc);
         $this->spod->create_record();
-//        
+
         echo "Promotion {$this->spinput->promo_child_id} completed ------------------------------------------\n";
+        return true;
     }
 
 }

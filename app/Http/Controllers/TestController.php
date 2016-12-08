@@ -36,13 +36,13 @@ class TestController extends BaseController {
     }
 
     function test() {
+
+        //Promotion::update_promotion_status(3, 'sleep');
+
+        $this->merge->reset_records(1);
         
-        echo ceil(0.01);
         exit();
-        
     }
-    
-    
 
     function local_test() {
         

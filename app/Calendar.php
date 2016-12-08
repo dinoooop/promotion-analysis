@@ -88,9 +88,9 @@ class Calendar {
         $Y = date('Y', strtotime($date));
 
         $quarters = $this->get_quarters_year($Y);
-        
+
         $return = [];
-        
+
         foreach ($quarters as $key => $quarter) {
             if ($date >= $quarter['start'] && $date <= $quarter['end']) {
                 $return['quarter'] = $key;
@@ -100,7 +100,7 @@ class Calendar {
                 $return['week_count'] = $this->week_count($return['start_date'], $return['end_date']);
             }
         }
-        
+
         return $return;
     }
 
@@ -267,29 +267,27 @@ class Calendar {
      * 
      * @param type $date promotion start date
      */
-    function get_number_weeks_baseline($date) {
-        $week_number = $this->merge->admin_settings('number_weeks_baseline');
+    function get_number_weeks_baseline($date, $week_number) {
         return date('Y-m-d', strtotime($date . " -{$week_number} weeks"));
     }
 
-    function get_number_weeks_post_promotion($date) {
-        $week_number = $this->merge->admin_settings('number_weeks_post_promotion');
+    function get_number_weeks_post_promotion($date, $week_number) {
         return date('Y-m-d', strtotime($date . " +{$week_number} weeks"));
     }
 
-    function init($start_date, $end_date) {
+    function init($start_date, $end_date, $baseline_weeks_count, $post_weeks_count) {
         $dates = [];
         $dates['during'] = $this->get_req_dates($start_date, $end_date);
 
-   
 
-        $baseline_start_date = $this->get_number_weeks_baseline($start_date);
+
+        $baseline_start_date = $this->get_number_weeks_baseline($start_date, $baseline_weeks_count);
         $baseline_end_date = date('Y-m-d', strtotime($start_date . " -1 days"));
 
         $dates['baseline'] = $this->get_req_dates($baseline_start_date, $baseline_end_date);
 
         $post_start_date = date('Y-m-d', strtotime($end_date . " +1 days"));
-        $post_end_date = $this->get_number_weeks_post_promotion($end_date);
+        $post_end_date = $this->get_number_weeks_post_promotion($end_date, $post_weeks_count);
 
         $dates['post'] = $this->get_req_dates($post_start_date, $post_end_date);
 
@@ -298,26 +296,30 @@ class Calendar {
         sort($all_quarters);
 
         $dates['all_quarters'] = $all_quarters;
-        
+
         return $dates;
     }
-    
+
     /**
      * 
      * Execute only the promotion with end_date less than 3 weeks before
      * @param string end date
      * 
      */
-    function is_avail_post_week($date) {
+    function is_avail_post_week($promotion) {
         
-        $week_number = $this->merge->admin_settings('post_week_avail_week_count');
+        $settings = $this->merge->admin_settings($promotion);
+
+        $count = $settings['post_weeks'] + 1;
         $sun = $this->get_week_sun($this->today);
-        $post_week = date('Y-m-d', strtotime($sun . " -{$week_number} weeks"));
-        
-        if($post_week > $date){
+        $post_week = date('Y-m-d', strtotime($sun . " -{$count} weeks"));
+
+        if ($post_week > $promotion['promotions_enddate']) {
+            echo "is_avail_post_week : true \n";
             return true;
         }
-        
+        echo "is_avail_post_week : false \n";
+
         return false;
     }
 

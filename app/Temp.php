@@ -13,8 +13,11 @@ class Temp {
         if ($promotion->status == 'active') {
             $button_name = "Stop Processing";
             $status = "sleep";
-        } else {
+        } elseif ($promotion->status == 'sleep') {
             $button_name = "Prepare Promotion Result";
+            $status = "active";
+        } elseif ($promotion->status == 'completed') {
+            $button_name = "Restart Promotion";
             $status = "active";
         }
         ob_start();

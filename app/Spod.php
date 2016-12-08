@@ -65,10 +65,12 @@ class Spod extends Model {
         
         if ($this->spinput->is_single_day) {
             // Number of days based denominator for single day it is 7
+            echo "Single day promotion (POD) \n";
             $this->nod_based_denominator = 7;
             $this->number_of_promotion_days = 1;
         } else {
-            $this->date_difference = $this->calendar->date_difference($this->promo_start_date, $this->promo_end_date);
+            echo "Multiple day promotion (POD) \n";
+            $this->date_difference = $this->calendar->date_difference($this->spinput->data['promotions_startdate'], $this->spinput->data['promotions_enddate']);
             $this->nod_based_denominator = $this->date_difference;
             $this->number_of_promotion_days = $this->date_difference;
         }
@@ -94,19 +96,19 @@ class Spod extends Model {
         
         // Basilene days (Normalized)
         $row['daily_baseline_pos_sales'] = $this->swcalc->get_avg_column('normalized_pos_sales', $this->spinput->calendar_dates['baseline']['start_week'], $this->spinput->calendar_dates['baseline']['end_week']);
-        $row['daily_baseline_pos_units'] = $this->swcalc->get_avg_column('normalized_pos_units', $this->spinput->calendar_dates['baseline']['start_week'], $this->spinput->calendar_dates['baseline']['end_week']);
+        $row['daily_baseline_pos_units'] = round($this->swcalc->get_avg_column('normalized_pos_units', $this->spinput->calendar_dates['baseline']['start_week'], $this->spinput->calendar_dates['baseline']['end_week']));
         $row['daily_baseline_ordered_amount'] = $this->swcalc->get_avg_column('normalized_ordered_amount', $this->spinput->calendar_dates['baseline']['start_week'], $this->spinput->calendar_dates['baseline']['end_week']);
-        $row['daily_baseline_ordered_units'] = $this->swcalc->get_avg_column('normalized_ordered_units', $this->spinput->calendar_dates['baseline']['start_week'], $this->spinput->calendar_dates['baseline']['end_week']);
+        $row['daily_baseline_ordered_units'] = round($this->swcalc->get_avg_column('normalized_ordered_units', $this->spinput->calendar_dates['baseline']['start_week'], $this->spinput->calendar_dates['baseline']['end_week']));
         // Promotion  days
         $row['daily_during_pos_sales'] = $this->swcalc->get_avg_column('pos_sales', $this->spinput->calendar_dates['during']['start_week'], $this->spinput->calendar_dates['during']['end_week']);
-        $row['daily_during_pos_units'] = $this->swcalc->get_avg_column('pos_units', $this->spinput->calendar_dates['during']['start_week'], $this->spinput->calendar_dates['during']['end_week']);
+        $row['daily_during_pos_units'] = round($this->swcalc->get_avg_column('pos_units', $this->spinput->calendar_dates['during']['start_week'], $this->spinput->calendar_dates['during']['end_week']));
         $row['daily_during_ordered_amount'] = $this->swcalc->get_avg_column('ordered_amount', $this->spinput->calendar_dates['during']['start_week'], $this->spinput->calendar_dates['during']['end_week']);
-        $row['daily_during_ordered_units'] = $this->swcalc->get_avg_column('ordered_units', $this->spinput->calendar_dates['during']['start_week'], $this->spinput->calendar_dates['during']['end_week']);
+        $row['daily_during_ordered_units'] = round($this->swcalc->get_avg_column('ordered_units', $this->spinput->calendar_dates['during']['start_week'], $this->spinput->calendar_dates['during']['end_week']));
         // Post days
         $row['daily_post_pos_sales'] = $this->swcalc->get_avg_column('pos_sales', $this->spinput->calendar_dates['post']['start_week'], $this->spinput->calendar_dates['post']['end_week']);
-        $row['daily_post_pos_units'] = $this->swcalc->get_avg_column('pos_units', $this->spinput->calendar_dates['post']['start_week'], $this->spinput->calendar_dates['post']['end_week']);
+        $row['daily_post_pos_units'] = round($this->swcalc->get_avg_column('pos_units', $this->spinput->calendar_dates['post']['start_week'], $this->spinput->calendar_dates['post']['end_week']));
         $row['daily_post_ordered_amount'] = $this->swcalc->get_avg_column('ordered_amount', $this->spinput->calendar_dates['post']['start_week'], $this->spinput->calendar_dates['post']['end_week']);
-        $row['daily_post_ordered_units'] = $this->swcalc->get_avg_column('ordered_units', $this->spinput->calendar_dates['post']['start_week'], $this->spinput->calendar_dates['post']['end_week']);
+        $row['daily_post_ordered_units'] = round($this->swcalc->get_avg_column('ordered_units', $this->spinput->calendar_dates['post']['start_week'], $this->spinput->calendar_dates['post']['end_week']));
         
         //Others
         $row['during_incremental_ordered_amount'] = $this->calc('during_incremental_ordered_amount', $row);
@@ -144,17 +146,17 @@ class Spod extends Model {
                 break;
             
             case 'post_incremental_ordered_amount':
-                return ($row['daily_post_ordered_amount'] - $row['daily_baseline_ordered_amount'] ) * 7 * $this->spinput->number_weeks_post_promotion;
+                return ($row['daily_post_ordered_amount'] - $row['daily_baseline_ordered_amount'] ) * 7 * $this->spinput->post_weeks;
                 break;
             
             case 'post_incremental_ordered_units':
-                return ($row['daily_post_ordered_units'] - $row['daily_baseline_ordered_units'] ) * 7 * $this->spinput->number_weeks_post_promotion;
+                return ($row['daily_post_ordered_units'] - $row['daily_baseline_ordered_units'] ) * 7 * $this->spinput->post_weeks;
                 break;
             case 'post_incremental_pos_sales':
-                return ($row['daily_post_pos_sales'] - $row['daily_baseline_pos_sales'] ) * 7 * $this->spinput->number_weeks_post_promotion;
+                return ($row['daily_post_pos_sales'] - $row['daily_baseline_pos_sales'] ) * 7 * $this->spinput->post_weeks;
                 break;
             case 'post_incremental_pos_units':
-                return ($row['daily_post_pos_units'] - $row['daily_baseline_pos_units'] ) * 7 * $this->spinput->number_weeks_post_promotion;
+                return ($row['daily_post_pos_units'] - $row['daily_baseline_pos_units'] ) * 7 * $this->spinput->post_weeks;
                 break;
             
             case 'during_lift_ordered_amount':
@@ -163,13 +165,13 @@ class Spod extends Model {
                 break;
             
             case 'during_lift_ordered_units':
-                return $this->merge->safe_division($row['daily_during_ordered_units'], $row['daily_baseline_ordered_units'] ) - 1;
+                return $this->merge->safe_division($row['daily_during_ordered_units'], $row['daily_baseline_ordered_units'], true) - 1;
                 break;
             case 'post_lift_ordered_amount':
                 return $this->merge->safe_division($row['daily_post_ordered_amount'], $row['daily_baseline_ordered_amount'] ) - 1;
                 break;
             case 'post_lift_ordered_units':
-                return $this->merge->safe_division($row['daily_post_ordered_units'], $row['daily_baseline_ordered_units'] ) - 1;
+                return $this->merge->safe_division($row['daily_post_ordered_units'], $row['daily_baseline_ordered_units'], true) - 1;
                 break;
         }
         return false;

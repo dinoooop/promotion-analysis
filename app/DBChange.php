@@ -76,7 +76,7 @@ class DBChange {
                 'product_family' => '',
                 'product_line' => '',
                 'division' => 'Baby',
-                'status' => 'Active',
+                'status' => 'active',
             ],
             // Category Level Promotion example
             [
@@ -103,7 +103,7 @@ class DBChange {
                 'product_family' => '',
                 'product_line' => '',
                 'division' => 'Baby',
-                'status' => 'Active',
+                'status' => 'active',
             ],
         ];
 
