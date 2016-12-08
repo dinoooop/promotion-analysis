@@ -133,7 +133,6 @@ class ItemsController extends Controller {
 
                     $status = Item::status($value);
                     if ($status['status']) {
-                        
                         $record = Item::find($key);
                         $record->update($status['input']);
                     }

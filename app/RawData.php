@@ -35,15 +35,14 @@ class RawData {
         $this->mockup = new Mockup;
     }
 
-    
     function process() {
+        
+        echo "Cron Start time " . date('Y-m-d H:i:s') . "\n";
         Config::set('database.fetch', \PDO::FETCH_ASSOC);
         $this->mockup->promotion_chunk();
+        echo "Cron end time " . date('Y-m-d H:i:s') . "\n";
+        echo "------------------------------------------------------------------\n";
     }
-
-
-
-    
 
     /**
      * 
@@ -77,8 +76,6 @@ class RawData {
             DB::table($table_name)->insert($value);
         }
     }
-
-    
 
     function csv_write($list) {
         //$header[] = Stock::get_headers();
@@ -119,18 +116,14 @@ class RawData {
         Spod::truncate();
         //Spinput::truncate();
     }
-    
-    function next_commit_db_change() {
-        
-        Schema::dropIfExists('promo_input');
-        
-        Schema::dropIfExists('promo_items');
-        Schema::dropIfExists('promo_date');
-        Schema::dropIfExists('promo_week');
-        Schema::dropIfExists('promo_pod');
+
+    function clear_promo_logs() {
+        $filename = storage_path('logs/promotions.log');
+        $handle = fopen($filename, 'r+');
+        ftruncate($handle, 0);
+        rewind($handle);
+        fclose($handle);
+        echo "Logs cleared on " . date('Y-m-d H:i:s') . " \n";
     }
-    
-    
-    
 
 }

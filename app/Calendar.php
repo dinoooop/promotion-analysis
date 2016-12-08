@@ -315,11 +315,8 @@ class Calendar {
         $post_week = date('Y-m-d', strtotime($sun . " -{$count} weeks"));
 
         if ($post_week > $promotion['promotions_enddate']) {
-            echo "is_avail_post_week : true \n";
             return true;
         }
-        echo "is_avail_post_week : false \n";
-
         return false;
     }
 

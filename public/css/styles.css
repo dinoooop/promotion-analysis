@@ -46,3 +46,13 @@ i.field_remove {
 td.action {
     width: 120px;
 }
+
+.pa-table td {
+    padding: 1px !important;
+}
+
+.pa-table td input {
+    padding: 1px !important;
+    border: 0px;
+    text-align: center;
+}

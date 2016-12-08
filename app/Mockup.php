@@ -31,16 +31,20 @@ class Mockup {
 
     function promotion_chunk() {
         // Promotion status => active, completed
+        
         Promotion::whereRaw("status ='active' AND newell_status = 'Approved'")->orderBy('id')->chunk(100, function ($promotions) {
             foreach ($promotions as $promotion) {
                 $this->promotion = $promotion;
-                $this->merge->reset_records($this->promotion->id);
+                echo "Promotion started for ID : {$this->promotion->id} \n";
                 if ($this->run_validity()) {
+                    $this->merge->reset_records($this->promotion->id);
                     $this->item_chunk();
                     Promotion::update_promotion_status($this->promotion->id, 'completed');
                 }
+                echo "Promotion ends for ID    : {$this->promotion->id} \n";
             }
         });
+        
     }
 
     /**
@@ -135,11 +139,11 @@ class Mockup {
         $this->spinput->set_vars($input);
 
         if (!$this->spinput->validate) {
-            echo "The given input is not valid \n";
+            echo "The given child item input is not valid \n";
             return false;
         }
 
-        echo "Executing the promotion with id {$this->spinput->promo_child_id} \n";
+        echo "Execution start for child item id {$this->spinput->promo_child_id} \n";
 
         $this->sdcalc = new Sdcalc;
         $this->swcalc = new Swcalc;
@@ -152,12 +156,11 @@ class Mockup {
             $this->spod->inject($this->spinput, $this->sdcalc, $this->swcalc);
             $this->spod->create_record();
         }else{
-            echo "No items found for preperation table, Child item id {$this->spinput->promo_child_id} completed ------------------------------------------\n";
-            return false;
+            echo "No items found sales table (redshift) \n";
         }
 
 
-        echo "Child item id {$this->spinput->promo_child_id} completed ------------------------------------------\n";
+        echo "Execution end for child item id {$this->spinput->promo_child_id} \n";
         return true;
     }
 

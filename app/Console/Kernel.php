@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        Commands\HappyBirthday::class
+        HappyBirthday::class
     ];
 
     /**
@@ -26,8 +26,9 @@ class Kernel extends ConsoleKernel
     {
 //         $schedule->command('db_change master_input_refresh')
 //                  ->everyFiveMinutes();
-        
-        $schedule->command('sms:birthday --force')->everyMinute();
+        $logfile = storage_path('logs/promotions.log');
+        $schedule->command('promo process')->everyMinute()->sendOutputTo($logfile);
+        $schedule->command('promo clear_promo_logs')->weekly()->sendOutputTo($logfile);
     }
 
     /**

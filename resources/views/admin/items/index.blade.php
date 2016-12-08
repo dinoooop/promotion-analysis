@@ -32,13 +32,13 @@
             {{ Form::open(array('route' => 'items.store', 'id' => 'pv_create_item_tbform', 'class'=>'normal_form')) }}
             <div class="row">
                 <div class="col-sm-12">
-                    <table class="table table-striped table-bordered">
+                    <table class="table table-striped table-bordered pa-table">
                         <thead>
                             <tr>
                                 <th>Material Id</th>
-                                <th>ASIN</th>
-                                <th width="120">Start date</th>
-                                <th width="120">End date</th>
+                                <th width="120">ASIN</th>
+                                <th width="90">Start date</th>
+                                <th width="90">End date</th>
                                 <th>Promotions Budget</th>
                                 <th>Promotions Projected Sales</th>
                                 <th>Promotions Expected Lift</th>

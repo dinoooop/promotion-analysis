@@ -3,7 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\promotions\Promotion;
+use App\RawData;
+use Illuminate\Support\Facades\Log;
 class HappyBirthday extends Command
 {
     /**
@@ -37,6 +38,10 @@ class HappyBirthday extends Command
      */
     public function handle()
     {
-        Promotion::truncate();
+        Log::info("Cron start to run ");
+        Log::info("Test work");
+        echo "sample test 02 \n";
+        $obj = new RawData();
+        $obj->table_truncate();
     }
 }

@@ -48,8 +48,7 @@ class Sdcalc extends Model {
         
 
         echo "On Sdcalc, records {$this->record_count} \n";
-        echo "Checking  for other quarters \n";
-
+        
         $quarters = $this->spinput->calendar_dates['all_quarters'];
 
         echo "total quarters " . count($quarters) . "\n";
