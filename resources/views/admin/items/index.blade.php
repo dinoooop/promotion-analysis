@@ -9,6 +9,7 @@
 
 
 
+    @if(isset($promotion))
     <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="x_panel">
 
@@ -16,7 +17,7 @@
                 <h2>Promotion Items</h2>
                 <div class="clearfix"></div>
             </div>
-            @if(isset($promotion))
+            
             @include('admin/tmp/promotion_item')
 
 
@@ -85,19 +86,19 @@
 
             {{ Form::close() }}
 
-            @endif
+            
 
 
         </div>
     </div>
-
-
 
     <div class="row">
         <div class="col-md-12">
-            <div class="pull-right">{{ $records->links() }}</div>
+            <div class="pull-right">{{ $records->appends(['pid' => $promotion->id])->links() }}</div>
         </div>
     </div>
+    
+    @endif
 
 
 
