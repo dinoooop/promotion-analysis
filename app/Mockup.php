@@ -52,7 +52,7 @@ class Mockup {
             echo "Future promotion since post week not available \n";
             return false;
         }
-        
+
         return true;
     }
 
@@ -145,15 +145,19 @@ class Mockup {
         $this->swcalc = new Swcalc;
         $this->spod = new Spod;
         $this->sdcalc->inject($this->spinput);
-        $this->sdcalc->set_invoice_price();
 
         if ($this->sdcalc->record_count) {
+            $this->sdcalc->set_invoice_price();
             $this->swcalc->inject($this->spinput, $this->sdcalc);
+            $this->spod->inject($this->spinput, $this->sdcalc, $this->swcalc);
+            $this->spod->create_record();
+        }else{
+            echo "No items found for preperation table, Child item id {$this->spinput->promo_child_id} completed ------------------------------------------\n";
+            return false;
         }
-        $this->spod->inject($this->spinput, $this->sdcalc, $this->swcalc);
-        $this->spod->create_record();
 
-        echo "Promotion {$this->spinput->promo_child_id} completed ------------------------------------------\n";
+
+        echo "Child item id {$this->spinput->promo_child_id} completed ------------------------------------------\n";
         return true;
     }
 
