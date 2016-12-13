@@ -150,11 +150,47 @@ class Swcalc extends Model {
         return false;
     }
 
+    /**
+     * 
+     * Get swcalc records by week (start week and end week)
+     * @param string $start_date
+     * @param string $end_date
+     * @return obj
+     */
+    function get_swcalc_week($start_date, $end_date) {
+        return self::whereBetween('week', [$start_date, $end_date])
+                        ->where('promo_child_id', $this->spinput->promo_child_id)
+                        ->get();
+    }
+
+    /**
+     * 
+     * Get avg for the column
+     * @param type $column
+     * @param type $start_date
+     * @param type $end_date
+     * @return type
+     */
     function get_avg_column($column, $start_date, $end_date) {
         return self::whereBetween('week', [$start_date, $end_date])
                         ->where('promo_child_id', $this->spinput->promo_child_id)
                         ->avg($column);
     }
 
+    /**
+     * 
+     * Get the avg based on the swcalc id
+     * @param string $column column name to find avg
+     * @return array
+     *      */
+    function get_avg_column_id($column, $ids) {
+        if(empty($ids)){
+            return 0;
+        }
+        return self::whereIn('id', $ids)
+                        ->avg($column);
+    }
+
+    
 
 }

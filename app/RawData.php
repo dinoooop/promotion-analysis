@@ -80,7 +80,7 @@ class RawData {
     function csv_write($list) {
         //$header[] = Stock::get_headers();
         //$list = array_merge($header, $records);
-
+        
         $csv = storage_path('app/sample_02.csv');
 
         $fp = fopen($csv, 'a+');
@@ -124,6 +124,11 @@ class RawData {
         rewind($handle);
         fclose($handle);
         echo "Logs cleared on " . date('Y-m-d H:i:s') . " \n";
+    }
+    
+    function test() {
+        $obj = new Spod;
+        $obj->sample_test();
     }
 
 }

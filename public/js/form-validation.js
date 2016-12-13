@@ -152,7 +152,7 @@ $.fn.extend({
             case "pv_create_promotion":
 
                 var value = $field.cu_getVal();
-                var required_fileds = ["promotions_name", "promotions_startdate", "promotions_enddate"];
+                var required_fileds = ["promotions_name", "promotions_startdate", "promotions_enddate", "retailer"];
                 if (required_fileds.indexOf(name) != -1) {
                     error = $field.cu_require();
                     $field.cu_error_switch(error);
@@ -172,6 +172,24 @@ $.fn.extend({
                             error = (date_one <= date_two) ? 0 : 1;
                             var message = "Please enter valid promotion duration";
                             $field.cu_error_switch(error, message);
+                            break;
+                            
+                        case 'category':
+                            var level_of_promotions = $form.find("[name='level_of_promotions']").val();
+                            if (level_of_promotions == 'Category') {
+                                error = $field.cu_require();
+                                $field.cu_error_switch(error, "For a category level of promotion you must specify the category.");
+                            }
+
+                            break;
+                            
+                        case 'brand':
+                            var level_of_promotions = $form.find("[name='level_of_promotions']").val();
+                            if (level_of_promotions == 'Brand') {
+                                error = $field.cu_require();
+                                $field.cu_error_switch(error, "For a brand level of promotion you must specify the brand.");
+                            }
+
                             break;
                     }
 
@@ -333,7 +351,7 @@ $.fn.extend({
                             break;
 
                     }
-                    
+
                 }
                 break;
             case 'pv_edit_configuration':
@@ -346,7 +364,7 @@ $.fn.extend({
                 }
 
                 break;
-            
+
             case 'pv_edit_multiple':
                 var value = $field.cu_getVal();
                 var required_fileds = ['multiple_promotion_csv'];
@@ -390,7 +408,7 @@ $.fn.extend({
                 }
                 break;
 
-           
+
             case 'form_edit_profile':
                 var value = $field.cu_getVal();
 
@@ -420,7 +438,7 @@ $.fn.extend({
                 }
                 break;
 
-            
+
         }
 
 

@@ -370,6 +370,7 @@ class DBChange {
         Schema::dropIfExists($table_name);
         Schema::create($table_name, function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->bigInteger('promotions_id');
             $table->bigInteger('promo_child_id');
             $table->string('material_id')->nullable();
             $table->string('asin')->nullable();

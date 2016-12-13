@@ -28,12 +28,13 @@ Route::group([ 'prefix' => 'admin', 'middleware' => 'role'], function() {
     Route::resource('items', 'ItemsController');
     Route::resource('multiples', 'MultiplesController');
     Route::resource('configurations', 'ConfigurationsController');
-    
+    Route::resource('results', 'ResultsController');
     
     Route::get('promotion-multiple', 'PromotionsController@promotion_multiple');
     
     Route::get('ajax/promotion-status/{id}/{status}', 'PromotionsController@update_promotion_status');
     Route::get('ajax', 'AjaxController@index');
     Route::post('submit_promotion_multiple', 'PromotionsController@submit_promotion_multiple');
+    
 });
 

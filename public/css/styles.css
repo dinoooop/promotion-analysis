@@ -56,3 +56,8 @@ td.action {
     border: 0px;
     text-align: center;
 }
+
+.result-table {
+    width: 100%;
+    overflow-x: scroll;
+}

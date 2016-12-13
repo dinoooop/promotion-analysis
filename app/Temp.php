@@ -8,6 +8,18 @@ class Temp {
         
     }
 
+    public static function button_result($promotion) {
+        if ($promotion->status != 'completed') {
+            return false;
+        }
+        ob_start();
+        
+        ?><a href="<?php echo route('results.index', array('pid' => $promotion->id)); ?>" class="btn btn-info"><i class="fa fa-pie-chart" aria-hidden="true"></i></a><?php
+        $html = ob_get_contents();
+        ob_end_clean();
+        return $html;
+    }
+
     public static function button_update_promotion_status($promotion) {
 
         if ($promotion->status == 'active') {
@@ -22,20 +34,20 @@ class Temp {
         }
         ob_start();
         ?><button type="button" data-pid="<?php echo $promotion->id; ?>" data-status="<?php echo $status; ?>" class="btn btn-danger ajax-promotion-status"><?php echo $button_name; ?></button><?php
-        $html = ob_get_contents();
-        ob_end_clean();
-        return $html;
-    }
-
-    public static function csv_session_title($record) {
-
-        if ($record->type == 'promotions') {
-            $url = route('promotions.index', ['cvids' => $record->id]);
-        } else {
-            $url = route('items.index', ['cvids' => $record->id]);
+            $html = ob_get_contents();
+            ob_end_clean();
+            return $html;
         }
-        ob_start();
-        ?>
+
+        public static function csv_session_title($record) {
+
+            if ($record->type == 'promotions') {
+                $url = route('promotions.index', ['cvids' => $record->id]);
+            } else {
+                $url = route('items.index', ['cvids' => $record->id]);
+            }
+            ob_start();
+            ?>
         <a href="<?php echo $url; ?>"><?php echo $record->title; ?></a>
         <?php
         $html = ob_get_contents();

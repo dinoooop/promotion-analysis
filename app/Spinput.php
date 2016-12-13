@@ -2,34 +2,13 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Dot;
 use App\Merge;
 use App\Calendar;
 
-class Spinput extends Model {
+class Spinput {
 
-    protected $table = 'promo_input';
-    protected $guarded = array('id');
-    protected $fillable = [
-        'material_id',
-        'retailer_id',
-        'promotions_name',
-        'promotion_type',
-        'start_date',
-        'end_date',
-        'promo_description',
-        'item_name',
-        'investment_d',
-        'forecasted_units',
-        'forecasted_d',
-        'customer_name',
-        'level_of_promotion',
-        'discount_price_d',
-        'discount_p',
-        'comments',
-        'status'
-    ];
+
     private $merge;
     private $calendar;
     public $data;
@@ -59,8 +38,9 @@ class Spinput extends Model {
         $this->baseline_threshold = $settings['baseline_threshold'];
         $this->post_week_avail_week_count = $this->post_weeks + 1;
 
-        $this->promotions_id = $input['promotions_id'];
-        $this->promo_child_id = $input['promo_child_id'];
+        $this->promotions_id = $this->data['promotions_id'];
+        $this->promo_child_id = $this->data['promo_child_id'];
+        $this->retailer = $this->data['retailer'];
 
 
         $this->material_id = isset($this->data['material_id']) ? $this->data['material_id'] : '';
@@ -71,7 +51,8 @@ class Spinput extends Model {
         $this->is_single_day = ($this->data['promotions_startdate'] == $this->data['promotions_enddate']);
 
         $this->calendar_dates = $this->calendar->init($this->data['promotions_startdate'], $this->data['promotions_enddate'], $this->baseline_weeks, $this->post_weeks);
-
+        
+        
 
         echo "Promotion start date - {$this->data['promotions_startdate']} \n";
         echo "Promotion end date   - {$this->data['promotions_enddate']} \n";

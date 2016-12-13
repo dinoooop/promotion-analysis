@@ -21,7 +21,7 @@
                 <th>Projected sales</th>
                 <th>expected lift</th>
                 
-                <th width="150">Action</th>
+                <th width="180">Action</th>
             </tr>
         </thead>
 
@@ -44,6 +44,9 @@
                 <td>
                     <a href="{{route('promotions.edit', array($record->id))}}" class="btn btn-info"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                     <a class="btn btn-danger row-delete" href="{{route('promotions.destroy', array($record->id))}}" data-modal_id="{{$record->id}}"><i class="fa fa-trash"></i></a>
+                    <?php echo $record->button_result ?>
+                    
+                    
                 </td>
             </tr>
             @endforeach

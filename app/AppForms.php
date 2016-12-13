@@ -101,6 +101,7 @@ class AppForms {
                     'type' => 'auto_complete',
                     'name' => 'retailer',
                     'label' => 'Retailer',
+                    'default' => 'Amazon',
                 ),
                 array(
                     'type' => 'text',

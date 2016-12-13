@@ -9,9 +9,10 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Response;
 use App\Gform;
+use App\Merge;
+use App\Dot;
 use App\FormHtmlJq;
 use App\AppForms;
-use App\Merge;
 use App\Temp;
 use App\promotions\Item;
 use App\promotions\Promotion;
@@ -111,12 +112,15 @@ class ItemsController extends Controller {
             if (isset($input['new'])) {
                 $records = $this->item->tabular_form_interpreter($input['new']);
                 
+                
 
                 foreach ($records as $value) {
 
                     $value['promotions_id'] = $input['promotions_id'];
+                    $value = $this->item->prepare_input_item($value);
 
                     $status = Item::status($value);
+                    
                     if ($status['status']) {
                         Item::create($status['input']);
                     }
@@ -125,12 +129,10 @@ class ItemsController extends Controller {
             if (isset($input['exist'])) {
                 $records = $this->item->tabular_form_interpreter($input['exist']);
                 
-                
-
                 foreach ($records as $key => $value) {
 
                     $value['promotions_id'] = $input['promotions_id'];
-
+                    
                     $status = Item::status($value);
                     if ($status['status']) {
                         $record = Item::find($key);
@@ -142,8 +144,9 @@ class ItemsController extends Controller {
 
             return Redirect::route('items.index', ['pid' => $input['promotions_id']]);
         } else {
+            $input = $this->item->prepare_input_item($input);
             $status = Item::status($input);
-
+            
             if ($status['status']) {
                 Item::create($status['input']);
                 return Redirect::route('items.index', ['pid' => $input['promotions_id']]);
@@ -181,7 +184,7 @@ class ItemsController extends Controller {
         $input = Input::get();
 
         if (!isset($input['pid'])) {
-            return Response::make(View::make('errors.404', ['page_404' => true]), 404);
+            return Dot::R404();
         }
 
         $data['promotion'] = Promotion::find($input['pid']);

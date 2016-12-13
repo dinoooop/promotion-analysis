@@ -113,7 +113,6 @@ class MultiplesController extends Controller {
      * @return Response
      */
     public function edit($id) {
-
         
     }
 
@@ -143,7 +142,6 @@ class MultiplesController extends Controller {
             Item::whereBetween('id', [$model->start_id, $model->end_id])->delete();
             unlink($this->merge->get_csv_file_path($model->file));
         }
-
 
         $model->delete();
         exit();

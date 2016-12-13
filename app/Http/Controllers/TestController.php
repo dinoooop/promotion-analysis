@@ -39,9 +39,18 @@ class TestController extends BaseController {
 
         //Promotion::update_promotion_status(3, 'sleep');
 
-        $this->merge->reset_records(1);
-        
-        exit();
+        $input['promotions_id'] = 1;
+        $input['asin'] = 'B01ABQBYSO';
+
+        $item = $this->item->prepare_input_item($input);
+
+        $status = Item::status($item);
+        if ($status['status']) {
+            Item::create($status['input']);
+            echo "inserted";
+        } else {
+            echo '<pre>', print_r($status['custom_validation']), '</pre>';
+        }
     }
 
     function local_test() {

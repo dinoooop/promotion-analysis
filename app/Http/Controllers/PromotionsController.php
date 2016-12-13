@@ -15,9 +15,10 @@ use App\FormHtmlJq;
 use App\AppForms;
 use App\promotions\Promotion;
 use App\Option;
-use App\Merge;
 use App\Multiple;
 use App\promotions\Item;
+use App\Merge;
+use App\Dot;
 
 class PromotionsController extends Controller {
 
@@ -47,6 +48,11 @@ class PromotionsController extends Controller {
         if (isset($input['cvids'])) {
             $multiple = Multiple::findOrFail($input['cvids']);
             $query->whereBetween('id', [$multiple->start_id, $multiple->end_id]);
+        }
+        //Display only the promotions having result
+        if (isset($input['re']) && $input['re'] == 1) {
+            $multiple = Multiple::findOrFail($input['re']);
+            $query->where('status', 'completed');
         }
 
         $data['records'] = $query->paginate(50);
@@ -81,14 +87,17 @@ class PromotionsController extends Controller {
         $status = Promotion::status($input);
 
         if ($status['status']) {
-            
+
+
+            $status['input']['status'] = 'sleep';
             $promotion = Promotion::create($status['input']);
+
             if ($input['level_of_promotions'] == 'Category') {
                 $this->item->insert_items_under_promotion($promotion, $input['category'], 'category');
-            }
-            if ($input['level_of_promotions'] == 'Brand') {
+            } elseif ($input['level_of_promotions'] == 'Brand') {
                 $this->item->insert_items_under_promotion($promotion, $input['brand'], 'brand');
             }
+
             return Redirect::route('promotions.index');
         }
 
@@ -174,10 +183,6 @@ class PromotionsController extends Controller {
     function update_promotion_status($promotion_id, $status) {
         Promotion::update_promotion_status($promotion_id, $status);
         exit(0);
-    }
-
-    function submit_promotion_multiple(Request $request) {
-        
     }
 
 }

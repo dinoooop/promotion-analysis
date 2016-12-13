@@ -41,11 +41,13 @@ class Item extends Model {
     ];
     public static $form_create_rules = [
         'promotions_id' => 'required|integer',
-        'forecasted_qty' => 'integer'
+        'forecasted_qty' => 'integer|nullable',
+        'x_plant_status_date' => 'date|nullable'
     ];
     public static $form_edit_rules = [
         'promotions_id' => 'required|integer',
-        'forecasted_qty' => 'integer'
+        'forecasted_qty' => 'integer|nullable',
+        'x_plant_status_date' => 'date|nullable'
     ];
 
     /**
@@ -72,16 +74,8 @@ class Item extends Model {
             }
         }
 
-        if (isset($input['x_plant_status_date'])) {
-            if (!Dot::validate_date($input['x_plant_status_date'])) {
-                $error['message'][] = 'Please enter a valid date';
-                $error['status'] = false;
-                return $error;
-            }
-        }
-
         if (!Dot::validate_true('material_id', $input)) {
-            if (!Dot::validate_true('rtl_id', $input)) {
+            if (!Dot::validate_true('asin', $input)) {
                 $error['message'][] = 'There are no material id or retailer id';
                 $error['status'] = false;
                 return $error;
@@ -202,11 +196,11 @@ class Item extends Model {
         if ($type == 'category') {
             $records = Pgquery::get_items_category($param);
         }
-        
+
         if ($type == 'brand') {
             $records = Pgquery::get_items_brand($param);
         }
-        
+
         foreach ($records as $key => $record) {
             $input = $this->prepare_redshift_item($promotion, $record);
             $status = self::status($input);
@@ -294,6 +288,63 @@ class Item extends Model {
             'percent_discount', // @todo
             'price_discount', // @todo
             'reference', // @todo
+        ];
+    }
+
+    /**
+     * 
+     * 
+     * Prepare items from user input (Form, CSV)
+     * 
+     */
+    function prepare_input_item($input) {
+        
+        
+
+        $promotion = Promotion::find($input['promotions_id']);
+        if (!$promotion) {
+            return false;
+        }
+        if (!empty($input['material_id'])) {
+                
+            $item = Pgquery::get_items_material_id($input['material_id']);
+        } elseif (!empty($input['asin'])) {
+        
+            $item = Pgquery::get_items_retailer_sku($input['asin']);
+        }else{
+            return [];
+        }
+
+        if (!isset($item)) {
+            return false;
+        }
+        
+        $this->merge = new Merge;
+
+
+        return [
+            'promotions_id' => $promotion->id,
+            'promotions_startdate' => $this->merge->get_first_second('promotions_startdate', $input, $promotion),
+            'promotions_enddate' => $this->merge->get_first_second('promotions_enddate', $input, $promotion),
+            'material_id' => $this->merge->get_first_second('material_id', $input, $item),
+            'product_name' => $this->merge->get_first_second('product_name', $input, $item, 'material_description'),
+            'asin' => $this->merge->get_first_second('asin', $input, $item, 'retailer_sku'),
+            'rtl_id' => $this->merge->get_first_second('rtl_id', $input, $item, 'retailer_sku'),
+            'promotions_budget' => Dot::sanitize_numeric('promotions_budget', $input),
+            'promotions_projected_sales' => Dot::sanitize_numeric('promotions_projected_sales', $input),
+            'promotions_expected_lift' => Dot::sanitize_numeric('promotions_expected_lift', $input),
+            'x_plant_material_status' => $this->merge->get_first_second('x_plant_material_status', $input, $item, 'x_plant_matl_status'),
+            'x_plant_status_date' => $this->merge->get_first_second('x_plant_status_date', $input, $item, 'x_plant_valid_from'),
+            'promotions_budget_type' => Dot::sanitize_string('promotions_budget_type', $input),
+            'funding_per_unit' => Dot::sanitize_numeric('funding_per_unit', $input),
+            'forecasted_qty' => Dot::sanitize_numeric('forecasted_qty', $input),
+            'forecasted_unit_sales' => Dot::sanitize_numeric('forecasted_unit_sales', $input),
+            'promoted' => Dot::sanitize_boolean('promoted', $input),
+            'user_input' => Dot::sanitize_boolean('user_input', $input),
+            'validated' => Dot::sanitize_boolean('validated', $input),
+            'percent_discount' => Dot::sanitize_numeric('percent_discount', $input),
+            'price_discount' => Dot::sanitize_numeric('price_discount', $input),
+            'reference' => Dot::sanitize_string('reference', $input),
         ];
     }
 

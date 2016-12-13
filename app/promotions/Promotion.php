@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Dot;
 use App\Merge;
 use App\Calendar;
+use App\Temp;
 
 class Promotion extends Model {
 
@@ -69,12 +70,14 @@ class Promotion extends Model {
         'promotions_name' => 'required',
         'promotions_startdate' => 'required',
         'promotions_enddate' => 'required',
+        'retailer' => 'required',
         'level_of_promotions' => 'required',
     ];
     public static $form_edit_rules = [
         'promotions_name' => 'required',
         'promotions_startdate' => 'required',
         'promotions_enddate' => 'required',
+        'retailer' => 'required',
         'level_of_promotions' => 'required',
     ];
 
@@ -93,8 +96,8 @@ class Promotion extends Model {
 //            $error['status'] = false;
 //            return $error;
 //        }
-        
-        
+
+
         if (!Dot::validate_date($input['promotions_startdate']) || !Dot::validate_date($input['promotions_enddate'])) {
             $error['message'][] = 'Please enter a valid date';
             $error['status'] = false;
@@ -115,7 +118,7 @@ class Promotion extends Model {
                 return $error;
             }
         }
-        
+
         if ($input['level_of_promotions'] == 'Brand') {
             if (!Dot::validate_true('brand', $input)) {
                 $error['message'][] = 'For brand level of promotion you must specify the brand';
@@ -184,6 +187,7 @@ class Promotion extends Model {
     public static function display_prepare($input) {
         $input->promotions_startdate = date('m/d/Y', strtotime($input->promotions_startdate));
         $input->promotions_enddate = date('m/d/Y', strtotime($input->promotions_enddate));
+        $input->button_result = Temp::button_result($input);
         return $input;
     }
 

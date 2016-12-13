@@ -4,7 +4,8 @@ namespace App;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\View;
 class Dot {
 
     function __construct() {
@@ -160,7 +161,7 @@ class Dot {
             return $input[$key];
         }
 
-        return 0;
+        return null;
     }
 
     public static function sanitize_string($key, $input) {
@@ -208,6 +209,9 @@ class Dot {
 
 
         return true;
+    }
+    public static function R404() {
+        return Response::make(View::make('errors.404', ['page_404' => true]), 404);
     }
 
 }

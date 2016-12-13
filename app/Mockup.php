@@ -9,6 +9,8 @@ use App\Spinput;
 use App\Sdcalc;
 use App\Swcalc;
 use App\Spod;
+use App\Retailers\Amazon;
+use App\Retailers\Walmart;
 use Illuminate\Support\Facades\DB;
 use App\promotions\Promotion;
 use App\promotions\Item;
@@ -31,20 +33,20 @@ class Mockup {
 
     function promotion_chunk() {
         // Promotion status => active, completed
-        
+
         Promotion::whereRaw("status ='active' AND newell_status = 'Approved'")->orderBy('id')->chunk(100, function ($promotions) {
             foreach ($promotions as $promotion) {
                 $this->promotion = $promotion;
                 echo "Promotion started for ID : {$this->promotion->id} \n";
                 if ($this->run_validity()) {
                     $this->merge->reset_records($this->promotion->id);
+
                     $this->item_chunk();
                     Promotion::update_promotion_status($this->promotion->id, 'completed');
                 }
                 echo "Promotion ends for ID    : {$this->promotion->id} \n";
             }
         });
-        
     }
 
     /**
@@ -153,9 +155,18 @@ class Mockup {
         if ($this->sdcalc->record_count) {
             $this->sdcalc->set_invoice_price();
             $this->swcalc->inject($this->spinput, $this->sdcalc);
-            $this->spod->inject($this->spinput, $this->sdcalc, $this->swcalc);
-            $this->spod->create_record();
-        }else{
+            if ($this->spinput->retailer == 'Amazon') {
+                echo "Retailer is amazone \n";
+                $this->retailer_obj = new Amazon;
+                $this->retailer_obj->inject($this->spinput, $this->sdcalc, $this->swcalc);
+                $this->retailer_obj->create_record();
+            } else {
+                echo "Retailer is walmart \n";
+                $this->retailer_obj = new Walmart;
+                $this->retailer_obj->inject($this->spinput, $this->sdcalc, $this->swcalc);
+                $this->retailer_obj->create_record();
+            }
+        } else {
             echo "No items found sales table (redshift) \n";
         }
 

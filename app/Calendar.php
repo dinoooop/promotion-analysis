@@ -263,16 +263,12 @@ class Calendar {
         return $date;
     }
 
-    /**
-     * 
-     * @param type $date promotion start date
-     */
-    function get_number_weeks_baseline($date, $week_number) {
-        return date('Y-m-d', strtotime($date . " -{$week_number} weeks"));
+    function add_week($date, $count) {
+        return date('Y-m-d', strtotime($date . " +{$count} weeks"));
     }
 
-    function get_number_weeks_post_promotion($date, $week_number) {
-        return date('Y-m-d', strtotime($date . " +{$week_number} weeks"));
+    function substract_week($date, $count) {
+        return date('Y-m-d', strtotime($date . " -{$count} weeks"));
     }
 
     function init($start_date, $end_date, $baseline_weeks_count, $post_weeks_count) {
@@ -281,15 +277,17 @@ class Calendar {
 
 
 
-        $baseline_start_date = $this->get_number_weeks_baseline($start_date, $baseline_weeks_count);
+        $baseline_start_date = $this->substract_week($start_date, $baseline_weeks_count);
         $baseline_end_date = date('Y-m-d', strtotime($start_date . " -1 days"));
 
         $dates['baseline'] = $this->get_req_dates($baseline_start_date, $baseline_end_date);
+        $dates['baseline']['end_week'] = $this->substract_week($dates['during']['start_week'], 1);
 
         $post_start_date = date('Y-m-d', strtotime($end_date . " +1 days"));
-        $post_end_date = $this->get_number_weeks_post_promotion($end_date, $post_weeks_count);
+        $post_end_date = $this->add_week($end_date, $post_weeks_count);
 
         $dates['post'] = $this->get_req_dates($post_start_date, $post_end_date);
+        $dates['post']['start_week'] = $this->add_week($dates['during']['end_week'], 1);
 
         $all_quarters = array_merge($dates['during']['quarters'], $dates['baseline']['quarters'], $dates['post']['quarters']);
         $all_quarters = array_unique($all_quarters);
@@ -307,7 +305,7 @@ class Calendar {
      * 
      */
     function is_avail_post_week($promotion) {
-        
+
         $settings = $this->merge->admin_settings($promotion);
 
         $count = $settings['post_weeks'] + 1;

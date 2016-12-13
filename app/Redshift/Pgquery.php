@@ -117,9 +117,19 @@ class Pgquery {
      * Get items by material id
      */
     public static function get_items_material_id($material_id) {
-        return DB::connection('redshift')
+        return (array)DB::connection('redshift')
                         ->table('nwl_pos.dim_material')
                         ->where('material_id', $material_id)
+                        ->first();
+    }
+    /**
+     * 
+     * Get items by retailer_sku (rtl_id, asin)
+     */
+    public static function get_items_retailer_sku($retailer_sku) {
+        return (array)DB::connection('redshift')
+                        ->table('nwl_pos.dim_material')
+                        ->where('retailer_sku', $retailer_sku)
                         ->first();
     }
 

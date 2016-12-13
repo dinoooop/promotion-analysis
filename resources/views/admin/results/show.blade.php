@@ -1,0 +1,1 @@
+<!-- Show page of promotion is index of item -->
