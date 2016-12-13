@@ -27,7 +27,12 @@ class Kernel extends ConsoleKernel {
 //         $schedule->command('db_change master_input_refresh')
 //                  ->everyFiveMinutes();
         $logfile = storage_path('logs/promotions.log');
-        $schedule->command('promo process')->hourly()->sendOutputTo($logfile);
+        if (env('CRON_TIME') == 'hourly') {
+            $schedule->command('promo process')->hourly()->sendOutputTo($logfile);
+        }else{
+            $schedule->command('promo process')->everyMinute()->sendOutputTo($logfile);
+        }
+
         $schedule->command('promo clear_promo_logs')->weekly()->sendOutputTo($logfile);
     }
 
