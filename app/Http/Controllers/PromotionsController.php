@@ -51,7 +51,6 @@ class PromotionsController extends Controller {
         }
         //Display only the promotions having result
         if (isset($input['re']) && $input['re'] == 1) {
-            $multiple = Multiple::findOrFail($input['re']);
             $query->where('status', 'completed');
         }
 

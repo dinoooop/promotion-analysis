@@ -55,7 +55,7 @@ class Sdcalc extends Model {
 
         foreach ($quarters as $key => $quarter_id) {
 
-            echo "collecting daily_pos for the quarter id {$quarter_id} \n";
+            echo "Collecting records on daily bases for the quarter id {$quarter_id} \n";
 
             $this->quarter_id = $quarter_id;
             $this->quarter = $this->calendar->get_quarter_info($quarter_id);

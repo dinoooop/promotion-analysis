@@ -179,6 +179,9 @@ $.fn.extend({
                             if (level_of_promotions == 'Category') {
                                 error = $field.cu_require();
                                 $field.cu_error_switch(error, "For a category level of promotion you must specify the category.");
+                            }else{
+                                error = 0;
+                                $field.cu_error_switch(error, "");
                             }
 
                             break;

@@ -1,6 +1,5 @@
 @extends('admin.layouts.dashboard')
 
-
 @section('title', 'Promotion Result')
 
 @section('main')
