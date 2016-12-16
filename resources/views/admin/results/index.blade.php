@@ -19,10 +19,10 @@
             @include('admin/tmp/promotion_item')
 
             @if ($records->count())
-                @if($promotion->retailer == 'amazon')
-                    @include('admin/results/tmp-retailer/amazon')
-                @else
+                @if($promotion->retailer == 'Walmart')
                     @include('admin/results/tmp-retailer/walmart')
+                @else
+                    @include('admin/results/tmp-retailer/amazon')
                 @endif
             @else
             <p>There are no records available for this promotion result</p>
