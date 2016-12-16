@@ -149,7 +149,7 @@ $.fn.extend({
         switch ($form.attr('id')) {
 
             case "pv_edit_promotion":
-            case "pv_create_promotion_":
+            case "pv_create_promotion":
 
                 var value = $field.cu_getVal();
                 var required_fileds = ["promotions_name", "promotions_startdate", "promotions_enddate", "retailer"];

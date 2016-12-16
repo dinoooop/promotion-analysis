@@ -86,12 +86,43 @@ class Item extends Model {
 //            'reference',
         ];
     }
+    public static function store_rules_update($param) {
+        return [
+            'promotions_id' => 'required',
+            
+//            'asin' => '',
+//            'rtl_id',
+//            'product_name',
+            'promotions_startdate' => 'required|date',
+            'promotions_enddate' => "bail|required|date|eaqualafter:{$param['promotions_startdate']}",
+            'promotions_budget' => 'numeric|nullable',
+            'promotions_projected_sales' => 'numeric|nullable',
+            'promotions_expected_lift' => 'numeric|nullable',
+//            'x_plant_material_status',
+            'x_plant_status_date' => 'date|nullable',
+//            'promotions_budget_type',
+            'funding_per_unit' => 'numeric|nullable',
+            'forecasted_qty' => 'integer|nullable',
+            'forecasted_unit_sales' => 'numeric|nullable',
+            'promoted' => 'boolean',
+            'user_input' => 'boolean',
+            'validated' => 'boolean',
+            'percent_discount' => 'numeric|nullable',
+            'price_discount' => 'numeric|nullable',
+//            'reference',
+        ];
+    }
 
-    public static function status($input) {
+    public static function status($input, $update = null) {
         $input = Dot::empty_strings2null($input);
         $input = self::sanitize($input);
 
-        $validation = Validator::make($input, self::store_rules($input), self::$messages);
+        if(is_null($update)){
+            $validation = Validator::make($input, self::store_rules($input), self::$messages);
+        }else{
+            $validation = Validator::make($input, self::store_rules_update($input), self::$messages);
+        }
+        
         if ($validation->passes()) {
             return ['status' => true, 'input' => $input];
         } else {

@@ -22,7 +22,7 @@ class AppServiceProvider extends ServiceProvider {
             $query = Item::where('promotions_id', $promotions_id);
             $query->where($attribute, $value);
             $count = $query->count();
-
+            
             // count zero means >>> no combination exist or validation success
             return ($count == 0) ? true : false;
         });

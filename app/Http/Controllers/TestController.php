@@ -38,7 +38,7 @@ class TestController extends BaseController {
     }
 
     function test() {
-
+        
         $input = [
             'promotions_name' => 'Graco Black Friday',
             'promotions_description' => 'All BF products with promotions',

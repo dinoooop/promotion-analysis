@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\View;
@@ -112,7 +113,6 @@ class ItemsController extends Controller {
 
                     $value['promotions_id'] = $input['promotions_id'];
 
-
                     $value = $this->item->generate_item($value);
                     if (empty($value)) {
                         continue;
@@ -134,10 +134,13 @@ class ItemsController extends Controller {
 
 
 
-                    $status = Item::status($value);
+                    $status = Item::status($value, true);
                     if ($status['status']) {
                         $record = Item::find($key);
                         $record->update($status['input']);
+                    }else{
+                        Log::info("Error in item update");
+                        Log::info($status['validation']->errors());
                     }
                 }
             }
