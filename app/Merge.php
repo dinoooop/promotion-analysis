@@ -179,36 +179,12 @@ class Merge {
      */
     function reset_records($promotion_id) {
         $ids = Item::where('promotions_id', $promotion_id)->distinct()->pluck('id')->toArray();
-        
+
         Sdcalc::whereIn('promo_child_id', $ids)->delete();
         Swcalc::whereIn('promo_child_id', $ids)->delete();
         Spod::whereIn('promo_child_id', $ids)->delete();
     }
 
-    /**
-     * 
-     * Check in $first for $key if not exist go for $second
-     * 
-     * @param type $key
-     * @param type $first
-     * @param type $second
-     * @param type $second_key
-     * @return string
-     */
-    function get_first_second($key, $first, $second, $second_key = null) {
-        
-        if (isset($first[$key]) && $first[$key] != '') {
-            return $first[$key];
-        } elseif (isset($second[$key]) && $second[$key] != '') {
-            return $second[$key];
-        }
-
-        if (!is_null($second_key)) {
-            if (isset($second[$second_key]) && $second[$second_key] != '') {
-                return $second[$second_key];
-            }
-        }
-        return '';
-    }
+   
 
 }

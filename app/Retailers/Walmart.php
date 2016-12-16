@@ -38,6 +38,7 @@ class Walmart {
 
     function create_record() {
         $row = [];
+        $row['promotions_id'] = $this->spinput->promotions_id;
         $row['promo_child_id'] = $this->spinput->promo_child_id;
         $row['material_id'] = $this->spinput->material_id;
         $row['rtl_id'] = $this->spinput->retailer_id;
@@ -48,8 +49,8 @@ class Walmart {
 
         $row['daily_baseline_pos_sales'] = $this->swcalc->get_avg_column('normalized_pos_sales', $this->spinput->calendar_dates['baseline']['start_week'], $this->spinput->calendar_dates['baseline']['end_week']);
         $row['daily_baseline_pos_units'] = round($this->swcalc->get_avg_column('normalized_pos_units', $this->spinput->calendar_dates['baseline']['start_week'], $this->spinput->calendar_dates['baseline']['end_week']));
-        // Promotion  days
 
+        // Promotion  days
         $row['daily_during_pos_sales'] = $this->swcalc->get_avg_column('pos_sales', $this->spinput->calendar_dates['during']['start_week'], $this->spinput->calendar_dates['during']['end_week']);
         $row['daily_during_pos_units'] = round($this->swcalc->get_avg_column('pos_units', $this->spinput->calendar_dates['during']['start_week'], $this->spinput->calendar_dates['during']['end_week']));
         // Post days
@@ -63,11 +64,7 @@ class Walmart {
 
         $row['post_incremental_pos_sales'] = $this->calc('post_incremental_pos_sales', $row);
         $row['post_incremental_pos_units'] = $this->calc('post_incremental_pos_units', $row);
-
-        $row['during_lift_pos_sales'] = $this->calc('during_lift_pos_sales', $row);
-        $row['during_lift_pos_units'] = $this->calc('during_lift_pos_units', $row);
-        $row['post_lift_pos_sales'] = $this->calc('post_lift_pos_sales', $row);
-        $row['post_lift_pos_units'] = $this->calc('post_lift_pos_units', $row);
+        
         $row['no_of_promotion_days'] = $this->number_of_promotion_days;
         echo "Inserting output for child item id {$this->spinput->promo_child_id} \n";
         $this->mark_promoted_items($row);
@@ -89,22 +86,6 @@ class Walmart {
 
             case 'post_incremental_pos_units':
                 return ($row['daily_post_pos_units'] - $row['daily_baseline_pos_units'] ) * 7 * $this->spinput->post_weeks;
-                break;
-
-
-            case 'during_lift_pos_sales':
-                return $this->merge->safe_division($row['daily_during_pos_sales'], $row['daily_baseline_pos_sales']) - 1;
-                return $this->merge->safe_division($row['daily_during_pos_sales'], $row['daily_baseline_pos_sales']) - 1;
-                break;
-
-            case 'during_lift_pos_units':
-                return $this->merge->safe_division($row['daily_during_pos_units'], $row['daily_baseline_pos_units'], true) - 1;
-                break;
-            case 'post_lift_pos_sales':
-                return $this->merge->safe_division($row['daily_post_pos_sales'], $row['daily_baseline_pos_sales']) - 1;
-                break;
-            case 'post_lift_pos_units':
-                return $this->merge->safe_division($row['daily_post_pos_units'], $row['daily_baseline_pos_units'], true) - 1;
                 break;
         }
         return false;

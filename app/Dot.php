@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
+
 class Dot {
 
     function __construct() {
@@ -165,11 +166,17 @@ class Dot {
     }
 
     public static function sanitize_string($key, $input) {
-        if (isset($input[$key])) {
-            return $input[$key];
+
+        if (!isset($input[$key])) {
+            return NULL;
         }
 
-        return '';
+        $trim = trim($input[$key]);
+        if ($trim == '') {
+            return NULL;
+        }
+
+        return $trim;
     }
 
     public static function sanitize_boolean($key, $input) {
@@ -210,8 +217,86 @@ class Dot {
 
         return true;
     }
+
     public static function R404() {
         return Response::make(View::make('errors.404', ['page_404' => true]), 404);
+    }
+
+    /**
+     * 
+     * Do not insert insert empty string to table set it to null
+     * @param type $input
+     * @return type
+     */
+    public static function empty_strings2null($input) {
+        foreach ($input as $key => $value) {
+            if (is_array($value)) {
+                continue;
+            }
+
+            $input[$key] = (trim($value) == '') ? NULL : $value;
+        }
+
+        return $input;
+    }
+
+    /**
+     * 
+     * Check in $first for $key if not exist go for $second
+     * 
+     * @param string $key
+     * @param array $first
+     * @param array $second
+     * @param string $second_key
+     * @return string
+     */
+    public static function get_first_second($key, $first, $second, $second_key = null) {
+
+        if (isset($first[$key]) && $first[$key] != '') {
+            return $first[$key];
+        }
+
+        if (!is_null($second_key)) {
+            if (isset($second[$second_key]) && $second[$second_key] != '') {
+                return $second[$second_key];
+            }
+        } elseif (isset($second[$key]) && $second[$key] != '') {
+            return $second[$key];
+        }
+        return NULL;
+    }
+    
+    public static function save_as_csv($input, $field) {
+        
+        if (!$input->hasFile($field)) {
+            $error['message'][] = 'CSV not attached';
+            $error['status'] = false;
+            return $error;
+        }
+        
+        
+        $allow_extension = ['csv', 'txt'];
+        $extention = $input->file($field)->extension();
+        if (!in_array($extention, $allow_extension)) {
+            $error['message'][] = 'Please upload valid file with data';
+            $error['status'] = false;
+            return $error;
+        }
+        
+        
+        $title = pathinfo($input->file($field)->getClientOriginalName())['filename'];
+        $file_name = date('Y-m-d-h-i-s') . rand(1000, 9999) . '.csv';
+        $path = $input->file($field)->storeAs('csv', $file_name);
+        $path = storage_path('app/' . $path);
+
+        $store = [
+            'title' => $title,
+            'file_name' => $file_name,
+            'file_path' => $path,
+            'status' => true,
+        ];
+
+        return $store;
     }
 
 }

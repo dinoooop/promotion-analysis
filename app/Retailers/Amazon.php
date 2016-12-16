@@ -83,9 +83,7 @@ class Amazon {
             case 'during_incremental_ordered_units':
                 return ($row['daily_during_ordered_units'] - $row['daily_baseline_ordered_units'] ) * $this->number_of_promotion_days;
                 break;
-
-
-
+            
             case 'post_incremental_ordered_amount':
                 return ($row['daily_post_ordered_amount'] - $row['daily_baseline_ordered_amount'] ) * 7 * $this->spinput->post_weeks;
                 break;

@@ -13,8 +13,7 @@ class Printm {
     public function __construct() {
         $this->calendar = new Calendar;
     }
-    
-    
+
     function get_hyphen_data() {
 
         $str = 'promo_child_id
@@ -117,12 +116,8 @@ invoice_cost';
         Dsales::create($row);
     }
 
-    
-
-  
-
     function refine_hyphen_array($str) {
-        
+
         $str = str_replace("\n", '-', $str);
         $ex_str = explode('-', $str);
         $return = [];
@@ -136,7 +131,7 @@ invoice_cost';
         $str = $this->get_hyphen_data();
         $refined = $this->refine_hyphen_array($str);
         $records[] = Dot::get_array_key_value($refined);
-        
+
         foreach ($records as $value) {
             echo "[\n";
             foreach ($value as $key => $val) {
@@ -149,21 +144,20 @@ invoice_cost';
     function print_array_table_schema_create() {
         $str = $this->get_hyphen_data();
         $ex_str = $this->refine_hyphen_array($str);
-        
+
         echo "\n";
         foreach ($ex_str as $key => $value) {
             //echo "\$table->double('{$value}', 15, 8);\n";
             echo "\$table->string('{$value}')->nullable();\n";
             // echo "'{$value}' => \$this->promotion['{$value}'],\n";
             // echo "'{$value}' => \$this->get_from_item('{$value}'),\n";
-            
         }
-        
+
         echo "\n";
     }
 
     function print_array_simple() {
-        
+
         $str = $this->get_hyphen_data();
 
         $records = $this->refine_hyphen_array($str);
@@ -262,8 +256,6 @@ invoice_cost';
         }
     }
 
-  
-
     function create_array_from_table_browser() {
 
         $records = Promotion::all()->toArray();
@@ -278,13 +270,43 @@ invoice_cost';
         }
         echo ']<br/>';
     }
-    
+
     /**
      * 
      * php artisan raw_data sample_test
      */
     function sample_test() {
         Pgquery::get_distinct_column_values();
+    }
+
+    function convert_array_string_column() {
+        $array = [
+            'promotions_name',
+            'promotions_description',
+            'promotions_startdate',
+            'promotions_enddate',
+            'retailer',
+            'retailer_country_id',
+            'retailer_country',
+            'newell_status',
+            'promotions_status',
+            'promotions_type',
+            'level_of_promotions',
+            'marketing_type',
+            'annivarsaried',
+            'promotions_budget',
+            'promotions_projected_sales',
+            'promotions_expected_lift',
+            'promotions_budget_type',
+            'brand_id',
+            'brand',
+            'category',
+            'division',
+        ];
+
+        foreach ($array as $key => $value) {
+            echo $value . "\n";
+        }
     }
 
 }

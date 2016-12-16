@@ -34,8 +34,6 @@ class Promotion extends Model {
         'brand_id',
         'brand',
         'category',
-//        'product_family',
-//        'product_line',
         'division',
         'status'
     ];
@@ -64,72 +62,69 @@ class Promotion extends Model {
     ];
     private $merge;
     private $calendar;
-    public $data;
-    public $promo_id;
-    public static $form_create_rules = [
-        'promotions_name' => 'required',
-        'promotions_startdate' => 'required',
-        'promotions_enddate' => 'required',
-        'retailer' => 'required',
-        'level_of_promotions' => 'required',
-    ];
-    public static $form_edit_rules = [
-        'promotions_name' => 'required',
-        'promotions_startdate' => 'required',
-        'promotions_enddate' => 'required',
-        'retailer' => 'required',
-        'level_of_promotions' => 'required',
+    public static $messages = [
+        'itemcomp' => 'Given :attribute repeated for promotion',
+        'eaqualafter' => 'Given :attribute must be eaqual or greater than promotions start date',
+        'masin' => 'You must enter either material id or ASIN',
     ];
 
-    /**
-     * 
-     * Custom validate user input to DB (form, CSV)
-     * @param array $input
-     * @return boolean
-     */
-    public static function validate($input) {
+    public static function status($input) {
 
-        $error = [];
+        $validation_primery = Validator::make($input, self::store_rules_primary($input), self::$messages);
 
-//        if (!isset($input['retailer']) || $input['retailer'] != 'AMZ') {
-//            $error['message'][] = 'Sample custom error';
-//            $error['status'] = false;
-//            return $error;
-//        }
-
-
-        if (!Dot::validate_date($input['promotions_startdate']) || !Dot::validate_date($input['promotions_enddate'])) {
-            $error['message'][] = 'Please enter a valid date';
-            $error['status'] = false;
-            return $error;
+        if (!$validation_primery->passes()) {
+            return [
+                'status' => false,
+                'validation' => $validation_primery
+            ];
         }
 
-        if ($input['promotions_startdate'] > $input['promotions_enddate']) {
-            $error['message'][] = 'Start date is greater than end date';
-            $error['status'] = false;
-            return $error;
+        $input = Dot::empty_strings2null($input);
+        $input = self::sanitize($input);
+
+        $validation = Validator::make($input, self::store_rules_secondary($input), self::$messages);
+
+        if ($validation->passes()) {
+            return ['status' => true, 'input' => $input];
+        } else {
+            return [
+                'status' => false,
+                'validation' => $validation
+            ];
         }
+    }
 
+    public static function store_rules_primary($param) {
+        return [
+            'promotions_name' => 'required',
+        ];
+    }
 
-        if ($input['level_of_promotions'] == 'Category') {
-            if (!Dot::validate_true('category', $input)) {
-                $error['message'][] = 'For category level of promotion you must specify the category';
-                $error['status'] = false;
-                return $error;
-            }
-        }
-
-        if ($input['level_of_promotions'] == 'Brand') {
-            if (!Dot::validate_true('brand', $input)) {
-                $error['message'][] = 'For brand level of promotion you must specify the brand';
-                $error['status'] = false;
-                return $error;
-            }
-        }
-
-
-        $error['status'] = true;
-        return $error;
+    public static function store_rules_secondary($param) {
+        return [
+            'promotions_name' => 'required',
+            //'promotions_description',
+            'promotions_startdate' => 'required|date',
+            'promotions_enddate' => "bail|required|date|eaqualafter:{$param['promotions_startdate']}",
+            'retailer' => 'required',
+            //'retailer_country_id',
+            //'retailer_country',
+            //'newell_status',
+            //'promotions_status',
+//            'promotions_type',
+            'level_of_promotions' => 'required',
+//            'marketing_type',
+//            'annivarsaried',
+            'promotions_budget' => 'numeric|nullable',
+            'promotions_projected_sales' => 'numeric|nullable',
+            'promotions_expected_lift' => 'numeric|nullable',
+//            'promotions_budget_type',
+//            'brand_id',
+            'brand' => 'required_if:level_of_promotions,Brand',
+            'category' => 'required_if:level_of_promotions,Category',
+//            'division',
+            'status' => 'required'
+        ];
     }
 
     /**
@@ -139,6 +134,18 @@ class Promotion extends Model {
      * @return type
      */
     public static function sanitize($input) {
+
+        $default = [
+            'retailer' => 'Amazon',
+            'retailer_country' => 'US',
+            'newell_status' => 'Approved',
+            'promotions_status' => 'Not Started',
+            'promotions_type' => 'Best Deals',
+            'level_of_promotions' => 'Item Level',
+            'marketing_type' => 'Price Promotion',
+            'status' => 'active',
+        ];
+
         $sanitize = [
             'promotions_name' => trim($input['promotions_name']),
             //'promotions_description' => $input['promotions_description'],
@@ -156,32 +163,20 @@ class Promotion extends Model {
             'promotions_budget' => Dot::sanitize_numeric('promotions_budget', $input),
             'promotions_projected_sales' => Dot::sanitize_numeric('promotions_projected_sales', $input),
             'promotions_expected_lift' => Dot::sanitize_numeric('promotions_expected_lift', $input),
-            //'promotions_budget_type',
-            //'brand_id',
-            //'brand',
-            //'category',
-            //'product_family',
-            //'product_line',
-            //'division',
-            'status' => isset($input['status']) ? $input['status'] : 'active',
+                //'promotions_budget_type',
+                //'brand_id',
+                //'brand',
+                //'category',
+                //'product_family',
+                //'product_line',
+                //'division',
         ];
 
-        return array_merge($input, $sanitize);
-    }
-
-    public static function status($input) {
-        $validation = Validator::make($input, self::$form_create_rules);
-        $custom_validation = self::validate($input);
-        if ($validation->passes() && $custom_validation['status']) {
-            $input = self::sanitize($input);
-            return ['status' => true, 'input' => $input];
-        } else {
-            return [
-                'status' => false,
-                'validation' => $validation,
-                'custom_validation' => $custom_validation
-            ];
+        foreach ($default as $key => $value) {
+            $sanitize[$key] = Dot::get_first_second($key, $input, $default);
         }
+
+        return array_merge($input, $sanitize);
     }
 
     public static function display_prepare($input) {
@@ -208,7 +203,6 @@ class Promotion extends Model {
     }
 
     function csv_validate_file($records) {
-
         return $this->csv === $records;
     }
 

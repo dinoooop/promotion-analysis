@@ -17,20 +17,21 @@ class DBChange {
     }
 
     function master_input_refresh() {
-        Schema::dropIfExists('promotions.promotions_master_input');
-        Schema::create('promotions.promotions_master_input', function (Blueprint $table) {
+        $table_name = 'promotions.promotions_master_input';
+        Schema::dropIfExists($table_name);
+        Schema::create($table_name, function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('promotions_name');
             $table->text('promotions_description')->nullable();
             $table->date('promotions_startdate');
             $table->date('promotions_enddate');
-            $table->string('retailer')->nullable();
+            $table->string('retailer');
             $table->string('retailer_country_id')->nullable();
             $table->string('retailer_country')->nullable();
             $table->string('newell_status')->nullable();
             $table->string('promotions_status')->nullable();
             $table->string('promotions_type')->nullable();
-            $table->string('level_of_promotions')->nullable();
+            $table->string('level_of_promotions');
             $table->string('marketing_type')->nullable();
             $table->boolean('annivarsaried')->default(0)->nullable();
             $table->double('promotions_budget', 15, 8)->nullable();
@@ -40,10 +41,8 @@ class DBChange {
             $table->string('brand_id')->nullable();
             $table->string('brand')->nullable();
             $table->string('category')->nullable();
-//            $table->string('product_family')->nullable();
-//            $table->string('product_line')->nullable();
             $table->string('division')->nullable();
-            $table->string('status')->nullable();
+            $table->string('status');
             $table->timestamps();
         });
     }
@@ -119,12 +118,12 @@ class DBChange {
         Schema::create($table_name, function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('promotions_id');
-            $table->date('promotions_startdate')->nullable();
-            $table->date('promotions_enddate')->nullable();
             $table->string('material_id')->nullable();
-            $table->string('product_name')->nullable();
             $table->string('asin')->nullable();
             $table->string('rtl_id')->nullable();
+            $table->string('product_name')->nullable();
+            $table->date('promotions_startdate')->nullable();
+            $table->date('promotions_enddate')->nullable();
             $table->double('promotions_budget', 15, 8)->nullable();
             $table->double('promotions_projected_sales', 15, 8)->nullable();
             $table->double('promotions_expected_lift', 15, 8)->nullable();
@@ -132,7 +131,7 @@ class DBChange {
             $table->date('x_plant_status_date')->nullable();
             $table->string('promotions_budget_type')->nullable();
             $table->double('funding_per_unit', 15, 8)->nullable();
-            $table->bigInteger('forecasted_qty')->nullable();
+            $table->integer('forecasted_qty')->nullable();
             $table->double('forecasted_unit_sales', 15, 8)->nullable();
             $table->boolean('promoted')->default(0);
             $table->boolean('user_input')->default(0);
@@ -402,6 +401,25 @@ class DBChange {
             $table->double('post_lift_ordered_units', 15, 8)->nullable();
             $table->double('calculated_investment_amount', 15, 8)->nullable();
             $table->integer('no_of_promotion_days');
+        });
+    }
+
+    function sample_promo_refresh() {
+        $table_name = 'promotions.sample_promo_test';
+        Schema::dropIfExists($table_name);
+        Schema::create($table_name, function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('promotions_id');
+            $table->string('material_id')->nullable();
+            $table->string('asin')->nullable();
+            $table->string('product_name');
+            $table->date('promotions_startdate')->nullable();
+            $table->date('promotions_enddate')->nullable();
+            $table->double('daily_baseline_pos_sales', 15, 8)->nullable();
+            $table->integer('daily_baseline_pos_units')->nullable();
+            $table->boolean('annivarsaried')->default(0);
+            $table->string('status');
+            $table->timestamps();
         });
     }
 

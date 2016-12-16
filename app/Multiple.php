@@ -18,60 +18,33 @@ class Multiple extends Model {
         'start_id',
         'end_id',
     ];
-    public static $form_create_rules = [];
+    public static $messages = [
+        'start_id.required' => 'Import failed, file not matching or no valid records',
+        'end_id.required' => '',
+    ];
 
-    public static function validate($input) {
-        $error = [];
-
-        if (!$input->hasFile('multiple_promotion_csv')) {
-            $error['message'][] = 'CSV not attached';
-            $error['status'] = false;
-            return $error;
-        }
-
-        $allow_extension = ['csv', 'txt'];
-        $extention = $input->multiple_promotion_csv->extension();
-        if (!in_array($extention, $allow_extension)) {
-            $error['message'][] = 'Please upload valid file with data';
-            $error['status'] = false;
-            return $error;
-        }
-
-
-        $error['status'] = true;
-        return $error;
-    }
-
-    public static function sanitize($input) {
-        $title = pathinfo($input->file('multiple_promotion_csv')->getClientOriginalName())['filename'];
-        $file_name = date('Y-m-d-h-i-s') . rand(1000, 9999) . '.csv';
-        $path = $input->multiple_promotion_csv->storeAs('csv', $file_name);
-        $path = storage_path('app/' . $path);
-
-
-        $sanitize = [
-            'title' => $title,
-            'description' => Dot::sanitize_string('description', $input),
-            'file' => $file_name,
-            'type' => $input->type,
-            'start_id' => '',
-            'end_id' => '',
+    public static function store_rules($param) {
+        return [
+            'title' => 'required',
+//        'description' => '',
+//        'type' => '',
+            'start_id' => 'required|integer',
+            'end_id' => 'required|integer',
         ];
-
-        return $sanitize;
     }
 
     public static function status($input) {
-        //$validation = Validator::make($input, self::$form_create_rules);
-        $custom_validation = self::validate($input);
-        if ($custom_validation['status']) {
-            $input = self::sanitize($input);
+
+        $input = Dot::empty_strings2null($input);
+
+        $validation = Validator::make($input, self::store_rules($input), self::$messages);
+        if ($validation->passes()) {
+
             return ['status' => true, 'input' => $input];
         } else {
             return [
                 'status' => false,
                 'validation' => $validation,
-                'custom_validation' => $custom_validation
             ];
         }
     }

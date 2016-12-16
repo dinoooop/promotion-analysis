@@ -149,7 +149,7 @@ $.fn.extend({
         switch ($form.attr('id')) {
 
             case "pv_edit_promotion":
-            case "pv_create_promotion":
+            case "pv_create_promotion_":
 
                 var value = $field.cu_getVal();
                 var required_fileds = ["promotions_name", "promotions_startdate", "promotions_enddate", "retailer"];
@@ -191,6 +191,9 @@ $.fn.extend({
                             if (level_of_promotions == 'Brand') {
                                 error = $field.cu_require();
                                 $field.cu_error_switch(error, "For a brand level of promotion you must specify the brand.");
+                            }else{
+                                error = 0;
+                                $field.cu_error_switch(error, "");
                             }
 
                             break;

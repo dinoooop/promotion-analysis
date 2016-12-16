@@ -1,6 +1,5 @@
 @extends('admin.layouts.dashboard')
 
-
 @section('title', 'Items')
 
 @section('main')
@@ -17,7 +16,7 @@
                 <h2>Promotion Items</h2>
                 <div class="clearfix"></div>
             </div>
-            
+
             @include('admin/tmp/promotion_item')
 
 
@@ -86,7 +85,7 @@
 
             {{ Form::close() }}
 
-            
+
 
 
         </div>
@@ -97,7 +96,64 @@
             <div class="pull-right">{{ $records->appends(['pid' => $promotion->id])->links() }}</div>
         </div>
     </div>
-    
+
+
+    @else
+    <!-- Items viewing from csv sessions - no promotion id -->
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+
+            <div class="x_title">
+                <h2>Promotion Items Under the CSV</h2>
+                <div class="clearfix"></div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Material Id</th>
+                                <th width="120">ASIN</th>
+                                <th width="90">Start date</th>
+                                <th width="90">End date</th>
+                                <th>Promotions Budget</th>
+                                <th>Promotions Projected Sales</th>
+                                <th>Promotions Expected Lift</th>
+                                <th>Promotions Budget Type</th>
+                                <th>Funding per unit</th>
+                                <th>Forecasted qty</th>
+                                <th>Forecasted Unit Sales</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="item-content">
+
+                            @foreach ($records as $record)
+                            <?php $record = App\promotions\Item::display_prepare($record) ?>
+                            <tr>
+                                <td>{{ $record->material_id }}</td>
+                                <td>{{ $record->asin }}</td>
+                                <td>{{ $record->promotions_startdate }}</td>
+                                <td>{{ $record->promotions_enddate }}</td>
+                                <td>{{ $record->promotions_budget }}</td>
+                                <td>{{ $record->promotions_projected_sales }}</td>
+                                <td>{{ $record->promotions_expected_lift }}</td>
+                                <td>{{ $record->promotions_budget_type }}</td>
+                                <td>{{ $record->funding_per_unit }}</td>
+                                <td>{{ $record->forecasted_qty }}</td>
+                                <td>{{ $record->forecasted_unit_sales }}</td>
+                            </tr>
+                            @endforeach
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
     @endif
 
 

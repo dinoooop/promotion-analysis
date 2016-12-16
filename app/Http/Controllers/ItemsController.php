@@ -47,6 +47,7 @@ class ItemsController extends Controller {
         if (isset($input['cvids'])) {
             $multiple = Multiple::findOrFail($input['cvids']);
             $query->whereBetween('id', [$multiple->start_id, $multiple->end_id]);
+            
         }
 
         if (isset($input['pid'])) {
@@ -58,14 +59,9 @@ class ItemsController extends Controller {
         if (!isset($input['cvids']) && !isset($input['pid'])) {
             return Response::make(View::make('errors.404', ['page_404' => true]), 404);
         }
-
-
-
+        
         $data['records'] = $query->paginate(50);
-
-
-
-
+        
         return View::make('admin.items.index', $data);
     }
 
@@ -105,22 +101,25 @@ class ItemsController extends Controller {
         $input = Input::all();
 
 
-        if (isset($input['action']) && $input['action'] == 'pv_create_item_tbform') {
 
+        if (isset($input['action']) && $input['action'] == 'pv_create_item_tbform') {
 
             // tbform form
             if (isset($input['new'])) {
                 $records = $this->item->tabular_form_interpreter($input['new']);
-                
-                
 
                 foreach ($records as $value) {
 
                     $value['promotions_id'] = $input['promotions_id'];
-                    $value = $this->item->prepare_input_item($value);
+
+
+                    $value = $this->item->generate_item($value);
+                    if (empty($value)) {
+                        continue;
+                    }
 
                     $status = Item::status($value);
-                    
+
                     if ($status['status']) {
                         Item::create($status['input']);
                     }
@@ -128,11 +127,13 @@ class ItemsController extends Controller {
             }
             if (isset($input['exist'])) {
                 $records = $this->item->tabular_form_interpreter($input['exist']);
-                
+
                 foreach ($records as $key => $value) {
 
                     $value['promotions_id'] = $input['promotions_id'];
-                    
+
+
+
                     $status = Item::status($value);
                     if ($status['status']) {
                         $record = Item::find($key);
@@ -144,9 +145,9 @@ class ItemsController extends Controller {
 
             return Redirect::route('items.index', ['pid' => $input['promotions_id']]);
         } else {
-            $input = $this->item->prepare_input_item($input);
+            $input = $this->item->generate_item($input);
             $status = Item::status($input);
-            
+
             if ($status['status']) {
                 Item::create($status['input']);
                 return Redirect::route('items.index', ['pid' => $input['promotions_id']]);
@@ -154,7 +155,7 @@ class ItemsController extends Controller {
 
             return Redirect::route('items.create', ['pid' => $input['promotions_id']])
                             ->withInput()
-                            ->withErrors($status['custom_validation'])
+                            ->withErrors($status['validation'])
                             ->with('message', 'Validation error');
         }
     }
@@ -217,7 +218,7 @@ class ItemsController extends Controller {
 
         return Redirect::route('items.edit', [$id, 'pid' => $input['promotions_id']])
                         ->withInput()
-                        ->withErrors($status['custom_validation'])
+                        ->withErrors($status['validation'])
                         ->with('message', 'Validation error');
     }
 

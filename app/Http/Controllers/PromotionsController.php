@@ -102,7 +102,7 @@ class PromotionsController extends Controller {
 
         return Redirect::route('promotions.create')
                         ->withInput()
-                        ->withErrors($status['custom_validation'])
+                        ->withErrors($status['validation'])
                         ->with('message', 'Validation error');
     }
 
@@ -163,7 +163,7 @@ class PromotionsController extends Controller {
 
         return Redirect::route('promotions.edit', $id)
                         ->withInput()
-                        ->withErrors($status['custom_validation'])
+                        ->withErrors($status['validation'])
                         ->with('message', 'Validation error');
     }
 
@@ -174,7 +174,9 @@ class PromotionsController extends Controller {
      * @return Response
      */
     public function destroy($id) {
-        Promotion::find($id)->delete();
+        $promotion = Promotion::find($id);
+        Item::where('promotions_id', $promotion->id)->delete();
+        $promotion->delete();
         exit();
         //return Redirect::route('promotions.index');
     }

@@ -347,8 +347,8 @@ class AppForms {
                     'name' => 'multiple_promotion_csv',
                     'label' => 'Upload File',
                     'description' => 'Upload your csv file here. '
-                    . '<br /> Download csv template for promotions - <a href="'.asset('downloads/template-promotions.csv').'">CSV Template (Promotions)</a>'
-                    . '<br /> Download csv template for items - <a href="'.asset('downloads/template-items.csv').'">CSV Template (Items)</a>',
+                    . '<br /> Download csv template for promotions - <a href="' . asset('downloads/template-promotions.csv') . '">CSV Template (Promotions)</a>'
+                    . '<br /> Download csv template for items - <a href="' . asset('downloads/template-items.csv') . '">CSV Template (Items)</a>',
                 ),
                 array(
                     'type' => 'select',
@@ -362,7 +362,7 @@ class AppForms {
             ),
         );
     }
-    
+
     public static function form_configuration() {
         return array(
             'form_name' => 'form_configuration',
@@ -379,7 +379,7 @@ class AppForms {
                     'label' => 'Level of promotions',
                     'options' => Stock::get('level_of_promotions'),
                 ),
-                 array(
+                array(
                     'type' => 'auto_complete',
                     'name' => 'retailer',
                     'label' => 'Retailer',

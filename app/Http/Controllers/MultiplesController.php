@@ -14,7 +14,9 @@ use App\Gform;
 use App\FormHtmlJq;
 use App\AppForms;
 use App\Merge;
+use App\Import;
 use App\Temp;
+use App\Dot;
 use App\Multiple;
 use App\promotions\Promotion;
 use App\promotions\Item;
@@ -24,13 +26,14 @@ class MultiplesController extends Controller {
     private $gform;
     private $formHtmlJq;
     private $multiple;
-    private $merge;
+    private $import;
 
     public function __construct() {
         $this->gform = new Gform;
         $this->formHtmlJq = new FormHtmlJq;
         $this->multiple = new Multiple;
         $this->merge = new Merge;
+        $this->import = new Import;
     }
 
     /**
@@ -72,26 +75,41 @@ class MultiplesController extends Controller {
      */
     public function store(Request $request) {
 
-        $status = Multiple::status($request);
 
-        if ($status['status']) {
-            $input = $status['input'];
-            Log::info($input);
-            $info = $this->merge->import_csv($input['file'], $input['type']);
-            if (!empty($info)) {
-                $input['start_id'] = $info[0];
-                $input['end_id'] = end($info);
-                Multiple::create($input);
-                return Redirect::route('multiples.index');
-            } else {
-                $status['custom_validation']['message'][] = 'Import failed: No valid record found in the file';
-            }
+        $store_info = Dot::save_as_csv($request, 'multiple_promotion_csv');
+
+        if (!$store_info['status']) {
+            return Redirect::route('multiples.create')
+                            ->withInput()
+                            ->withErrors($store_info['message'])
+                            ->with('message', 'Validation error');
         }
 
-        return Redirect::route('multiples.create')
-                        ->withInput()
-                        ->withErrors($status['custom_validation'])
-                        ->with('message', 'Validation error');
+        $input['title'] = $store_info['title'];
+        $input['file'] = $store_info['file_name'];
+        $input['type'] = $request->type;
+        
+        print_r($input);
+
+        $info = $this->import->inject($input['file'], $input['type']);
+
+        if (!empty($info)) {
+            $input['start_id'] = $info[0];
+            $input['end_id'] = end($info);
+        } else {
+            Log::info("Import failed file not matching or no valid records");
+        }
+
+        $status = Multiple::status($input);
+        if ($status['status']) {
+            Multiple::create($input);
+            return Redirect::route('multiples.index');
+        } else {
+            return Redirect::route('multiples.create')
+                            ->withInput()
+                            ->withErrors($status['validation'])
+                            ->with('message', 'Validation error');
+        }
     }
 
     /**
@@ -135,12 +153,20 @@ class MultiplesController extends Controller {
     public function destroy($id) {
         $model = Multiple::find($id);
 
+        if (!$model) {
+            exit();
+        }
+
         if ($model->type == 'promotions') {
             Promotion::whereBetween('id', [$model->start_id, $model->end_id])->delete();
-            unlink($this->merge->get_csv_file_path($model->file));
+            Item::whereBetween('promotions_id', [$model->start_id, $model->end_id])->delete();
         } else {
             Item::whereBetween('id', [$model->start_id, $model->end_id])->delete();
-            unlink($this->merge->get_csv_file_path($model->file));
+        }
+
+        $file_path = $this->import->get_csv_file_path($model->file);
+        if (file_exists($file_path)) {
+            unlink($file_path);
         }
 
         $model->delete();
