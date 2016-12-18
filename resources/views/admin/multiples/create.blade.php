@@ -33,6 +33,9 @@
                         <?php echo $form_create; ?>
                         {{ Form::close() }}
                         
+                        <h3>Step 2: Add promoted items</h3>
+                        
+                        
                     </div>
                 </div>
             </div>
