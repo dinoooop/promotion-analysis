@@ -13,6 +13,7 @@
             <div class="menu_section">
 
                 <ul class="nav side-menu">
+                    <li><a href="{{ url('admin/promotions/create') }}" ><i class="fa fa-plus-circle" aria-hidden="true"></i> Create Promotion</a></li>
                     <li><a href="{{ url('admin/promotions') }}" ><i class="fa fa-database"></i> Manage Promotions</a></li>
                     <li><a href="{{ url('admin/multiples') }}" ><i class="fa fa-download"></i> CSV Import</a></li>
                     <li><a href="{{ url('admin/configurations') }}" ><i class="fa fa-cogs"></i> Settings</a></li>

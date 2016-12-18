@@ -61,7 +61,7 @@ class Sdcalc extends Model {
             $this->quarter = $this->calendar->get_quarter_info($quarter_id);
 
             $this->set_psql_where();
-            $sql = Stock::psql_dayily_pos($this->where_id, $this->where_date);
+            $sql = Pgquery::psql_dayily_pos($this->where_id, $this->where_date);
             $records = DB::connection('redshift')->select($sql);
 
             $this->record_count = count($records) + $this->record_count;
@@ -150,6 +150,18 @@ class Sdcalc extends Model {
                 
             }
         });
+    }
+    
+    /**
+     * 
+     * 
+     * @param string $where_column
+     * @param string $where_value
+     */
+    function get_column_val($column, $where_column, $where_value) {
+        return self::where('promo_child_id', $this->spinput->promo_child_id)
+                        ->where($where_column, $where_value)
+                        ->value($column);
     }
 
 }

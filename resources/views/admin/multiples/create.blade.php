@@ -13,7 +13,7 @@
             <div class="x_panel">
 
                 <div class="x_title">
-                    <h2>Multiple Promotions/Items</h2>
+                    <h2>Import Multiple Promotions</h2>
                     <div class="clearfix"></div>
                 </div>
 

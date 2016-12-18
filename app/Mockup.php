@@ -153,19 +153,10 @@ class Mockup {
         $this->sdcalc->inject($this->spinput);
 
         if ($this->sdcalc->record_count) {
-            $this->sdcalc->set_invoice_price();
+            //$this->sdcalc->set_invoice_price();
             $this->swcalc->inject($this->spinput, $this->sdcalc);
-            if ($this->spinput->retailer == 'Amazon') {
-                echo "Retailer is amazone \n";
-                $this->retailer_obj = new Amazon;
-                $this->retailer_obj->inject($this->spinput, $this->sdcalc, $this->swcalc);
-                $this->retailer_obj->create_record();
-            } else {
-                echo "Retailer is walmart \n";
-                $this->retailer_obj = new Walmart;
-                $this->retailer_obj->inject($this->spinput, $this->sdcalc, $this->swcalc);
-                $this->retailer_obj->create_record();
-            }
+            $this->spod->inject($this->spinput, $this->sdcalc, $this->swcalc);
+            $this->spod->create_record();
         } else {
             echo "No items found sales table (redshift) \n";
         }

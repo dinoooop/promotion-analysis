@@ -74,6 +74,7 @@ class AppForms {
     public static function form_promotion() {
         return array(
             'form_name' => 'pv_form_promotion',
+            'submit' => 'Item Level Details <i class="fa fa-angle-double-right" aria-hidden="true"></i>',
             'fields' => array(
                 array(
                     'type' => 'text',

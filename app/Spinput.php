@@ -41,6 +41,8 @@ class Spinput {
         $this->promotions_id = $this->data['promotions_id'];
         $this->promo_child_id = $this->data['promo_child_id'];
         $this->retailer = $this->data['retailer'];
+        $this->promotions_startdate = $this->data['promotions_startdate'];
+        $this->promotions_enddate = $this->data['promotions_enddate'];
 
 
         $this->material_id = isset($this->data['material_id']) ? $this->data['material_id'] : '';

@@ -13,7 +13,7 @@
             <div class="x_panel">
 
                 <div class="x_title">
-                    <h2>Create Promotion</h2>
+                    <h2>Create a Promotion</h2>
                     <div class="clearfix"></div>
                 </div>
 
@@ -28,6 +28,9 @@
                         {{ Form::open(array('route' => 'promotions.store', 'id' => 'pv_create_promotion', 'class'=>'normal_form')) }}
                         <?php echo $form_create; ?>
                         {{ Form::close() }}
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <a href="{{url('admin/multiples/create')}}" class="btn btn-default pull-right">Click here to add multiple promotion.</a>
                     </div>
                 </div>
             </div>

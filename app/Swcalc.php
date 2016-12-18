@@ -184,13 +184,11 @@ class Swcalc extends Model {
      * @return array
      *      */
     function get_avg_column_id($column, $ids) {
-        if(empty($ids)){
+        if (empty($ids)) {
             return 0;
         }
         return self::whereIn('id', $ids)
                         ->avg($column);
     }
-
-    
 
 }
