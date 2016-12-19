@@ -13,7 +13,7 @@
             <div class="x_panel">
 
                 <div class="x_title">
-                    <h2>Create Item</h2>
+                    <h3>Create Item</h3>
                     <div class="clearfix"></div>
                 </div>
 

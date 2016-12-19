@@ -10,6 +10,5 @@
     <div class="col-md-4 col-sm-12">
         <p>Level of promotions: {{ $promotion->level_of_promotions }}</p>
         <p>Newell Status: {{ $promotion->newell_status }}</p>
-        <p>Status: {{ $promotion->status }}</p>
     </div>
 </div>

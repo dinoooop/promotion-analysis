@@ -162,7 +162,7 @@ $(function () {
      * auto_complete
      * Form input field like retailer 
      */
-    var auto_complete_item = '';
+    var auto_complete_col = '';
     $(".auto-complete").focus(function () {
         auto_complete_col = $(this).data('coll');
     });
@@ -229,6 +229,20 @@ $(function () {
 //            $this.after(html);
 //        }, 'html');
 //    });
+
+    /**
+     * 
+     * 
+     * Check whether the items exist on submit STEP 2
+     */
+
+    $(".prepare-promotions-results").click(function (e) {
+        var $firstRow = $("#item-content tr td:first-child input");
+        if ($firstRow.val() == '' || $firstRow.length == 0) {
+            swal("Oops!", "Please add items under this promotion!!!", "error");
+            e.preventDefault();
+        }
+    });
 
 
 });

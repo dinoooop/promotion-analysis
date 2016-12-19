@@ -15,7 +15,7 @@
                 
                 
                 <div class="x_title">
-                    <h2>{{ $record->promotions_name }}</h2>
+                    <h3>{{ $record->promotions_name }}</h3>
                     <div class="clearfix"></div>
                 </div>
                 

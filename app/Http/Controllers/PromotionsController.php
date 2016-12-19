@@ -51,7 +51,12 @@ class PromotionsController extends Controller {
         }
         //Display only the promotions having result
         if (isset($input['re']) && $input['re'] == 1) {
+            $data['page_heading'] = 'Promotion Results';
+            $data['result_view_button'] = true;
             $query->where('status', 'completed');
+        }else{
+            $data['page_heading'] = 'Promotion Overview';
+            $data['result_view_button'] = false;
         }
 
         $data['records'] = $query->paginate(50);
@@ -87,17 +92,18 @@ class PromotionsController extends Controller {
 
         if ($status['status']) {
 
-
             $status['input']['status'] = 'sleep';
             $promotion = Promotion::create($status['input']);
 
             if ($input['level_of_promotions'] == 'Category') {
-                $this->item->insert_items_under_promotion($promotion, $input['category'], 'category');
+                //$this->item->insert_items_under_promotion($promotion, $input['category'], 'category');
+                return Redirect()->route('prepare_promotion', ['pid' => $promotion->id]);
             } elseif ($input['level_of_promotions'] == 'Brand') {
-                $this->item->insert_items_under_promotion($promotion, $input['brand'], 'brand');
+                //$this->item->insert_items_under_promotion($promotion, $input['brand'], 'brand');
+                return Redirect()->route('prepare_promotion', ['pid' => $promotion->id]);
             }
 
-            return Redirect::route('promotions.index');
+            return Redirect::route('items.index', ['pid' => $promotion->id]);
         }
 
         return Redirect::route('promotions.create')
@@ -127,11 +133,13 @@ class PromotionsController extends Controller {
      * @return Response
      */
     public function edit($id) {
+        
         $data = array();
-        $data['record'] = Promotion::find($id);
-
+        $data['record'] = Promotion::findOrFail($id);
+        
         $form = $this->gform->set_form(AppForms::form_promotion(), $data['record']);
         $form['form_name'] = 'pv_edit_promotion';
+        $form['submit'] = 'Save';
         $data['form_edit'] = $this->formHtmlJq->create_form($form);
         return View::make('admin.promotions.edit', $data);
     }
@@ -152,6 +160,7 @@ class PromotionsController extends Controller {
         if ($status['status']) {
             $promotion = Promotion::find($id);
             $promotion->update($status['input']);
+            
             if ($input['level_of_promotions'] == 'Category') {
                 $this->item->insert_items_under_promotion($promotion, $input['category'], 'category');
             }

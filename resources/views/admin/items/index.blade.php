@@ -6,6 +6,9 @@
 
 <div class="right_col" role="main">
 
+    @if(!$item_edit_mode_view)
+    <?php echo App\Temp::step_progress('step_2'); ?>
+    @endif
 
 
     @if(isset($promotion))
@@ -13,7 +16,8 @@
         <div class="x_panel">
 
             <div class="x_title">
-                <h2>Promotion Items</h2>
+                <h3 class="pull-left">Add Promoted Items</h3>
+                <a href="#" class="btn btn-info pull-right">Click here to add multiple items.</a>
                 <div class="clearfix"></div>
             </div>
 
@@ -77,9 +81,16 @@
                 <div class="col-sm-12">
                     <input type="hidden" name="promotions_id" value="{{ $promotion->id }}">
                     <input type="hidden" name="action" value="pv_create_item_tbform">
-                    <?php echo $button_update_promotion_status; ?>
-                    <button class="btn btn-primary pull-right">Save</button>
-                    <button type="button" class="btn btn-primary add-item pull-right">+</button>    
+                    <?php // echo $button_update_promotion_status; ?>
+
+                    <a type="button" class="btn btn-primary add-item pull-left">Add Item [+]</a>
+                    
+                    @if($item_edit_mode_view)
+                    <input type="submit" name="item_edit_mode_view"  class="btn btn-danger prepare-promotions-results pull-right" value="Save">
+                    @else
+                    <button type="submit" class="btn btn-danger prepare-promotions-results pull-right">Prepare Promotions Results <i class="fa fa-angle-double-right" aria-hidden="true"></i></button>
+                    @endif
+                    
                 </div>
             </div>
 

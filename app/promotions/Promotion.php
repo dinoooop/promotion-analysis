@@ -8,6 +8,7 @@ use App\Dot;
 use App\Merge;
 use App\Calendar;
 use App\Temp;
+use App\Stock;
 
 class Promotion extends Model {
 
@@ -183,6 +184,7 @@ class Promotion extends Model {
         $input->promotions_startdate = date('m/d/Y', strtotime($input->promotions_startdate));
         $input->promotions_enddate = date('m/d/Y', strtotime($input->promotions_enddate));
         $input->button_result = Temp::button_result($input);
+        $input->status = Stock::get_value('status', $input->status);
         return $input;
     }
 

@@ -2,10 +2,17 @@
 
 namespace App;
 
-
 use App\Redshift\Pgquery;
 
 class Stock {
+
+    public static function get_value($stock_key, $return_key) {
+        $stock = self::get($stock_key);
+        if (!is_array($stock)) {
+            return false;
+        }
+        return isset($stock[$return_key]) ? $stock[$return_key] : false;
+    }
 
     public static function get($key) {
 
@@ -59,7 +66,7 @@ class Stock {
                 break;
 
             case 'retailer':
-                
+
                 return Pgquery::get_distinct_column_values('retailer');
                 break;
 
@@ -144,15 +151,14 @@ class Stock {
 
             case 'status':
                 $return = [
-                    'sleep', // (setting user) do not process the promotion
-                    'active', // (setting user) execute only this promotion
-                    'processing', // (set by pgm) Promotion go through the calculation
-                    'completed', // (set by pgm) calculation completed 
-                    'failed', // calculation failed
+                    'active' => 'Not Processed', // (setting user) On submit the promotion
+                    'processing' => 'In-Progress', // (set by pgm) Promotion go through the calculation (do not allow edit on this mode)
+                    'completed' => 'Completed', // (set by pgm) calculation completed 
+                    'failed' => 'Needs Attention', // (set by pgm) calculation failed
                 ];
-                return array_combine($return, $return);
+                return $return;
                 break;
-            
+
             case 'material_id':
                 return Pgquery::get_distinct_column_values('material_id');
                 break;
@@ -195,8 +201,6 @@ AND ms.date_day BETWEEN '{$start_date}' AND '{$end_date}'";
 
         return $sql;
     }
-
-    
 
     public static function psql_dayily_pos_bkp01($material_id, $start_date, $end_date) {
 

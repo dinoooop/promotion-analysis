@@ -60,10 +60,13 @@ class MultiplesController extends Controller {
 
         $data = [];
 
-        $form = $this->gform->set_form(AppForms::form_multiple());
+        $form = $this->gform->set_form(AppForms::form_multiple_promotion());
         $form['form_name'] = 'pv_create_multiple';
-
-        $data['form_create'] = $this->formHtmlJq->create_form($form);
+        $data['form_multiple_promotion'] = $this->formHtmlJq->create_form($form);
+        
+        $form = $this->gform->set_form(AppForms::form_multiple_items());
+        $form['form_name'] = 'pv_create_multiple';
+        $data['form_multiple_items'] = $this->formHtmlJq->create_form($form);
 
         return View::make('admin.multiples.create', $data);
     }
@@ -74,8 +77,7 @@ class MultiplesController extends Controller {
      * @return Response
      */
     public function store(Request $request) {
-
-
+        
         $store_info = Dot::save_as_csv($request, 'multiple_promotion_csv');
 
         if (!$store_info['status']) {
@@ -89,7 +91,7 @@ class MultiplesController extends Controller {
         $input['file'] = $store_info['file_name'];
         $input['type'] = $request->type;
         
-        print_r($input);
+       
 
         $info = $this->import->inject($input['file'], $input['type']);
 

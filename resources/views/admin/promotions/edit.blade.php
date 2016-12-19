@@ -14,7 +14,7 @@
                 
                 
                 <div class="x_title">
-                    <h2>Edit Promotions</h2>
+                    <h3>Edit Promotions</h3>
                     <div class="clearfix"></div>
                 </div>
                 

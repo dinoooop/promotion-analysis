@@ -13,7 +13,6 @@ class Temp {
             return false;
         }
         ob_start();
-        
         ?><a href="<?php echo route('results.index', array('pid' => $promotion->id)); ?>" class="btn btn-info"><i class="fa fa-pie-chart" aria-hidden="true"></i></a><?php
         $html = ob_get_contents();
         ob_end_clean();
@@ -72,6 +71,66 @@ class Temp {
             <td><input type="text" name="new[<?php echo $id; ?>][10]" value="" class="form-control"></td>
             <td><button class="btn btn-danger remove-item-row"><i class="fa fa-trash"></i></button></td>
         </tr>
+        <?php
+        $html = ob_get_contents();
+        ob_end_clean();
+        return $html;
+    }
+
+    public static function step_progress($active_step) {
+        $steps_status = ['complete', 'active', 'disabled'];
+        $steps = ['step_1', 'step_2', 'step_3', 'step_4'];
+
+        $set_steps = [];
+
+        foreach ($steps as $value) {
+            if ($value == $active_step) {
+                $set_steps[$value] = 'active';
+            } elseif (in_array('active', $set_steps)) {
+                $set_steps[$value] = 'disabled';
+            } else {
+                $set_steps[$value] = 'complete';
+            }
+        }
+        
+
+        ob_start();
+        ?>
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <!-- start progress -->
+                <div class="row bs-wizard" style="border-bottom:0;">
+                    <div class="col-xs-3 bs-wizard-step <?php echo $set_steps['step_1']; ?>">
+                        <div class="text-center bs-wizard-stepnum">Step 1</div>
+                        <div class="progress"><div class="progress-bar"></div></div>
+                        <a href="#" class="bs-wizard-dot"></a>
+                        <div class="bs-wizard-info text-center">Create promotion</div>
+                    </div>
+
+                    <div class="col-xs-3 bs-wizard-step <?php echo $set_steps['step_2']; ?>">
+                        <div class="text-center bs-wizard-stepnum">Step 2</div>
+                        <div class="progress"><div class="progress-bar"></div></div>
+                        <a href="#" class="bs-wizard-dot"></a>
+                        <div class="bs-wizard-info text-center">Add promoted items</div>
+                    </div>
+
+                    <div class="col-xs-3 bs-wizard-step <?php echo $set_steps['step_3']; ?>">
+                        <div class="text-center bs-wizard-stepnum">Step 3</div>
+                        <div class="progress"><div class="progress-bar"></div></div>
+                        <a href="#" class="bs-wizard-dot"></a>
+                        <div class="bs-wizard-info text-center">Prepare promotions results</div>
+                    </div>
+
+                    <div class="col-xs-3 bs-wizard-step <?php echo $set_steps['step_4']; ?>">
+                        <div class="text-center bs-wizard-stepnum">Step 4</div>
+                        <div class="progress"><div class="progress-bar"></div></div>
+                        <a href="#" class="bs-wizard-dot"></a>
+                        <div class="bs-wizard-info text-center"> Promotions results</div>
+                    </div>
+                </div>
+                <!-- end progress  -->
+            </div>
+        </div>
         <?php
         $html = ob_get_contents();
         ob_end_clean();

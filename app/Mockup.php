@@ -39,8 +39,8 @@ class Mockup {
                 $this->promotion = $promotion;
                 echo "Promotion started for ID : {$this->promotion->id} \n";
                 if ($this->run_validity()) {
+                    Promotion::update_promotion_status($this->promotion->id, 'processing');
                     $this->merge->reset_records($this->promotion->id);
-
                     $this->item_chunk();
                     Promotion::update_promotion_status($this->promotion->id, 'completed');
                 }

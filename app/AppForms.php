@@ -338,27 +338,50 @@ class AppForms {
      * Create a form to import csv file (promotions)
      * @return array
      */
-    public static function form_multiple() {
+    public static function form_multiple_promotion() {
         return array(
             'form_name' => 'form_multiple',
-            'submit' => 'Import',
+            'submit' => 'Start Import <i class="fa fa-upload" aria-hidden="true"></i>',
             'fields' => array(
                 array(
                     'type' => 'file_upload',
                     'name' => 'multiple_promotion_csv',
-                    'label' => 'Upload File',
+                    'label' => 'Upload promotion (csv)',
                     'description' => 'Upload your csv file here. '
-                    . '<br /> Download csv template for promotions - <a href="' . asset('downloads/template-promotions.csv') . '">CSV Template (Promotions)</a>'
-                    . '<br /> Download csv template for items - <a href="' . asset('downloads/template-items.csv') . '">CSV Template (Items)</a>',
+                    . '<br /><strong><a href="' . asset('downloads/template-promotions.csv') . '">Download promotions template (csv)</a></strong>',
                 ),
                 array(
-                    'type' => 'select',
+                    'type' => 'hidden',
                     'name' => 'type',
-                    'label' => 'File content type',
-                    'options' => [
-                        'promotions' => 'Promotions',
-                        'items' => 'Items'
-                    ],
+                    'value' => 'Promotions',
+                ),
+            ),
+        );
+    }
+
+    /**
+     * 
+     * 
+     * Create a form to import csv file (promotions)
+     * @return array
+     */
+    public static function form_multiple_items() {
+        return array(
+            'form_name' => 'form_multiple',
+            'submit' => 'Start Import <i class="fa fa-upload" aria-hidden="true"></i>',
+            'fields' => array(
+                array(
+                    'type' => 'file_upload',
+                    'name' => 'multiple_promotion_csv',
+                    'label' => 'Upload promotion (csv)',
+                    'description' => 'Upload your csv file here. '
+                    . '<br /><strong><a href="' . asset('downloads/template-items.csv') . '">Download item template (csv)</a></strong>'
+                    . '<br />Note: You don\'t need to upload promoted items for promotions that are across brand or category',
+                ),
+                array(
+                    'type' => 'hidden',
+                    'name' => 'type',
+                    'value' => 'Items',
                 ),
             ),
         );

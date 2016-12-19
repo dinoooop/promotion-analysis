@@ -36,5 +36,7 @@ Route::group([ 'prefix' => 'admin', 'middleware' => 'role'], function() {
     Route::get('ajax', 'AjaxController@index');
     Route::post('submit_promotion_multiple', 'PromotionsController@submit_promotion_multiple');
     
+    
+    Route::get('prepare-promotion', 'PagesController@prepare_result')->name('prepare_promotion');
 });
 
