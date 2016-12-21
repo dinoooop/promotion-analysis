@@ -42,7 +42,8 @@ class ItemsController extends Controller {
         $data = array();
 
         $input = Input::get();
-
+        $data['pagination_appends'] = $input;
+        
         $query = Item::orderBy('id', 'asc');
 
         if (isset($input['cvids'])) {
@@ -63,12 +64,14 @@ class ItemsController extends Controller {
         // Hide step view on edit mode 
         if (isset($input['hsv']) && $input['hsv'] == 1) {
             $data['item_edit_mode_view'] = true;
-        }else{
+        } else {
             $data['item_edit_mode_view'] = false;
         }
 
         $data['records'] = $query->paginate(50);
 
+        $data['display_message_items'] = (in_array($data['promotion']->level_of_promotions, ['Brand', 'Category'])) && ($data['records']->count() == 0);
+        
         return View::make('admin.items.index', $data);
     }
 
@@ -106,8 +109,7 @@ class ItemsController extends Controller {
      */
     public function store() {
         $input = Input::all();
-
-
+        
 
         if (isset($input['action']) && $input['action'] == 'pv_create_item_tbform') {
 
@@ -137,9 +139,9 @@ class ItemsController extends Controller {
                 foreach ($records as $key => $value) {
 
                     $value['promotions_id'] = $input['promotions_id'];
-                    
+
                     $value = $this->item->generate_item($value);
-                    
+
                     if (empty($value)) {
                         continue;
                     }
@@ -154,12 +156,16 @@ class ItemsController extends Controller {
                     }
                 }
             }
-            
-            if(isset($input['item_edit_mode_view'])){
+
+            if (isset($input['item_edit_mode_view'])) {
+                // Items edited on save mode - keep status same
+                return Redirect()->route('promotions.index');
+            }elseif (isset($input['re_run'])) {
+                Promotion::update_promotion_status($input['promotions_id'], 'active');
                 return Redirect()->route('promotions.index');
             }
 
-            Promotion::update_promotion_status($input['promotions_id'], 'active');
+            // Step by step flow
             return Redirect()->route('prepare_promotion', ['pid' => $input['promotions_id']]);
         } else {
             $input = $this->item->generate_item($input);

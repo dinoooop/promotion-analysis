@@ -55,6 +55,7 @@ class Temp {
     }
 
     public static function dynamic_table_form($id) {
+        $promotions_budget_type = Stock::get('promotions_budget_type');
         ob_start();
         ?>
         <tr>
@@ -65,11 +66,46 @@ class Temp {
             <td><input type="text" name="new[<?php echo $id; ?>][4]" value="" class="form-control"></td>
             <td><input type="text" name="new[<?php echo $id; ?>][5]" value="" class="form-control"></td>
             <td><input type="text" name="new[<?php echo $id; ?>][6]" value="" class="form-control"></td>
-            <td><input type="text" name="new[<?php echo $id; ?>][7]" value="" class="form-control"></td>
+            <td><select name="new[<?php echo $id; ?>][7]" class="form-control">
+                    <?php foreach ($promotions_budget_type as $key => $value): ?>
+                        <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
+                    <?php endforeach; ?>
+                </select></td>
             <td><input type="text" name="new[<?php echo $id; ?>][8]" value="" class="form-control"></td>
             <td><input type="text" name="new[<?php echo $id; ?>][9]" value="" class="form-control"></td>
             <td><input type="text" name="new[<?php echo $id; ?>][10]" value="" class="form-control"></td>
             <td><button class="btn btn-danger remove-item-row"><i class="fa fa-trash"></i></button></td>
+        </tr>
+        <?php
+        $html = ob_get_contents();
+        ob_end_clean();
+        return $html;
+    }
+
+    public static function dynamic_table_form_exist($record) {
+        $promotions_budget_type = Stock::get('promotions_budget_type');
+        ob_start();
+        ?>
+        <tr>
+            <td><input type="text" name="exist[<?php echo $record->id; ?>][0]" value="<?php echo $record->material_id ?>" class="form-control auto-complete" data-coll="material_id"></td>
+            <td><input type="text" name="exist[<?php echo $record->id; ?>][1]" value="<?php echo $record->asin ?>" class="form-control auto-complete" data-coll="asin"></td>
+            <td><input type="text" name="exist[<?php echo $record->id; ?>][2]" value="<?php echo $record->promotions_startdate ?>" class="form-control date-picker-tool"></td>
+            <td><input type="text" name="exist[<?php echo $record->id; ?>][3]" value="<?php echo $record->promotions_enddate ?>" class="form-control date-picker-tool"></td>
+            <td><input type="text" name="exist[<?php echo $record->id; ?>][4]" value="<?php echo $record->promotions_budget ?>" class="form-control"></td>
+            <td><input type="text" name="exist[<?php echo $record->id; ?>][5]" value="<?php echo $record->promotions_projected_sales ?>" class="form-control"></td>
+            <td><input type="text" name="exist[<?php echo $record->id; ?>][6]" value="<?php echo $record->promotions_expected_lift ?>" class="form-control"></td>
+            <td>
+                <select name="exist[<?php echo $record->id; ?>][7]" class="form-control">
+                    <?php foreach ($promotions_budget_type as $key => $value): ?>
+                        <?php $selected = ($value == $record->promotions_budget_type) ? 'selected' : ''; ?>
+                        <option value="<?php echo $key; ?>" <?php echo $selected; ?>><?php echo $value; ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </td>
+            <td><input type="text" name="exist[<?php echo $record->id; ?>][8]" value="<?php echo $record->funding_per_unit ?>" class="form-control"></td>
+            <td><input type="text" name="exist[<?php echo $record->id; ?>][9]" value="<?php echo $record->forecasted_qty ?>" class="form-control"></td>
+            <td><input type="text" name="exist[<?php echo $record->id; ?>][10]" value="<?php echo $record->forecasted_unit_sales ?>" class="form-control"></td>
+            <td><a class="btn btn-danger row-delete-no-alert" href="<?php echo route('items.destroy', array($record->id))?>" data-modal_id="<?php echo $record->id?>"><i class="fa fa-trash"></i></a></td>
         </tr>
         <?php
         $html = ob_get_contents();
@@ -92,7 +128,7 @@ class Temp {
                 $set_steps[$value] = 'complete';
             }
         }
-        
+
 
         ob_start();
         ?>

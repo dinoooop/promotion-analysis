@@ -71,6 +71,11 @@ td.action {
 .right_col p {
     color:#2A3F54;
 }
+.right_col p.error {
+    color: #f00;
+}
+
+
 
 /* Create Promotion Progress */
 .bs-wizard {margin-top: 15px; margin-bottom: 15px;}

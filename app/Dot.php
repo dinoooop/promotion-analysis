@@ -157,9 +157,18 @@ class Dot {
         Log::info($contents);
     }
 
-    public static function sanitize_numeric($key, $input) {
+    public static function sanitize_numeric($key, $input = null, $round = 2) {
+        
+        // If input not exist key is an integer given to round
+        if(is_null($input)){
+            if(is_numeric($key)){
+                return round($key, $round);
+            }
+            
+        }
+        
         if (isset($input[$key]) && is_numeric($input[$key])) {
-            return $input[$key];
+            return round($input[$key], $round);
         }
 
         return null;
@@ -265,16 +274,16 @@ class Dot {
         }
         return NULL;
     }
-    
+
     public static function save_as_csv($input, $field) {
-        
+
         if (!$input->hasFile($field)) {
             $error['message'][] = 'CSV not attached';
             $error['status'] = false;
             return $error;
         }
-        
-        
+
+
         $allow_extension = ['csv', 'txt'];
         $extention = $input->file($field)->extension();
         if (!in_array($extention, $allow_extension)) {
@@ -282,8 +291,8 @@ class Dot {
             $error['status'] = false;
             return $error;
         }
-        
-        
+
+
         $title = pathinfo($input->file($field)->getClientOriginalName())['filename'];
         $file_name = date('Y-m-d-h-i-s') . rand(1000, 9999) . '.csv';
         $path = $input->file($field)->storeAs('csv', $file_name);

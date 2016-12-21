@@ -111,6 +111,14 @@ class Stock {
                 ];
                 return array_combine($return, $return);
                 break;
+            case 'promotions_budget_type':
+                $return = [
+                    'Checkbook',
+                    'ITPF',
+                    'Other',
+                ];
+                return array_combine($return, $return);
+                break;
 
             case 'level_of_promotions':
                 $return = [
@@ -151,10 +159,11 @@ class Stock {
 
             case 'status':
                 $return = [
-                    'active' => 'Not Processed', // (setting user) On submit the promotion
-                    'processing' => 'In-Progress', // (set by pgm) Promotion go through the calculation (do not allow edit on this mode)
-                    'completed' => 'Completed', // (set by pgm) calculation completed 
-                    'failed' => 'Needs Attention', // (set by pgm) calculation failed
+                    'sleep' => 'Not Processed', // Non active promotion. May be waiting for items of a category or brand
+                    'active' => 'Not Processed', // On submit the promotion
+                    'processing' => 'In-Progress', // Promotion go through the calculation (do not allow edit on this mode)
+                    'completed' => 'Completed', // calculation completed 
+                    'failed' => 'Needs Attention',  //calculation failed
                 ];
                 return $return;
                 break;

@@ -38,40 +38,9 @@ class TestController extends BaseController {
     }
 
     function test() {
+        $this->rawdata->find_items();
         
-        $input = [
-            'promotions_name' => 'Graco Black Friday',
-            'promotions_description' => 'All BF products with promotions',
-            'promotions_startdate' => '07/12/2016',
-            'promotions_enddate' => '07/12/2016',
-            'retailer' => '',
-            'retailer_country_id' => '',
-            'retailer_country' => 'US',
-            'newell_status' => 'Approved',
-            'promotions_status' => 'Not Started',
-            'promotions_type' => 'Price Discount',
-            'level_of_promotions' => 'Brand',
-            'marketing_type' => 'Price Promotion',
-            'annivarsaried' => 0,
-            'promotions_budget' => 0,
-            'promotions_projected_sales' => '25',
-            'promotions_expected_lift',
-            'promotions_budget_type' => '',
-            'brand_id' => '',
-            'brand' => 'Graco',
-            'category' => '',
-            'product_family' => '',
-            'product_line' => '',
-            'division' => 'Baby',
-            'status' => 'active',
-        ];
-        $status = Promotion::status($input);
-        if ($status['status']) {
-            echo "inserted";
-            Promotion::create($status['input']);
-        } else {
-            echo '<pre>', print_r($status['validation']->errors()), '</pre>';
-        }
+        
     }
 
     function test_child_items_input() {

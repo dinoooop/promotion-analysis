@@ -29,6 +29,7 @@ class Mockup {
     function __construct() {
         $this->calendar = new Calendar;
         $this->merge = new Merge;
+        $this->item = new Item;
     }
 
     function promotion_chunk() {
@@ -37,16 +38,27 @@ class Mockup {
         Promotion::whereRaw("status ='active' AND newell_status = 'Approved'")->orderBy('id')->chunk(100, function ($promotions) {
             foreach ($promotions as $promotion) {
                 $this->promotion = $promotion;
+                $this->items_count = 0;
                 echo "Promotion started for ID : {$this->promotion->id} \n";
                 if ($this->run_validity()) {
                     Promotion::update_promotion_status($this->promotion->id, 'processing');
                     $this->merge->reset_records($this->promotion->id);
                     $this->item_chunk();
-                    Promotion::update_promotion_status($this->promotion->id, 'completed');
+//                    Promotion::update_promotion_status($this->promotion->id, 'completed');
                 }
+                $this->update_process_status();
                 echo "Promotion ends for ID    : {$this->promotion->id} \n";
             }
         });
+    }
+
+    function update_process_status() {
+        if ($this->items_count == 0 && in_array($this->promotion->level_of_promotions, ['Brand', 'Category'])) {
+            // Keep status active
+            // Promotion::update_promotion_status($this->promotion->id, 'active');
+        } else {
+            Promotion::update_promotion_status($this->promotion->id, 'completed');
+        }
     }
 
     /**
@@ -64,8 +76,11 @@ class Mockup {
 
     function item_chunk() {
 
+
         Item::where('promotions_id', $this->promotion->id)->orderBy('id')->chunk(100, function ($items) {
+            $this->items_count = $items->count() + $this->items_count;
             echo "Promotion id {$this->promotion->id} count child items {$items->count()} \n";
+
             foreach ($items as $item) {
                 $this->item = $item;
                 $input = $this->set_input_array();
@@ -164,6 +179,20 @@ class Mockup {
 
         echo "Execution end for child item id {$this->spinput->promo_child_id} \n";
         return true;
+    }
+
+    /**
+     * 
+     * Find items for category level and brand level
+     */
+    function find_items() {
+        Promotion::whereRaw("level_of_promotions ='Category' OR level_of_promotions ='Brand'")->orderBy('id')->chunk(100, function ($promotions) {
+            echo "There are {$promotions->count()} records for execute \n";
+            foreach ($promotions as $promotion) {
+
+                $this->item->insert_items_under_promotion($promotion);
+            }
+        });
     }
 
 }

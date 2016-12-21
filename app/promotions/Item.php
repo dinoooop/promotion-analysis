@@ -86,10 +86,10 @@ class Item extends Model {
 //            'reference',
         ];
     }
+
     public static function store_rules_update($param) {
         return [
             'promotions_id' => 'required',
-            
 //            'asin' => '',
 //            'rtl_id',
 //            'product_name',
@@ -117,12 +117,12 @@ class Item extends Model {
         $input = Dot::empty_strings2null($input);
         $input = self::sanitize($input);
 
-        if(is_null($update)){
+        if (is_null($update)) {
             $validation = Validator::make($input, self::store_rules($input), self::$messages);
-        }else{
+        } else {
             $validation = Validator::make($input, self::store_rules_update($input), self::$messages);
         }
-        
+
         if ($validation->passes()) {
             return ['status' => true, 'input' => $input];
         } else {
@@ -229,18 +229,16 @@ class Item extends Model {
      * 
      * Category level promotion may not contain items, create items
      */
-    function insert_items_under_promotion($promotion, $param, $type) {
+    function insert_items_under_promotion($promotion) {
 
         if ($this->have_child_items($promotion)) {
             return true;
         }
 
-        if ($type == 'category') {
-            $records = Pgquery::get_items_category($param);
-        }
-
-        if ($type == 'brand') {
-            $records = Pgquery::get_items_brand($param);
+        if ($promotion->level_of_promotions == 'Category') {
+            $records = Pgquery::get_items_category($promotion->category);
+        } elseif ($promotion->level_of_promotions == 'Brand') {
+            $records = Pgquery::get_items_brand($promotion->brand);
         }
 
         foreach ($records as $key => $record) {
@@ -251,7 +249,7 @@ class Item extends Model {
             }
         }
 
-        $this->set_have_child_items($promotion, $type);
+        $this->set_have_child_items($promotion);
     }
 
     /**
@@ -265,14 +263,26 @@ class Item extends Model {
 
         if ($option) {
 
-            if (isset($option['category']) && $option['category'] == $promotion->category) {
-                // child item exist for the category
-                return true;
+            if ($promotion->level_of_promotions == 'Category') {
+                if (isset($option['category']) && $option['category'] == $promotion->category) {
+                    
+                    echo "child item exist for the category \n";
+                    return true;
+                } else {
+                    echo "Its look like new category, So remove old items \n";
+                    Item::where('promotions_id', $promotion->id)->delete();
+                    return false;
+                }
             }
-
-            if (isset($option['brand']) && $option['brand'] == $promotion->brand) {
-                // child item exist for the brand
-                return true;
+            if ($promotion->level_of_promotions == 'Brand') {
+                if (isset($option['brand']) && $option['brand'] == $promotion->brand) {
+                    // child item exist for the brand
+                    return true;
+                } else {
+                    // Its look like new brand, So remove old items
+                    Item::where('promotions_id', $promotion->id)->delete();
+                    return false;
+                }
             }
         }
         // child item doesn't exist
@@ -283,14 +293,13 @@ class Item extends Model {
      * 
      * Set or change option have_child_items_{n} value
      */
-    function set_have_child_items($promotion, $type) {
+    function set_have_child_items($promotion) {
         $mata_key = 'have_child_items_' . $promotion->id;
-        if ($type == 'category') {
+        if ($promotion->level_of_promotions == 'Category') {
             $value = [
                 'category' => $promotion->category
             ];
-        }
-        if ($type == 'brand') {
+        } elseif ($promotion->level_of_promotions == 'Brand') {
             $value = [
                 'brand' => $promotion->brand
             ];
@@ -306,6 +315,7 @@ class Item extends Model {
      * @param array $record
      */
     function prepare_redshift_item($promotion, $record) {
+        
 
         return [
             'promotions_id' => $promotion->id,

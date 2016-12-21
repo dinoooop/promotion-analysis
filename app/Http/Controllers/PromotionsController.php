@@ -54,7 +54,7 @@ class PromotionsController extends Controller {
             $data['page_heading'] = 'Promotion Results';
             $data['result_view_button'] = true;
             $query->where('status', 'completed');
-        }else{
+        } else {
             $data['page_heading'] = 'Promotion Overview';
             $data['result_view_button'] = false;
         }
@@ -88,18 +88,14 @@ class PromotionsController extends Controller {
     public function store() {
         $input = Input::all();
 
+
         $status = Promotion::status($input);
 
         if ($status['status']) {
-
             $status['input']['status'] = 'sleep';
             $promotion = Promotion::create($status['input']);
 
-            if ($input['level_of_promotions'] == 'Category') {
-                //$this->item->insert_items_under_promotion($promotion, $input['category'], 'category');
-                return Redirect()->route('prepare_promotion', ['pid' => $promotion->id]);
-            } elseif ($input['level_of_promotions'] == 'Brand') {
-                //$this->item->insert_items_under_promotion($promotion, $input['brand'], 'brand');
+            if (in_array($input['level_of_promotions'], ['Category', 'Brand'])) {
                 return Redirect()->route('prepare_promotion', ['pid' => $promotion->id]);
             }
 
@@ -133,13 +129,14 @@ class PromotionsController extends Controller {
      * @return Response
      */
     public function edit($id) {
-        
+
         $data = array();
         $data['record'] = Promotion::findOrFail($id);
-        
+
         $form = $this->gform->set_form(AppForms::form_promotion(), $data['record']);
         $form['form_name'] = 'pv_edit_promotion';
         $form['submit'] = 'Save';
+        $form['hide_submit_button'] = true;
         $data['form_edit'] = $this->formHtmlJq->create_form($form);
         return View::make('admin.promotions.edit', $data);
     }
@@ -155,19 +152,32 @@ class PromotionsController extends Controller {
 
         $input = Input::all();
 
-        $status = Promotion::status($input);
+        $promotion = Promotion::find($id);
 
-        if ($status['status']) {
-            $promotion = Promotion::find($id);
-            $promotion->update($status['input']);
+        // Promotion Save for edit
+        if (isset($input['save'])) {
+            $input['status'] = $promotion->status;
+            $status = Promotion::status($input);
+
+            if ($status['status']) {
+
+                $promotion->update($status['input']);
+                $this->item->have_child_items($promotion);
+
+                return Redirect::route('promotions.index');
+            }
+        } elseif (isset($input['re_run'])) {
+            // Promotion Save for RE-RUN
             
-            if ($input['level_of_promotions'] == 'Category') {
-                $this->item->insert_items_under_promotion($promotion, $input['category'], 'category');
+            $input['status'] = 'active';
+            $status = Promotion::status($input);
+            if ($status['status']) {
+                $promotion = Promotion::find($id);
+                $promotion->update($status['input']);
+                $this->item->have_child_items($promotion);
+
+                return Redirect::route('promotions.index');
             }
-            if ($input['level_of_promotions'] == 'Brand') {
-                $this->item->insert_items_under_promotion($promotion, $input['brand'], 'brand');
-            }
-            return Redirect::route('promotions.index');
         }
 
         return Redirect::route('promotions.edit', $id)

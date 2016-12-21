@@ -31,9 +31,10 @@
                 @endif
 
                 <div class="row">
-                    <div class="col-md-6 col-sm-12">
+                    <div class="col-sm-12">
                         {{ Form::open(array('route' => 'promotions.store', 'id' => 'pv_create_promotion', 'class'=>'normal_form')) }}
                         <?php echo $form_create; ?>
+                        <p class="col-sm-12 form-error-msg-submit error"></p>
                         {{ Form::close() }}
                     </div>
                     

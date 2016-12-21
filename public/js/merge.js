@@ -15,12 +15,8 @@ $.fn.extend({
         }
     },
     fieldMsgError: function (msg) {
-        var $next = $(this).next();
-        var class_name = $next.attr("class");
-        if (class_name == "error") {
-            $next.html(msg);
-        } else {
-            $(this).after('<p class="error">' + msg + '</p>');
-        }
+        var $formMsgPlace = $(".form-error-msg-submit");
+        $formMsgPlace.html(msg);
+        
     },
 });

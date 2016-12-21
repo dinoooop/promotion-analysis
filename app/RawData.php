@@ -28,6 +28,7 @@ class RawData {
     private $sdcalc;
     private $smaterial;
     private $printm;
+    private $mockup;
 
     public function __construct() {
         $this->calendar = new Calendar;
@@ -35,13 +36,33 @@ class RawData {
         $this->mockup = new Mockup;
     }
 
+    /**
+     * 
+     * Execute promotion analysis calculation (Cron Job)
+     */
     function process() {
         
+        echo "Cron Name : Promotion analysis calculation \n";
         echo "Cron Start time " . date('Y-m-d H:i:s') . "\n";
         Config::set('database.fetch', \PDO::FETCH_ASSOC);
         $this->mockup->promotion_chunk();
         echo "Cron end time " . date('Y-m-d H:i:s') . "\n";
         echo "------------------------------------------------------------------\n";
+    }
+    
+    /**
+     * 
+     * Cron job
+     * Find items for category level and brand level
+     */
+    function find_items() {
+        echo "Cron Name : Find items for category level and brand level \n";
+        echo "Cron Start time " . date('Y-m-d H:i:s') . "\n";
+        
+        $this->mockup->find_items();
+        echo "Cron end time " . date('Y-m-d H:i:s') . "\n";
+        echo "------------------------------------------------------------------\n";
+    
     }
 
     /**

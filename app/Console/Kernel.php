@@ -29,8 +29,10 @@ class Kernel extends ConsoleKernel {
         $logfile = storage_path('logs/promotions.log');
         if (env('CRON_TIME') == 'hourly') {
             $schedule->command('promo process')->hourly()->sendOutputTo($logfile);
+            $schedule->command('promo find_items')->everyFiveMinutes()->sendOutputTo($logfile);
         }else{
             $schedule->command('promo process')->everyMinute()->sendOutputTo($logfile);
+            $schedule->command('promo find_items')->everyFiveMinutes()->sendOutputTo($logfile);
         }
 
         $schedule->command('promo clear_promo_logs')->weekly()->sendOutputTo($logfile);

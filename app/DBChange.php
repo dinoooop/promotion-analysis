@@ -22,6 +22,7 @@ class DBChange {
         Schema::create($table_name, function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('promotions_name');
+            $table->string('status');
             $table->text('promotions_description')->nullable();
             $table->date('promotions_startdate');
             $table->date('promotions_enddate');
@@ -42,7 +43,6 @@ class DBChange {
             $table->string('brand')->nullable();
             $table->string('category')->nullable();
             $table->string('division')->nullable();
-            $table->string('status');
             $table->timestamps();
         });
     }

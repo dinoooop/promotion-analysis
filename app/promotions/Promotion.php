@@ -136,6 +136,9 @@ class Promotion extends Model {
      */
     public static function sanitize($input) {
 
+
+
+
         $default = [
             'retailer' => 'Amazon',
             'retailer_country' => 'US',

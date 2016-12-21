@@ -21,7 +21,10 @@ class FormHtmlJq {
             $html .= $this->form_group_html($field);
         }
 
-        $html .= $this->get_submit_button();
+        if (!isset($form['hide_submit_button']) || $form['hide_submit_button'] == false) {
+            $html .= $this->get_submit_button();
+        }
+
 
         return $html;
     }
@@ -32,7 +35,7 @@ class FormHtmlJq {
 
         ob_start();
 
-        $col = (isset($col) && $col == 6) ? '<div class="col-sm-6 col-md-6">' : '<div class="col-sm-12 col-md-12">';
+        $col = (!isset($col) || $col == 6) ? '<div class="col-sm-6 col-md-6">' : '<div class="col-sm-' . $col . '">';
 
         switch ($type):
 
@@ -152,16 +155,20 @@ class FormHtmlJq {
                 $checked = (isset($value) && $value == 1) ? 'checked' : '';
                 ?>
                 <?php echo $col; ?>
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox"  value="1" name="<?php echo $name; ?>" <?php echo $checked; ?>> <?php echo $label ?>
-                    </label>
+                <div class="form-group">
+                    <label class="control-label"><?php echo $label ?></label>
+                    <div class="checkbox">
+
+                        <label>
+                            <input type="checkbox"  value="1" name="<?php echo $name; ?>" <?php echo $checked; ?>> <?php echo $label_checkbox ?>
+                        </label>
+                    </div>
                 </div>
                 <?php echo '</div>'; ?>
                 <?php
                 break;
-            
-            
+
+
 
             case 'hidden':
                 ?><input type="hidden" id="<?php echo $id ?>" name="<?php echo $name; ?>" value="<?php echo $value; ?>"><?php
@@ -188,7 +195,7 @@ class FormHtmlJq {
                 <?php
                 break;
             case 'file':
-                
+
                 $placeholder = ($placeholder != '') ? $placeholder : 'Upload';
                 echo Temp::upload_file($field);
                 ?>
@@ -210,8 +217,8 @@ class FormHtmlJq {
                 </div>
                 <?php
                 break;
-                
-                
+
+
 
             case 'clearfix':
                 echo '<div class="clearfix"></div>';
@@ -219,7 +226,6 @@ class FormHtmlJq {
 
             case 'date':
                 $value = (!isset($value) || $value == '') ? date('m/d/Y') : date('m/d/Y', strtotime($value));
-                
                 ?>
                 <?php echo $col; ?>
                 <div class="form-group">

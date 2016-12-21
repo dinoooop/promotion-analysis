@@ -11,11 +11,11 @@ $(function () {
 
         if (error) {
 
-            $form.find("[type='submit']").fieldMsgError('Error: Please fill the required fields with valid information.');
+            $form.fieldMsgError('Error: There are errors in your form.');
             e.preventDefault();
 
         } else {
-            $form.find("[type='submit']").fieldMsgError('');
+            $form.fieldMsgError('');
         }
     });
 
@@ -237,10 +237,13 @@ $(function () {
      */
 
     $(".prepare-promotions-results").click(function (e) {
-        var $firstRow = $("#item-content tr td:first-child input");
-        if ($firstRow.val() == '' || $firstRow.length == 0) {
-            swal("Oops!", "Please add items under this promotion!!!", "error");
-            e.preventDefault();
+        var $first_material_id = $("#item-content tr td:first-child input"); // Material id
+        var $ASIN = $("#item-content tr td:nth-child(2) input"); // Material id
+        if ($first_material_id.val() == '' || $first_material_id.length == 0) {
+            if ($ASIN.val() == '' || $ASIN.length == 0) {
+                swal("Oops!", "Please add items under this promotion!!!", "error");
+                e.preventDefault();
+            }
         }
     });
 

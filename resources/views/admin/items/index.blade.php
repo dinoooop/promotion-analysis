@@ -32,6 +32,9 @@
             </div>
             -->
 
+            @if($display_message_items)
+            <p>Please wait. System is processing items for this promotion... </p>
+            @else
             {{ Form::open(array('route' => 'items.store', 'id' => 'pv_create_item_tbform', 'class'=>'normal_form')) }}
             <div class="row">
                 <div class="col-sm-12">
@@ -57,20 +60,7 @@
 
                             @foreach ($records as $record)
                             <?php $record = App\promotions\Item::display_prepare($record) ?>
-                            <tr>
-                                <td><input type="text" name="exist[<?php echo $record->id; ?>][0]" value="{{ $record->material_id }}" class="form-control auto-complete" data-coll="material_id"></td>
-                                <td><input type="text" name="exist[<?php echo $record->id; ?>][1]" value="{{ $record->asin }}" class="form-control auto-complete" data-coll="asin"></td>
-                                <td><input type="text" name="exist[<?php echo $record->id; ?>][2]" value="{{ $record->promotions_startdate }}" class="form-control date-picker-tool"></td>
-                                <td><input type="text" name="exist[<?php echo $record->id; ?>][3]" value="{{ $record->promotions_enddate }}" class="form-control date-picker-tool"></td>
-                                <td><input type="text" name="exist[<?php echo $record->id; ?>][4]" value="{{ $record->promotions_budget }}" class="form-control"></td>
-                                <td><input type="text" name="exist[<?php echo $record->id; ?>][5]" value="{{ $record->promotions_projected_sales }}" class="form-control"></td>
-                                <td><input type="text" name="exist[<?php echo $record->id; ?>][6]" value="{{ $record->promotions_expected_lift }}" class="form-control"></td>
-                                <td><input type="text" name="exist[<?php echo $record->id; ?>][7]" value="{{ $record->promotions_budget_type }}" class="form-control"></td>
-                                <td><input type="text" name="exist[<?php echo $record->id; ?>][8]" value="{{ $record->funding_per_unit }}" class="form-control"></td>
-                                <td><input type="text" name="exist[<?php echo $record->id; ?>][9]" value="{{ $record->forecasted_qty }}" class="form-control"></td>
-                                <td><input type="text" name="exist[<?php echo $record->id; ?>][10]" value="{{ $record->forecasted_unit_sales }}" class="form-control"></td>
-                                <td><a class="btn btn-danger row-delete-no-alert" href="{{route('items.destroy', array($record->id))}}" data-modal_id="{{$record->id}}"><i class="fa fa-trash"></i></a></td>
-                            </tr>
+                            <?php echo App\Temp::dynamic_table_form_exist($record); ?>
                             @endforeach
                             <?php echo App\Temp::dynamic_table_form(0); ?>
                         </tbody>
@@ -79,22 +69,32 @@
             </div>
             <div class="row">
                 <div class="col-sm-12">
+                    <a type="button" class="btn btn-default btn-lg btn-block add-item">Add Item [+]</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
                     <input type="hidden" name="promotions_id" value="{{ $promotion->id }}">
                     <input type="hidden" name="action" value="pv_create_item_tbform">
                     <?php // echo $button_update_promotion_status; ?>
 
-                    <a type="button" class="btn btn-primary add-item pull-left">Add Item [+]</a>
+
                     
                     @if($item_edit_mode_view)
-                    <input type="submit" name="item_edit_mode_view"  class="btn btn-danger prepare-promotions-results pull-right" value="Save">
+                    
+                    <button type="submit" name="item_edit_mode_view" class="btn btn-primary">Save</button>
+                    <button type="submit" name="re_run" class="btn btn-danger">Re-run</button>
                     @else
                     <button type="submit" class="btn btn-danger prepare-promotions-results pull-right">Prepare Promotions Results <i class="fa fa-angle-double-right" aria-hidden="true"></i></button>
                     @endif
                     
+
                 </div>
             </div>
 
             {{ Form::close() }}
+            @endif
+
 
 
 
@@ -104,7 +104,7 @@
 
     <div class="row">
         <div class="col-md-12">
-            <div class="pull-right">{{ $records->appends(['pid' => $promotion->id])->links() }}</div>
+            <div class="pull-right">{{ $records->appends($pagination_appends)->links() }}</div>
         </div>
     </div>
 

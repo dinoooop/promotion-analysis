@@ -97,14 +97,15 @@ class Swcalc extends Model {
             $records_quarter = $this->basic_quarter_data();
             $quarter = $this->calendar->get_quarter_info($raw['quarter']);
 
-
             $raw['quarter_ordered_amount'] = $this->merge->safe_division($records_quarter['ordered_amount'], $quarter['week_count']);
             $raw['normalized_ordered_amount'] = $this->calc('normalized_ordered_amount', $raw);
+
             $raw['quarter_ordered_units'] = $this->merge->safe_division($records_quarter['ordered_units'], $quarter['week_count'], true);
             $raw['normalized_ordered_units'] = $this->calc('normalized_ordered_units', $raw);
 
             $raw['quarter_pos_sales'] = $this->merge->safe_division($records_quarter['pos_sales'], $quarter['week_count']);
             $raw['normalized_pos_sales'] = $this->calc('normalized_pos_sales', $raw);
+
             $raw['quarter_pos_units'] = $this->merge->safe_division($records_quarter['pos_units'], $quarter['week_count'], true);
             $raw['normalized_pos_units'] = $this->calc('normalized_pos_units', $raw);
 
@@ -117,10 +118,11 @@ class Swcalc extends Model {
         switch ($find) {
             case 'normalized_ordered_amount':
                 if ($input['ordered_amount'] > (1 + $this->spinput->baseline_threshold) * $input['quarter_ordered_amount']) {
-                    return $input['quarter_ordered_amount'];
+                    $value = $input['quarter_ordered_amount'];
                 } else {
-                    return $input['ordered_amount'];
+                    $value = $input['ordered_amount'];
                 }
+                return Dot::sanitize_numeric($value);
                 break;
             case 'normalized_ordered_units':
                 if ($input['ordered_units'] > (1 + $this->spinput->baseline_threshold) * $input['quarter_ordered_units']) {
@@ -132,10 +134,11 @@ class Swcalc extends Model {
 
             case 'normalized_pos_sales':
                 if ($input['pos_sales'] > (1 + $this->spinput->baseline_threshold) * $input['quarter_pos_sales']) {
-                    return $input['quarter_pos_sales'];
+                    $value = $input['quarter_pos_sales'];
                 } else {
-                    return $input['pos_sales'];
+                    $value = $input['pos_sales'];
                 }
+                return Dot::sanitize_numeric($value);
                 break;
 
             case 'normalized_pos_units':
@@ -172,9 +175,10 @@ class Swcalc extends Model {
      * @return type
      */
     function get_avg_column($column, $start_date, $end_date) {
-        return self::whereBetween('week', [$start_date, $end_date])
-                        ->where('promo_child_id', $this->spinput->promo_child_id)
-                        ->avg($column);
+        $return = self::whereBetween('week', [$start_date, $end_date])
+                ->where('promo_child_id', $this->spinput->promo_child_id)
+                ->avg($column);
+        return Dot::sanitize_numeric($return);
     }
 
     /**
@@ -187,8 +191,9 @@ class Swcalc extends Model {
         if (empty($ids)) {
             return 0;
         }
-        return self::whereIn('id', $ids)
-                        ->avg($column);
+        $return = self::whereIn('id', $ids)
+                ->avg($column);
+        return Dot::sanitize_numeric($return);
     }
 
 }

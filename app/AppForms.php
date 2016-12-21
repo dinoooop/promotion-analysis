@@ -82,15 +82,21 @@ class AppForms {
                     'label' => 'Promotions Name',
                 ),
                 array(
+                    'type' => 'auto_complete',
+                    'name' => 'retailer',
+                    'label' => 'Retailer',
+                    'default' => 'Amazon',
+                ),
+                array(
                     'type' => 'textarea',
                     'name' => 'promotions_description',
                     'label' => 'Promotions Description',
+                    'col' => 12,
                 ),
                 array(
                     'type' => 'date',
                     'name' => 'promotions_startdate',
                     'label' => 'Promotions start date',
-                    'col' => 6,
                 ),
                 array(
                     'type' => 'date',
@@ -98,17 +104,11 @@ class AppForms {
                     'label' => 'Promotions end date',
                     'col' => 6,
                 ),
-                array(
-                    'type' => 'auto_complete',
-                    'name' => 'retailer',
-                    'label' => 'Retailer',
-                    'default' => 'Amazon',
-                ),
-                array(
-                    'type' => 'text',
-                    'name' => 'retailer_country_id',
-                    'label' => 'Retailer Country Id',
-                ),
+//                array(
+//                    'type' => 'text',
+//                    'name' => 'retailer_country_id',
+//                    'label' => 'Retailer Country Id',
+//                ),
                 array(
                     'type' => 'select',
                     'name' => 'retailer_country',
@@ -122,12 +122,6 @@ class AppForms {
                     'label' => 'Newell Status',
                     'options' => Stock::get('newell_status'),
                     'default' => 'approved'
-                ),
-                array(
-                    'type' => 'select',
-                    'name' => 'promotions_status',
-                    'label' => 'Promotions Status',
-                    'options' => Stock::get('promotions_status'),
                 ),
                 array(
                     'type' => 'select',
@@ -148,31 +142,24 @@ class AppForms {
                     'options' => Stock::get('marketing_type'),
                 ),
                 array(
-                    'type' => 'boolean_checkbox',
-                    'name' => 'annivarsaried',
-                    'label' => 'Annivarsaried',
-                ),
-                array(
                     'type' => 'number',
                     'name' => 'promotions_projected_sales',
-                    'label' => 'Promotions Projected Sales',
+                    'label' => 'Promotions Projected Sales ($)',
                     'step' => '0.01',
+                    'placeholder' => '$',
                 ),
                 array(
                     'type' => 'number',
                     'name' => 'promotions_expected_lift',
-                    'label' => 'Promotions Expected Lift',
+                    'label' => 'Promotions Expected Lift (%)',
                     'step' => '0.01',
+                    'placeholder' => '%',
                 ),
                 array(
-                    'type' => 'text',
+                    'type' => 'select',
                     'name' => 'promotions_budget_type',
                     'label' => 'Promotions Budget Type',
-                ),
-                array(
-                    'type' => 'text',
-                    'name' => 'brand_id',
-                    'label' => 'Brand Id',
+                    'options' => Stock::get('promotions_budget_type'),
                 ),
                 array(
                     'type' => 'auto_complete',
@@ -198,6 +185,12 @@ class AppForms {
                     'type' => 'auto_complete',
                     'name' => 'division',
                     'label' => 'Division',
+                ),
+                array(
+                    'type' => 'boolean_checkbox',
+                    'name' => 'annivarsaried',
+                    'label_checkbox' => 'YES',
+                    'label' => 'Is this promotion annivarsaried?',
                 ),
 //                        array(
 //                            'type' => 'select',

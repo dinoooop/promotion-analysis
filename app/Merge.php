@@ -10,6 +10,7 @@ use App\promotions\Configuration;
 use App\Sdcalc;
 use App\Swcalc;
 use App\Spod;
+use App\Dot;
 
 class Merge {
 
@@ -72,7 +73,7 @@ class Merge {
         if ($round) {
             return round($numerator / $denominator);
         }
-        return $numerator / $denominator;
+        return Dot::sanitize_numeric($numerator / $denominator);
     }
 
     function url($key, $param) {

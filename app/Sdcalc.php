@@ -45,10 +45,10 @@ class Sdcalc extends Model {
         $this->record_count = 0;
 
         $this->spinput = $input;
-        
+
 
         echo "On Sdcalc, records {$this->record_count} \n";
-        
+
         $quarters = $this->spinput->calendar_dates['all_quarters'];
 
         echo "total quarters " . count($quarters) . "\n";
@@ -61,7 +61,7 @@ class Sdcalc extends Model {
             $this->quarter = $this->calendar->get_quarter_info($quarter_id);
 
             $this->set_psql_where();
-            $sql = Pgquery::psql_dayily_pos($this->where_id, $this->where_date);
+            $sql = Pgquery::new_promotion_query($this->where_id, $this->where_date);
             $records = DB::connection('redshift')->select($sql);
 
             $this->record_count = count($records) + $this->record_count;
@@ -77,8 +77,6 @@ class Sdcalc extends Model {
                 $this->spinput->material_id = $this->record_one['material_id'];
             }
         }
-        
-        
     }
 
     function calc($find, $input) {
@@ -112,10 +110,13 @@ class Sdcalc extends Model {
         $row['week'] = $this->calendar->get_week_sat($record['date_day']);
         $row['quarter'] = $this->calendar->get_quarter_id($record['date_day']);
         $row['date_day'] = date('Y-m-d', strtotime($record['date_day']));
-        $row['ordered_amount'] = $record['ordered_amount'];
+        $row['ordered_amount'] = Dot::sanitize_numeric($record['ordered_amount'], null, 0);
         $row['ordered_units'] = $record['ordered_units'];
-        $row['pos_sales'] = $record['pos_sales'];
+        $row['pos_sales'] = Dot::sanitize_numeric($record['pos_sales'], null, 0);
         $row['pos_units'] = $record['pos_units'];
+        $row['invoice_amounts'] = Dot::sanitize_numeric($record['invoice_sales']);
+        $row['invoice_units'] = Dot::sanitize_numeric($record['invoice_units']);
+        $row['invoice_cost'] = $this->merge->safe_division($row['invoice_amounts'], $row['invoice_units']) * Dot::sanitize_numeric($record['invoice_numerator']);
         return $row;
     }
 
@@ -137,21 +138,20 @@ class Sdcalc extends Model {
         self::where('promo_child_id', $this->spinput->promo_child_id)->orderBy('id')->chunk(100, function ($items) {
             foreach ($items as $item) {
                 $invoice = Pgquery::get_invoice($this->spinput->material_id, $item->date_day);
-                
-                if(empty($invoice)){
+
+                if (empty($invoice)) {
                     continue;
                 }
-                 
+
                 $row = [];
                 $row['invoice_amounts'] = Dot::sanitize_numeric('invoice_sales', $invoice);
                 $row['invoice_units'] = Dot::sanitize_numeric('invoice_units', $invoice);
                 $row['invoice_cost'] = $this->merge->safe_division($row['invoice_amounts'], $row['invoice_units']) * Dot::sanitize_numeric('invoice_numerator', $invoice);
                 self::where('id', $item->id)->update($row);
-                
             }
         });
     }
-    
+
     /**
      * 
      * 
