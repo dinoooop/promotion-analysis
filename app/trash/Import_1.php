@@ -5,7 +5,6 @@ namespace App;
 use Illuminate\Support\Facades\Log;
 use App\promotions\Promotion;
 use App\promotions\Item;
-use App\Plugins\PHPExcel\Classes\PHPExcel;
 
 class Import {
 
@@ -15,11 +14,6 @@ class Import {
     function __construct() {
         $this->promotion = new Promotion;
         $this->item = new Item;
-    }
-    
-    function test() {
-        $inputFileName = public_path('downloads/template-promotions.xlsx');
-        $inputFileType = PHPExcel_IOFactory::identify($inputFileName);
     }
 
     function inject($file, $type) {
