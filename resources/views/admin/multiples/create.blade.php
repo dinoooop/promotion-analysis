@@ -22,7 +22,7 @@
                     <?php echo implode('. ', $errors->all(':message')); ?>
                 </div>
                 @endif
-                
+
 
                 <div class="row">
                     <div class="col-md-12 col-sm-12">
@@ -32,14 +32,29 @@
                         {{ Form::open(array('route' => 'multiples.store', 'id' => 'pv_create_multiple', 'class'=>'normal_form', 'enctype' => 'multipart/form-data')) }}
                         <?php echo $form_multiple_promotion; ?>
                         {{ Form::close() }}
-                        <br>
+
+                    </div>
+                </div>        
+                <div class="row">
+                    <div class="col-sm-12">
+                        @if(isset($promotions))
+                        <div class="promotion-list-table">
+                            @include('admin/tmp/promotion_list_table', ['records' => $promotions])
+                        </div>
+                        @endif
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
                         <h2>Step 2: Add promoted items</h2>
                         {{ Form::open(array('route' => 'multiples.store', 'id' => 'pv_create_multiple', 'class'=>'normal_form', 'enctype' => 'multipart/form-data')) }}
                         <?php echo $form_multiple_items; ?>
                         {{ Form::close() }}
-                        
+
                     </div>
                 </div>
+
+
             </div>
         </div>
 

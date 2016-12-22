@@ -20,6 +20,7 @@ use App\promotions\Promotion;
 use App\promotions\Item;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Validator;
+use App\Import;
 
 class TestController extends BaseController {
 
@@ -35,10 +36,11 @@ class TestController extends BaseController {
         $this->promotion = new Promotion;
         $this->item = new Item;
         $this->sample = new Sample;
+        $this->import = new Import;
     }
 
     function test() {
-        $this->rawdata->find_items();
+        $this->import->test();
         
         
     }

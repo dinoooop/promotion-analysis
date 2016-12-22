@@ -1,6 +1,5 @@
 <?php
 
-namespace App;
 
 use Illuminate\Support\Facades\Log;
 use App\promotions\Promotion;

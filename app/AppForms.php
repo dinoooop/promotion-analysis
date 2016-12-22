@@ -338,7 +338,7 @@ class AppForms {
             'fields' => array(
                 array(
                     'type' => 'file_upload',
-                    'name' => 'multiple_promotion_csv',
+                    'name' => 'multiple_promotions',
                     'label' => 'Upload promotion (csv)',
                     'description' => 'Upload your csv file here. '
                     . '<br /><strong><a href="' . asset('downloads/template-promotions.csv') . '">Download promotions template (csv)</a></strong>',
@@ -365,7 +365,7 @@ class AppForms {
             'fields' => array(
                 array(
                     'type' => 'file_upload',
-                    'name' => 'multiple_promotion_csv',
+                    'name' => 'multiple_items',
                     'label' => 'Upload promotion (csv)',
                     'description' => 'Upload your csv file here. '
                     . '<br /><strong><a href="' . asset('downloads/template-items.csv') . '">Download item template (csv)</a></strong>'

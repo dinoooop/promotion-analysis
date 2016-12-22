@@ -58,15 +58,24 @@ class MultiplesController extends Controller {
      */
     public function create() {
 
+        $input = Input::get();
+
+
         $data = [];
 
         $form = $this->gform->set_form(AppForms::form_multiple_promotion());
         $form['form_name'] = 'pv_create_multiple';
         $data['form_multiple_promotion'] = $this->formHtmlJq->create_form($form);
-        
+
         $form = $this->gform->set_form(AppForms::form_multiple_items());
         $form['form_name'] = 'pv_create_multiple';
         $data['form_multiple_items'] = $this->formHtmlJq->create_form($form);
+
+
+        if (isset($input['csvid'])) {
+            $multiple = Multiple::findOrFail($input['csvid']);
+            $data['promotions'] = Promotion::whereBetween('id', [$multiple->start_id, $multiple->end_id])->get();
+        }
 
         return View::make('admin.multiples.create', $data);
     }
@@ -77,8 +86,8 @@ class MultiplesController extends Controller {
      * @return Response
      */
     public function store(Request $request) {
-        
-        $store_info = Dot::save_as_csv($request, 'multiple_promotion_csv');
+
+        $store_info = Dot::save_attachment($request, 'multiple_promotions');
 
         if (!$store_info['status']) {
             return Redirect::route('multiples.create')
@@ -88,12 +97,12 @@ class MultiplesController extends Controller {
         }
 
         $input['title'] = $store_info['title'];
-        $input['file'] = $store_info['file_name'];
+        $csv_file = $this->import->get_csv_file_path($store_info['file_path']);
+        $input['file'] = pathinfo($csv_file)['basename'];
         $input['type'] = $request->type;
-        
-       
 
-        $info = $this->import->inject($input['file'], $input['type']);
+
+        $info = $this->import->inject($csv_file, $input['type']);
 
         if (!empty($info)) {
             $input['start_id'] = $info[0];
@@ -104,8 +113,8 @@ class MultiplesController extends Controller {
 
         $status = Multiple::status($input);
         if ($status['status']) {
-            Multiple::create($input);
-            return Redirect::route('multiples.index');
+            $multiple = Multiple::create($input);
+            return Redirect::route('multiples.create', ['csvid' => $multiple->id]);
         } else {
             return Redirect::route('multiples.create')
                             ->withInput()

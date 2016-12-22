@@ -158,15 +158,14 @@ class Dot {
     }
 
     public static function sanitize_numeric($key, $input = null, $round = 2) {
-        
+
         // If input not exist key is an integer given to round
-        if(is_null($input)){
-            if(is_numeric($key)){
+        if (is_null($input)) {
+            if (is_numeric($key)) {
                 return round($key, $round);
             }
-            
         }
-        
+
         if (isset($input[$key]) && is_numeric($input[$key])) {
             return round($input[$key], $round);
         }
@@ -275,17 +274,18 @@ class Dot {
         return NULL;
     }
 
-    public static function save_as_csv($input, $field) {
+    public static function save_attachment($input, $field) {
 
         if (!$input->hasFile($field)) {
-            $error['message'][] = 'CSV not attached';
+            $error['message'][] = 'File not attached';
             $error['status'] = false;
             return $error;
         }
 
 
-        $allow_extension = ['csv', 'txt'];
+        $allow_extension = ['xls', 'xlsx', 'txt', 'bin'];
         $extention = $input->file($field)->extension();
+        
         if (!in_array($extention, $allow_extension)) {
             $error['message'][] = 'Please upload valid file with data';
             $error['status'] = false;
@@ -293,8 +293,10 @@ class Dot {
         }
 
 
-        $title = pathinfo($input->file($field)->getClientOriginalName())['filename'];
-        $file_name = date('Y-m-d-h-i-s') . rand(1000, 9999) . '.csv';
+        $pathinfo = pathinfo($input->file($field)->getClientOriginalName());
+        
+        $title = $pathinfo['filename'];
+        $file_name = date('Y-m-d-h-i-s') . rand(1000, 9999) . '.' . $pathinfo['extension'];
         $path = $input->file($field)->storeAs('csv', $file_name);
         $path = storage_path('app/' . $path);
 
