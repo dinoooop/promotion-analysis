@@ -20,6 +20,12 @@
                 <a href="#" class="btn btn-info pull-right">Click here to add multiple items.</a>
                 <div class="clearfix"></div>
             </div>
+            
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <?php echo implode('. ', $errors->all(':message')); ?>
+                </div>
+                @endif
 
             @include('admin/tmp/promotion_item')
 
@@ -48,7 +54,6 @@
                                 <th>Promotions Budget</th>
                                 <th>Promotions Projected Sales</th>
                                 <th>Promotions Expected Lift</th>
-                                <th>Promotions Budget Type</th>
                                 <th>Funding per unit</th>
                                 <th>Forecasted qty</th>
                                 <th>Forecasted Unit Sales</th>
@@ -76,7 +81,7 @@
                 <div class="col-sm-12">
                     <input type="hidden" name="promotions_id" value="{{ $promotion->id }}">
                     <input type="hidden" name="action" value="pv_create_item_tbform">
-                    <?php // echo $button_update_promotion_status; ?>
+                    
 
 
                     
@@ -131,7 +136,6 @@
                                 <th>Promotions Budget</th>
                                 <th>Promotions Projected Sales</th>
                                 <th>Promotions Expected Lift</th>
-                                <th>Promotions Budget Type</th>
                                 <th>Funding per unit</th>
                                 <th>Forecasted qty</th>
                                 <th>Forecasted Unit Sales</th>
@@ -150,7 +154,6 @@
                                 <td>{{ $record->promotions_budget }}</td>
                                 <td>{{ $record->promotions_projected_sales }}</td>
                                 <td>{{ $record->promotions_expected_lift }}</td>
-                                <td>{{ $record->promotions_budget_type }}</td>
                                 <td>{{ $record->funding_per_unit }}</td>
                                 <td>{{ $record->forecasted_qty }}</td>
                                 <td>{{ $record->forecasted_unit_sales }}</td>

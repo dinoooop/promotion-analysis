@@ -43,7 +43,7 @@ class ItemsController extends Controller {
 
         $input = Input::get();
         $data['pagination_appends'] = $input;
-        
+
         $query = Item::orderBy('id', 'asc');
 
         if (isset($input['cvids'])) {
@@ -54,7 +54,9 @@ class ItemsController extends Controller {
         if (isset($input['pid'])) {
             $data['promotion'] = Promotion::findOrFail($input['pid']);
             $query->where('promotions_id', $input['pid']);
-            $data['button_update_promotion_status'] = Temp::button_update_promotion_status($data['promotion']);
+            if ($data['promotion']->status == 'processing') {
+                return View::make('admin.promotions.editnotallow', $data);
+            }
         }
 
         if (!isset($input['cvids']) && !isset($input['pid'])) {
@@ -71,7 +73,7 @@ class ItemsController extends Controller {
         $data['records'] = $query->paginate(50);
 
         $data['display_message_items'] = (in_array($data['promotion']->level_of_promotions, ['Brand', 'Category'])) && ($data['records']->count() == 0);
-        
+
         return View::make('admin.items.index', $data);
     }
 
@@ -110,8 +112,16 @@ class ItemsController extends Controller {
     public function store() {
         $input = Input::all();
         
-
         if (isset($input['action']) && $input['action'] == 'pv_create_item_tbform') {
+
+            $promotion = Promotion::findOrFail($input['promotions_id']);
+            
+            if ($promotion->status == 'processing') {
+                return Redirect::route('items.index', ['pid' => $input['promotions_id'], 'hsv' => 1])
+                                ->withInput()
+                                ->withErrors(['Calculation running mode, not permitted to edit.'])
+                                ->with('message', 'Validation error');
+            }
 
             // tbform form
             if (isset($input['new'])) {
@@ -160,7 +170,7 @@ class ItemsController extends Controller {
             if (isset($input['item_edit_mode_view'])) {
                 // Items edited on save mode - keep status same
                 return Redirect()->route('promotions.index');
-            }elseif (isset($input['re_run'])) {
+            } elseif (isset($input['re_run'])) {
                 Promotion::update_promotion_status($input['promotions_id'], 'active');
                 return Redirect()->route('promotions.index');
             }

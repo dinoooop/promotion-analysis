@@ -29,7 +29,7 @@ class Item extends Model {
         'promotions_expected_lift',
         'x_plant_material_status',
         'x_plant_status_date',
-        'promotions_budget_type',
+        
         'funding_per_unit',
         'forecasted_qty',
         'forecasted_unit_sales',
@@ -49,7 +49,7 @@ class Item extends Model {
         'promotions_budget',
         'promotions_projected_sales',
         'promotions_expected_lift',
-        'promotions_budget_type',
+        
         'funding_per_unit',
         'forecasted_qty',
         'forecasted_unit_sales',
@@ -196,10 +196,9 @@ class Item extends Model {
             4 => 'promotions_budget',
             5 => 'promotions_projected_sales',
             6 => 'promotions_expected_lift',
-            7 => 'promotions_budget_type',
-            8 => 'funding_per_unit',
-            9 => 'forecasted_qty',
-            10 => 'forecasted_unit_sales',
+            7 => 'funding_per_unit',
+            8 => 'forecasted_qty',
+            9 => 'forecasted_unit_sales',
         ];
 
         //$key is the row
@@ -249,7 +248,10 @@ class Item extends Model {
             }
         }
 
-        $this->set_have_child_items($promotion);
+        if (!empty($records)) {
+            $this->set_have_child_items($promotion);
+            Promotion::update_promotion_status($promotion->id, 'active');
+        }
     }
 
     /**
@@ -265,11 +267,12 @@ class Item extends Model {
 
             if ($promotion->level_of_promotions == 'Category') {
                 if (isset($option['category']) && $option['category'] == $promotion->category) {
-                    
+
                     echo "child item exist for the category \n";
                     return true;
                 } else {
                     echo "Its look like new category, So remove old items \n";
+                    Promotion::update_promotion_status($promotion->id, 'sleep');
                     Item::where('promotions_id', $promotion->id)->delete();
                     return false;
                 }
@@ -280,6 +283,7 @@ class Item extends Model {
                     return true;
                 } else {
                     // Its look like new brand, So remove old items
+                    Promotion::update_promotion_status($promotion->id, 'sleep');
                     Item::where('promotions_id', $promotion->id)->delete();
                     return false;
                 }
@@ -315,7 +319,7 @@ class Item extends Model {
      * @param array $record
      */
     function prepare_redshift_item($promotion, $record) {
-        
+
 
         return [
             'promotions_id' => $promotion->id,
@@ -330,7 +334,6 @@ class Item extends Model {
             'promotions_expected_lift' => null,
             'x_plant_material_status' => $record->x_plant_matl_status,
             'x_plant_status_date' => $record->x_plant_valid_from,
-            'promotions_budget_type' => null,
             'funding_per_unit' => null,
             'forecasted_qty' => null,
             'forecasted_unit_sales' => null,
@@ -381,7 +384,6 @@ class Item extends Model {
             'promotions_expected_lift' => Dot::sanitize_numeric('promotions_expected_lift', $input),
             'x_plant_material_status' => Dot::get_first_second('x_plant_material_status', $input, $item, 'x_plant_matl_status'),
             'x_plant_status_date' => Dot::get_first_second('x_plant_status_date', $input, $item, 'x_plant_valid_from'),
-            'promotions_budget_type' => Dot::sanitize_string('promotions_budget_type', $input),
             'funding_per_unit' => Dot::sanitize_numeric('funding_per_unit', $input),
             'forecasted_qty' => Dot::sanitize_numeric('forecasted_qty', $input),
             'forecasted_unit_sales' => Dot::sanitize_numeric('forecasted_unit_sales', $input),

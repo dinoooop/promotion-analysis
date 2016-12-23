@@ -60,7 +60,7 @@ class TestController extends BaseController {
             'promotions_expected_lift',
             'x_plant_material_status',
             'x_plant_status_date',
-            'promotions_budget_type',
+            
             'funding_per_unit' => '42.84',
             'forecasted_qty' => 1800,
             'forecasted_unit_sales',

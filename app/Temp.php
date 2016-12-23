@@ -19,26 +19,7 @@ class Temp {
         return $html;
     }
 
-    public static function button_update_promotion_status($promotion) {
-
-        if ($promotion->status == 'active') {
-            $button_name = "Stop Processing";
-            $status = "sleep";
-        } elseif ($promotion->status == 'sleep') {
-            $button_name = "Prepare Promotion Result";
-            $status = "active";
-        } elseif ($promotion->status == 'completed') {
-            $button_name = "Restart Promotion";
-            $status = "active";
-        }
-        ob_start();
-        ?>
-        <button type="button" data-pid="<?php echo $promotion->id; ?>" data-status="<?php echo $status; ?>" class="btn btn-danger ajax-promotion-status"><?php echo $button_name; ?></button>
-        <?php
-        $html = ob_get_contents();
-        ob_end_clean();
-        return $html;
-    }
+   
 
     public static function csv_session_title($record) {
 
@@ -60,7 +41,7 @@ class Temp {
     }
 
     public static function dynamic_table_form($id) {
-        $promotions_budget_type = Stock::get('promotions_budget_type');
+        
         ob_start();
         ?>
         <tr>
@@ -71,14 +52,9 @@ class Temp {
             <td><input type="text" name="new[<?php echo $id; ?>][4]" value="" class="form-control"></td>
             <td><input type="text" name="new[<?php echo $id; ?>][5]" value="" class="form-control"></td>
             <td><input type="text" name="new[<?php echo $id; ?>][6]" value="" class="form-control"></td>
-            <td><select name="new[<?php echo $id; ?>][7]" class="form-control">
-                    <?php foreach ($promotions_budget_type as $key => $value): ?>
-                        <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
-                    <?php endforeach; ?>
-                </select></td>
+            <td><input type="text" name="new[<?php echo $id; ?>][7]" value="" class="form-control"></td>
             <td><input type="text" name="new[<?php echo $id; ?>][8]" value="" class="form-control"></td>
             <td><input type="text" name="new[<?php echo $id; ?>][9]" value="" class="form-control"></td>
-            <td><input type="text" name="new[<?php echo $id; ?>][10]" value="" class="form-control"></td>
             <td><button class="btn btn-danger remove-item-row"><i class="fa fa-trash"></i></button></td>
         </tr>
         <?php
@@ -88,7 +64,6 @@ class Temp {
     }
 
     public static function dynamic_table_form_exist($record) {
-        $promotions_budget_type = Stock::get('promotions_budget_type');
         ob_start();
         ?>
         <tr>
@@ -99,17 +74,9 @@ class Temp {
             <td><input type="text" name="exist[<?php echo $record->id; ?>][4]" value="<?php echo $record->promotions_budget ?>" class="form-control"></td>
             <td><input type="text" name="exist[<?php echo $record->id; ?>][5]" value="<?php echo $record->promotions_projected_sales ?>" class="form-control"></td>
             <td><input type="text" name="exist[<?php echo $record->id; ?>][6]" value="<?php echo $record->promotions_expected_lift ?>" class="form-control"></td>
-            <td>
-                <select name="exist[<?php echo $record->id; ?>][7]" class="form-control">
-                    <?php foreach ($promotions_budget_type as $key => $value): ?>
-                        <?php $selected = ($value == $record->promotions_budget_type) ? 'selected' : ''; ?>
-                        <option value="<?php echo $key; ?>" <?php echo $selected; ?>><?php echo $value; ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </td>
-            <td><input type="text" name="exist[<?php echo $record->id; ?>][8]" value="<?php echo $record->funding_per_unit ?>" class="form-control"></td>
-            <td><input type="text" name="exist[<?php echo $record->id; ?>][9]" value="<?php echo $record->forecasted_qty ?>" class="form-control"></td>
-            <td><input type="text" name="exist[<?php echo $record->id; ?>][10]" value="<?php echo $record->forecasted_unit_sales ?>" class="form-control"></td>
+            <td><input type="text" name="exist[<?php echo $record->id; ?>][7]" value="<?php echo $record->funding_per_unit ?>" class="form-control"></td>
+            <td><input type="text" name="exist[<?php echo $record->id; ?>][8]" value="<?php echo $record->forecasted_qty ?>" class="form-control"></td>
+            <td><input type="text" name="exist[<?php echo $record->id; ?>][9]" value="<?php echo $record->forecasted_unit_sales ?>" class="form-control"></td>
             <td><a class="btn btn-danger row-delete-no-alert" href="<?php echo route('items.destroy', array($record->id)) ?>" data-modal_id="<?php echo $record->id ?>"><i class="fa fa-trash"></i></a></td>
         </tr>
         <?php

@@ -91,8 +91,10 @@ class PromotionsController extends Controller {
 
         $status = Promotion::status($input);
 
+
         if ($status['status']) {
             $status['input']['status'] = 'sleep';
+
             $promotion = Promotion::create($status['input']);
 
             if (in_array($input['level_of_promotions'], ['Category', 'Brand'])) {
@@ -133,11 +135,20 @@ class PromotionsController extends Controller {
         $data = array();
         $data['record'] = Promotion::findOrFail($id);
 
+        if ($data['record']->status == 'processing') {
+            return View::make('admin.promotions.editnotallow', $data);
+        }
+
         $form = $this->gform->set_form(AppForms::form_promotion(), $data['record']);
         $form['form_name'] = 'pv_edit_promotion';
         $form['submit'] = 'Save';
         $form['hide_submit_button'] = true;
         $data['form_edit'] = $this->formHtmlJq->create_form($form);
+        
+        if ($data['record']->status == 'completed') {
+            $data['display_recalculate_button'] = true;
+        }
+        
         return View::make('admin.promotions.edit', $data);
     }
 
@@ -154,6 +165,13 @@ class PromotionsController extends Controller {
 
         $promotion = Promotion::find($id);
 
+        if ($promotion->status == 'processing') {
+            return Redirect::route('promotions.edit', $id)
+                            ->withInput()
+                            ->withErrors(['Calculation running mode, not permitted to edit.'])
+                            ->with('message', 'Validation error');
+        }
+
         // Promotion Save for edit
         if (isset($input['save'])) {
             $input['status'] = $promotion->status;
@@ -168,7 +186,7 @@ class PromotionsController extends Controller {
             }
         } elseif (isset($input['re_run'])) {
             // Promotion Save for RE-RUN
-            
+
             $input['status'] = 'active';
             $status = Promotion::status($input);
             if ($status['status']) {

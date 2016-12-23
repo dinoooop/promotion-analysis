@@ -56,7 +56,7 @@ class Mockup {
         if ($this->items_count == 0 && in_array($this->promotion->level_of_promotions, ['Brand', 'Category'])) {
             // Keep status active
             // Promotion::update_promotion_status($this->promotion->id, 'active');
-        } else {
+        } elseif ($this->items_count) {
             Promotion::update_promotion_status($this->promotion->id, 'completed');
         }
     }

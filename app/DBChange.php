@@ -129,7 +129,6 @@ class DBChange {
             $table->double('promotions_expected_lift', 15, 8)->nullable();
             $table->string('x_plant_material_status')->nullable();
             $table->date('x_plant_status_date')->nullable();
-            $table->string('promotions_budget_type')->nullable();
             $table->double('funding_per_unit', 15, 8)->nullable();
             $table->integer('forecasted_qty')->nullable();
             $table->double('forecasted_unit_sales', 15, 8)->nullable();
@@ -156,9 +155,8 @@ class DBChange {
                 'promotions_budget',
                 'promotions_projected_sales',
                 'promotions_expected_lift',
-                'x_plant_material_status',
-                'x_plant_status_date',
-                'promotions_budget_type',
+                'x_plant_material_status' => Null,
+                'x_plant_status_date' => Null,
                 'funding_per_unit' => '42.84',
                 'forecasted_qty' => 1800,
                 'forecasted_unit_sales',
