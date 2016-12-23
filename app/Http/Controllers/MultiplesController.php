@@ -97,11 +97,19 @@ class MultiplesController extends Controller {
         }
 
         $input['title'] = $store_info['title'];
-        $csv_file = $this->import->get_csv_file_path($store_info['file_path']);
-        $input['file'] = pathinfo($csv_file)['basename'];
+        $pathinfo_attachment = pathinfo($store_info['file_path']);
+
+        if ($pathinfo_attachment['extension'] != 'csv') {
+            $csv_file = $this->import->get_csv_file_path($store_info['file_path']);
+            $pathinfo_csv = pathinfo($csv_file);
+        } else {
+            $csv_file = $store_info['file_path'];
+            $pathinfo_csv = pathinfo($store_info['file_path']);
+        }
+
+        $input['file'] = $pathinfo_csv['basename'];
         $input['type'] = $request->type;
-
-
+        
         $info = $this->import->inject($csv_file, $input['type']);
 
         if (!empty($info)) {
@@ -168,7 +176,7 @@ class MultiplesController extends Controller {
             exit();
         }
 
-        if ($model->type == 'promotions') {
+        if (strtolower($model->type) == 'promotions') {
             Promotion::whereBetween('id', [$model->start_id, $model->end_id])->delete();
             Item::whereBetween('promotions_id', [$model->start_id, $model->end_id])->delete();
         } else {

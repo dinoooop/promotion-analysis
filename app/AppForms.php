@@ -339,9 +339,8 @@ class AppForms {
                 array(
                     'type' => 'file_upload',
                     'name' => 'multiple_promotions',
-                    'label' => 'Upload promotion (csv)',
-                    'description' => 'Upload your csv file here. '
-                    . '<br /><strong><a href="' . asset('downloads/template-promotions.csv') . '">Download promotions template (csv)</a></strong>',
+                    'label' => 'Upload promotion (xlsx)',
+                    'description' => '<br /><strong><a href="' . asset('downloads/template-promotions.csv') . '">Download promotions template</a></strong>',
                 ),
                 array(
                     'type' => 'hidden',
@@ -366,9 +365,8 @@ class AppForms {
                 array(
                     'type' => 'file_upload',
                     'name' => 'multiple_items',
-                    'label' => 'Upload promotion (csv)',
-                    'description' => 'Upload your csv file here. '
-                    . '<br /><strong><a href="' . asset('downloads/template-items.csv') . '">Download item template (csv)</a></strong>'
+                    'label' => 'Upload items (xlsx)',
+                    'description' => '<br><strong><a href="' . asset('downloads/template-items.csv') . '">Download item template</a></strong>'
                     . '<br />Note: You don\'t need to upload promoted items for promotions that are across brand or category',
                 ),
                 array(

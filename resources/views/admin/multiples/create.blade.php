@@ -26,9 +26,10 @@
 
                 <div class="row">
                     <div class="col-md-12 col-sm-12">
-                        <p>Adding promotions for processing is a two steps process. Note, each of the steps have sub-steps. 
+                        <p>Adding multiple promotions for processing is a two steps process. Note, each of the steps have sub-steps. 
                             Over all the process is very simple and will enable you to quickly add multiple number of promotions and their respective promoted items quickly in modeling database.</p>
                         <h2>Step 1: Create promotions</h2>
+                        
                         {{ Form::open(array('route' => 'multiples.store', 'id' => 'pv_create_multiple', 'class'=>'normal_form', 'enctype' => 'multipart/form-data')) }}
                         <?php echo $form_multiple_promotion; ?>
                         {{ Form::close() }}

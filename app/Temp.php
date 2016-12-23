@@ -32,19 +32,28 @@ class Temp {
             $status = "active";
         }
         ob_start();
-        ?><button type="button" data-pid="<?php echo $promotion->id; ?>" data-status="<?php echo $status; ?>" class="btn btn-danger ajax-promotion-status"><?php echo $button_name; ?></button><?php
-            $html = ob_get_contents();
-            ob_end_clean();
-            return $html;
-        }
-
-        public static function csv_session_title($record) {
-
-            $url = route('multiples.create', ['csvid' => $record->id]);
-            ob_start();
-            ?>
-        <a href="<?php echo $url; ?>"><?php echo $record->title; ?></a>
+        ?>
+        <button type="button" data-pid="<?php echo $promotion->id; ?>" data-status="<?php echo $status; ?>" class="btn btn-danger ajax-promotion-status"><?php echo $button_name; ?></button>
         <?php
+        $html = ob_get_contents();
+        ob_end_clean();
+        return $html;
+    }
+
+    public static function csv_session_title($record) {
+
+        ob_start();
+        if (strtolower($record->type) == 'promotions') {
+            $url = route('multiples.create', ['csvid' => $record->id]);
+            ?>
+            <a href="<?php echo $url; ?>"><?php echo $record->title; ?></a>
+            <?php
+        } else {
+            $url = route('items.index', ['cvids' => $record->id]);
+            ?>
+            <?php echo $record->title; ?>
+            <?php
+        }
         $html = ob_get_contents();
         ob_end_clean();
         return $html;
@@ -101,7 +110,7 @@ class Temp {
             <td><input type="text" name="exist[<?php echo $record->id; ?>][8]" value="<?php echo $record->funding_per_unit ?>" class="form-control"></td>
             <td><input type="text" name="exist[<?php echo $record->id; ?>][9]" value="<?php echo $record->forecasted_qty ?>" class="form-control"></td>
             <td><input type="text" name="exist[<?php echo $record->id; ?>][10]" value="<?php echo $record->forecasted_unit_sales ?>" class="form-control"></td>
-            <td><a class="btn btn-danger row-delete-no-alert" href="<?php echo route('items.destroy', array($record->id))?>" data-modal_id="<?php echo $record->id?>"><i class="fa fa-trash"></i></a></td>
+            <td><a class="btn btn-danger row-delete-no-alert" href="<?php echo route('items.destroy', array($record->id)) ?>" data-modal_id="<?php echo $record->id ?>"><i class="fa fa-trash"></i></a></td>
         </tr>
         <?php
         $html = ob_get_contents();

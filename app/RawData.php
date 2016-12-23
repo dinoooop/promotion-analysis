@@ -13,6 +13,7 @@ use App\Swcalc;
 use App\Spod;
 use App\Printm;
 use App\Mockup;
+use App\DBChange;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
@@ -29,11 +30,13 @@ class RawData {
     private $smaterial;
     private $printm;
     private $mockup;
+    private $dbchange;
 
     public function __construct() {
         $this->calendar = new Calendar;
         $this->printm = new Printm;
         $this->mockup = new Mockup;
+        $this->dbchange = new DBChange;
     }
 
     /**
@@ -41,7 +44,7 @@ class RawData {
      * Execute promotion analysis calculation (Cron Job)
      */
     function process() {
-        
+
         echo "Cron Name : Promotion analysis calculation \n";
         echo "Cron Start time " . date('Y-m-d H:i:s') . "\n";
         Config::set('database.fetch', \PDO::FETCH_ASSOC);
@@ -49,7 +52,7 @@ class RawData {
         echo "Cron end time " . date('Y-m-d H:i:s') . "\n";
         echo "------------------------------------------------------------------\n";
     }
-    
+
     /**
      * 
      * Cron job
@@ -58,11 +61,10 @@ class RawData {
     function find_items() {
         echo "Cron Name : Find items for category level and brand level \n";
         echo "Cron Start time " . date('Y-m-d H:i:s') . "\n";
-        
+
         $this->mockup->find_items();
         echo "Cron end time " . date('Y-m-d H:i:s') . "\n";
         echo "------------------------------------------------------------------\n";
-    
     }
 
     /**
@@ -101,7 +103,7 @@ class RawData {
     function csv_write($list) {
         //$header[] = Stock::get_headers();
         //$list = array_merge($header, $records);
-        
+
         $csv = storage_path('app/sample_02.csv');
 
         $fp = fopen($csv, 'a+');
@@ -138,6 +140,15 @@ class RawData {
         //Spinput::truncate();
     }
 
+    function app_reset() {
+        $this->table_truncate();
+        Multiple::truncate();
+        $this->dbchange->master_input_refresh();
+        $this->dbchange->master_input_seed();
+        $this->dbchange->child_input_refresh();
+        $this->dbchange->child_input_seed();
+    }
+
     function clear_promo_logs() {
         $filename = storage_path('logs/promotions.log');
         $handle = fopen($filename, 'r+');
@@ -146,7 +157,7 @@ class RawData {
         fclose($handle);
         echo "Logs cleared on " . date('Y-m-d H:i:s') . " \n";
     }
-    
+
     function test() {
         $obj = new Spod;
         $obj->sample_test();

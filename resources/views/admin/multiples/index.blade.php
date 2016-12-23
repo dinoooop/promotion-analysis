@@ -1,27 +1,21 @@
 @extends('admin.layouts.dashboard')
 
-
-@section('title', 'Items')
+@section('title', 'Manage multiple promotions')
 
 @section('main')
 
 <div class="right_col" role="main">
 
-
-
     <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="x_panel">
 
             <div class="x_title">
-                <h2>CSV Imported Sessions</h2>
+                <h3 class="pull-left">Manage multiple promotions</h3>
+                <a href="{{url('admin/multiples/create')}}" class="btn btn-info pull-right">Click here to add multiple promotions.</a>
                 <div class="clearfix"></div>
             </div>
             
-            <div class="row">
-                <div class="col-md-6 col-sm-12">
-                    <a href="{{route('multiples.create')}}">Import CSV [+]</a>
-                </div>
-            </div>
+            
 
             @if ($records->count())
             <table class="table table-striped table-bordered">
@@ -54,7 +48,7 @@
             </table>
 
             @else
-            <p>There are no csv import available</p>
+            <p>There are no multiple promotions available</p>
             @endif
         </div>
     </div>

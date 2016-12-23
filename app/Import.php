@@ -37,10 +37,7 @@ class Import {
     function inject($file, $type) {
         $this->file_path = $file;
         $this->type = $type;
-
-        Log::info("Promotion type is {$this->type}");
-
-        Log::info("new csv file path {$this->file_path}");
+        
         if (!is_file($this->file_path) || !file_exists($this->file_path)) {
             Log::info("file does not exist");
             return false;
@@ -49,7 +46,7 @@ class Import {
         $this->return = [];
         Excel::load($this->file_path, function($reader) {
             $results = $reader->get()->toArray();
-            Log::info($results[0]);
+            
             if (isset($results[0])) {
                 if ($this->type == 'Promotions') {
                     Log::info("Type is promotion");
@@ -102,9 +99,7 @@ class Import {
             if ($input == false) {
                 return [];
             }
-
-            Log::info("new input");
-            Log::info($input);
+            
             $input['status'] = 'active';
 
             $status = Promotion::status($input);
@@ -143,8 +138,6 @@ class Import {
         $excel = $file_path;
         $csv = storage_path('app/csv/' . $pathinfo['filename'] . '.csv');
         
-        Log::info("path XL :>> {$excel}");
-        Log::info("path csv :>> {$csv}");
         return (self::PY_CONVERT_TO_CSV($excel, $csv) == true) ? $csv : false;
     }
 
@@ -211,7 +204,6 @@ class Import {
 //        $CSV = public_path('downloads/template-promotions-newell.xlsx');
 //        $output_path = storage_path('app/csv/sample.csv');
         $command = escapeshellcmd("python " . public_path('ext-python/convert-csv.py') . " {$excel} {$csv}");
-        Log::info($command);
         $output = shell_exec($command);
         return $output;
     }
