@@ -83,7 +83,7 @@
                     @if($item_edit_mode_view)
                     
                     <button type="submit" name="item_edit_mode_view" class="btn btn-primary">Save</button>
-                    <button type="submit" name="re_run" class="btn btn-danger">Re-run</button>
+                    <button type="submit" name="re_run" class="btn btn-danger">Recalculate</button>
                     @else
                     <button type="submit" class="btn btn-danger prepare-promotions-results pull-right">Prepare Promotions Results <i class="fa fa-angle-double-right" aria-hidden="true"></i></button>
                     @endif

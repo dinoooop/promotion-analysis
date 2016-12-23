@@ -299,6 +299,10 @@ class Dot {
         $file_name = date('Y-m-d-h-i-s') . rand(1000, 9999) . '.' . $pathinfo['extension'];
         $path = $input->file($field)->storeAs('csv', $file_name);
         $path = storage_path('app/' . $path);
+        
+        $output = shell_exec("chmod 777 {$path}");
+        Log::info("Changing the permision of uploading file");
+        Log::info($output);
 
         $store = [
             'title' => $title,

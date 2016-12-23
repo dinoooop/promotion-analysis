@@ -34,7 +34,7 @@
                         <p class="col-sm-12 form-error-msg-submit error"></p>
                         <div class="col-sm-12 col-md-12"> 
                             <button type="submit" name="save" class="btn btn-primary">Save</button>
-                            <button type="submit" name="re_run" class="btn btn-danger">Re-run</button>
+                            <button type="submit" name="re_run" class="btn btn-danger">Recalculate</button>
                         </div>
                     </div>
 
