@@ -16,7 +16,7 @@
                     <h3>Import Multiple Promotions</h3>
                     <div class="clearfix"></div>
                 </div>
-
+                
                 @if ($errors->any())
                 <div class="alert alert-danger">
                     <?php echo implode('. ', $errors->all(':message')); ?>

@@ -210,6 +210,7 @@ class Import {
 //        $CSV = public_path('downloads/template-promotions-newell.xlsx');
 //        $output_path = storage_path('app/csv/sample.csv');
         $command = escapeshellcmd("python " . public_path('ext-python/convert-csv.py') . " {$excel} {$csv}");
+        Log::info($command);
         $output = shell_exec($command);
         return $output;
     }
