@@ -20,12 +20,12 @@
                 <a href="#" class="btn btn-info pull-right">Click here to add multiple items.</a>
                 <div class="clearfix"></div>
             </div>
-            
+
             @if ($errors->any())
-                <div class="alert alert-danger">
-                    <?php echo implode('. ', $errors->all(':message')); ?>
-                </div>
-                @endif
+            <div class="alert alert-danger">
+                <?php echo implode('. ', $errors->all(':message')); ?>
+            </div>
+            @endif
 
             @include('admin/tmp/promotion_item')
 
@@ -81,18 +81,21 @@
                 <div class="col-sm-12">
                     <input type="hidden" name="promotions_id" value="{{ $promotion->id }}">
                     <input type="hidden" name="action" value="pv_create_item_tbform">
-                    
 
 
-                    
+
+
                     @if($item_edit_mode_view)
-                    
+
                     <button type="submit" name="item_edit_mode_view" class="btn btn-primary">Save</button>
+                    
+                    @if(isset($display_recalculate_button) && $display_recalculate_button)
                     <button type="submit" name="re_run" class="btn btn-danger">Recalculate</button>
+                    @endif
                     @else
                     <button type="submit" class="btn btn-danger prepare-promotions-results pull-right">Prepare Promotions Results <i class="fa fa-angle-double-right" aria-hidden="true"></i></button>
                     @endif
-                    
+
 
                 </div>
             </div>

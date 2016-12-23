@@ -57,6 +57,9 @@ class ItemsController extends Controller {
             if ($data['promotion']->status == 'processing') {
                 return View::make('admin.promotions.editnotallow', $data);
             }
+            if ($data['promotion']->status == 'completed') {
+                $data['display_recalculate_button'] = true;
+            }
         }
 
         if (!isset($input['cvids']) && !isset($input['pid'])) {
@@ -111,11 +114,11 @@ class ItemsController extends Controller {
      */
     public function store() {
         $input = Input::all();
-        
+
         if (isset($input['action']) && $input['action'] == 'pv_create_item_tbform') {
 
             $promotion = Promotion::findOrFail($input['promotions_id']);
-            
+
             if ($promotion->status == 'processing') {
                 return Redirect::route('items.index', ['pid' => $input['promotions_id'], 'hsv' => 1])
                                 ->withInput()
