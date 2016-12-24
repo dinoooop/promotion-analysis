@@ -43,24 +43,31 @@ class PromotionsController extends Controller {
     public function index() {
         $data = array();
         $input = Input::get();
-
-        $query = Promotion::orderBy('id', 'desc');
-        if (isset($input['cvids'])) {
-            $multiple = Multiple::findOrFail($input['cvids']);
-            $query->whereBetween('id', [$multiple->start_id, $multiple->end_id]);
-        }
-        //Display only the promotions having result
         if (isset($input['re']) && $input['re'] == 1) {
             $data['page_heading'] = 'Promotion Results';
-            $data['result_view_button'] = true;
-            $query->where('status', 'completed');
+            $data['display_result_view_button'] = true;
+            $data['kendo_url'] = url('kendo/promotions?re=1');
         } else {
             $data['page_heading'] = 'Promotion Overview';
-            $data['result_view_button'] = false;
+            $data['kendo_url'] = url('kendo/promotions');
         }
-
-        $data['records'] = $query->paginate(50);
         return View::make('admin.promotions.index', $data);
+    }
+
+    public function kendo_index() {
+        $input = Input::get();
+
+        $query = Promotion::orderBy('id', 'desc');
+        if (isset($input['re']) && $input['re'] == 1) {
+
+            $query->where('status', 'completed');
+            $records = $query->get()->toArray();
+            return response()->json($records);
+        } else {
+
+            $records = $query->get()->toArray();
+            return response()->json($records);
+        }
     }
 
     /**
@@ -144,11 +151,11 @@ class PromotionsController extends Controller {
         $form['submit'] = 'Save';
         $form['hide_submit_button'] = true;
         $data['form_edit'] = $this->formHtmlJq->create_form($form);
-        
+
         if ($data['record']->status == 'completed') {
             $data['display_recalculate_button'] = true;
         }
-        
+
         return View::make('admin.promotions.edit', $data);
     }
 

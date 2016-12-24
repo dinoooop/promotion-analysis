@@ -16,6 +16,7 @@ Route::get('/', function () {
 });
 
 Route::get('test', 'TestController@test');
+
 Route::get('local-test', 'TestController@local_test');
 Route::any('admin', 'UsersController@login');
 Route::get('admin/logout', 'UsersController@logout');
@@ -40,3 +41,4 @@ Route::group([ 'prefix' => 'admin', 'middleware' => 'role'], function() {
     Route::get('prepare-promotion', 'PagesController@prepare_result')->name('prepare_promotion');
 });
 
+Route::get('kendo/promotions', 'PromotionsController@kendo_index');

@@ -25,7 +25,7 @@ $(function () {
      * 
      * Alert when delete a table record (admin)
      */
-    $(".row-delete").click(function (e) {
+    $("body").on('click', '.row-delete',function (e) {
 
         e.preventDefault();
 
@@ -246,6 +246,10 @@ $(function () {
             }
         }
     });
+    
+    
+    
+    
 
 
 });

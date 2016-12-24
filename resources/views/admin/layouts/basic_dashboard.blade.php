@@ -29,7 +29,9 @@
         <script src="{{ asset('js/jquery.min.js') }}"></script>
         <script src="{{ asset('js/app-const.js') }}"></script>        
         
-        <script src="{{ asset('js/merge.js') }}"></script>        
+        <script src="{{ asset('js/merge.js') }}"></script>
+        
+        
         
         
         
