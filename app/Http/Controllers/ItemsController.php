@@ -53,6 +53,7 @@ class ItemsController extends Controller {
 
         if (isset($input['pid'])) {
             $data['promotion'] = Promotion::findOrFail($input['pid']);
+            $data['promotions_id'] = $input['pid'];
             $query->where('promotions_id', $input['pid']);
             if ($data['promotion']->status == 'processing') {
                 return View::make('admin.promotions.editnotallow', $data);
@@ -80,6 +81,19 @@ class ItemsController extends Controller {
         return View::make('admin.items.index', $data);
     }
 
+    public function kendo_index() {
+        $data = array();
+
+        $input = Input::get();
+        $query = Item::orderBy('id', 'asc');
+
+        if (isset($input['pid'])) {
+            $query->where('promotions_id', $input['pid']);
+            $records = $query->get()->toArray();
+            return response()->json($records);
+        }
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -88,6 +102,7 @@ class ItemsController extends Controller {
     public function create() {
 
         $input = Input::get();
+
 
         if (!isset($input['pid'])) {
             return Response::make(View::make('errors.404', ['page_404' => true]), 404);
@@ -107,92 +122,29 @@ class ItemsController extends Controller {
         return View::make('admin.items.create', $data);
     }
 
+    function create_kendo() {
+        $input = Input::all();
+        return response()->json($input);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
      * @return Response
      */
     public function store() {
+
         $input = Input::all();
 
-        if (isset($input['action']) && $input['action'] == 'pv_create_item_tbform') {
-
-            $promotion = Promotion::findOrFail($input['promotions_id']);
-
-            if ($promotion->status == 'processing') {
-                return Redirect::route('items.index', ['pid' => $input['promotions_id'], 'hsv' => 1])
-                                ->withInput()
-                                ->withErrors(['Calculation running mode, not permitted to edit.'])
-                                ->with('message', 'Validation error');
-            }
-
-            // tbform form
-            if (isset($input['new'])) {
-                $records = $this->item->tabular_form_interpreter($input['new']);
-
-                foreach ($records as $value) {
-
-                    $value['promotions_id'] = $input['promotions_id'];
-
-                    $value = $this->item->generate_item($value);
-                    if (empty($value)) {
-                        continue;
-                    }
-
-                    $status = Item::status($value);
-
-                    if ($status['status']) {
-                        Item::create($status['input']);
-                    }
-                }
-            }
-            if (isset($input['exist'])) {
-                $records = $this->item->tabular_form_interpreter($input['exist']);
-
-                foreach ($records as $key => $value) {
-
-                    $value['promotions_id'] = $input['promotions_id'];
-
-                    $value = $this->item->generate_item($value);
-
-                    if (empty($value)) {
-                        continue;
-                    }
-
-                    $status = Item::status($value, true);
-                    if ($status['status']) {
-                        $record = Item::find($key);
-                        $record->update($status['input']);
-                    } else {
-                        Log::info("Error in item update");
-                        Log::info($status['validation']->errors());
-                    }
-                }
-            }
-
-            if (isset($input['item_edit_mode_view'])) {
-                // Items edited on save mode - keep status same
-                return Redirect()->route('promotions.index');
-            } elseif (isset($input['re_run'])) {
-                Promotion::update_promotion_status($input['promotions_id'], 'active');
-                return Redirect()->route('promotions.index');
-            }
-
-            // Step by step flow
-            return Redirect()->route('prepare_promotion', ['pid' => $input['promotions_id']]);
-        } else {
-            $input = $this->item->generate_item($input);
-            $status = Item::status($input);
-
+        foreach ($input['models'] as $key => $value) {
+            $value['promotions_id'] = $input['pid'];
+            $value['promotions_startdate'] = date('Y-m-d', strtotime($value['promotions_startdate']));
+            $value['promotions_enddate'] = date('Y-m-d', strtotime($value['promotions_enddate']));
+            $value = $this->item->generate_item($value);
+            $status = Item::status($value);
             if ($status['status']) {
                 Item::create($status['input']);
-                return Redirect::route('items.index', ['pid' => $input['promotions_id']]);
             }
-
-            return Redirect::route('items.create', ['pid' => $input['promotions_id']])
-                            ->withInput()
-                            ->withErrors($status['validation'])
-                            ->with('message', 'Validation error');
         }
     }
 

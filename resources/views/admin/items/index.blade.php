@@ -41,66 +41,89 @@
             @if($display_message_items)
             <p>Please wait. System is processing items for this promotion... </p>
             @else
-            {{ Form::open(array('route' => 'items.store', 'id' => 'pv_create_item_tbform', 'class'=>'normal_form')) }}
-            <div class="row">
-                <div class="col-sm-12">
-                    <table class="table table-striped table-bordered pa-table">
-                        <thead>
-                            <tr>
-                                <th>Material Id</th>
-                                <th width="120">ASIN</th>
-                                <th width="90">Start date</th>
-                                <th width="90">End date</th>
-                                <th>Promotions Budget</th>
-                                <th>Promotions Projected Sales</th>
-                                <th>Promotions Expected Lift</th>
-                                <th>Funding per unit</th>
-                                <th>Forecasted qty</th>
-                                <th>Forecasted Unit Sales</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
+            <div id="grid"></div>
 
-                        <tbody id="item-content">
-
-                            @foreach ($records as $record)
-                            <?php $record = App\promotions\Item::display_prepare($record) ?>
-                            <?php echo App\Temp::dynamic_table_form_exist($record); ?>
-                            @endforeach
-                            <?php echo App\Temp::dynamic_table_form(0); ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-12">
-                    <a type="button" class="btn btn-default btn-lg btn-block add-item">Add Item [+]</a>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-12">
-                    <input type="hidden" name="promotions_id" value="{{ $promotion->id }}">
-                    <input type="hidden" name="action" value="pv_create_item_tbform">
+            <script>
+                $(document).ready(function () {
 
 
 
+                    var dataSource = new kendo.data.DataSource({
+                                transport: {
+                                    read: {
+                                        url: appConst.base_url + "/kendo/items?pid=<?php echo $promotions_id ?>",
+                                        dataType: "json"
+                                    },
+                                    update: {
+                                        url: function (options) {
+                                            return appConst.base_url + "/admin/items/" + options.id + "?pid=<?php echo $promotions_id ?>";
+                                        },
+                                        data: {_token: appConst.token},
+                                        dataType: 'json',
+                                        type: 'PATCH',
+                                    },
+                                    destroy: {
+                                        url: function (options) {
+                                            return appConst.base_url + "/admin/items/" + options.id
+                                        },
+                                        data: {_token: appConst.token},
+                                        dataType: 'json',
+                                        type: 'DELETE',
+                                        cache: false
+                                    },
+                                    create: {
+                                        url: appConst.base_url + "/admin/items",
+                                        data: {_token: appConst.token},
+                                        dataType: "json",
+                                        type: 'POST',
+                                    },
+                                    parameterMap: function (data, type) {
+                                        if (type == "create") {
+                                            data._token = appConst.token;
+                                            data.pid = <?php echo $promotions_id ?>;
+                                            return data;
+                                        }
+                                        
+                                        
+                                    }
+                                },
+                                batch: true,
+                                pageSize: 20,
+                                schema: {
+                                    model: {
+                                        id: "id",
+                                        fields: {
+                                            id: {editable: false, nullable: true},
+                                            material_id: {type: "string"},
+                                            asin: {type: "string"},
+                                            promotions_startdate: {type: "date", format: "Y-m-d"},
+                                            promotions_enddate: {type: "date", format: "Y-m-d"},
+                                            promotions_budget: {type: "number"},
+                                        }
+                                    }
+                                }
+                            });
 
-                    @if($item_edit_mode_view)
-
-                    <button type="submit" name="item_edit_mode_view" class="btn btn-primary">Save</button>
-                    
-                    @if(isset($display_recalculate_button) && $display_recalculate_button)
-                    <button type="submit" name="re_run" class="btn btn-danger">Recalculate</button>
-                    @endif
-                    @else
-                    <button type="submit" class="btn btn-danger prepare-promotions-results pull-right">Prepare Promotions Results <i class="fa fa-angle-double-right" aria-hidden="true"></i></button>
-                    @endif
-
-
-                </div>
-            </div>
-
-            {{ Form::close() }}
+                    $("#grid").kendoGrid({
+                        dataSource: dataSource,
+                        navigatable: true,
+                        pageable: true,
+                        height: 550,
+                        sortable: true,
+                        filterable: true,
+                        toolbar: ["create", "save", "cancel"],
+                        columns: [
+                            {field: "material_id", title: "Material Id", width: 120, sortable: true},
+                            {field: "asin", title: "ASIN", width: 120, sortable: true},
+                            {field: "promotions_startdate", title: "Start date", format: '{0:MM/dd/yyyy}', width: 150, sortable: true},
+                            {field: "promotions_enddate", title: "End date", format: '{0:MM/dd/yyyy}', width: 150, sortable: true},
+                            {field: "promotions_budget", title: "Promotions Budget", format: "{0:c}", width: 120, sortable: true},
+                            {command: "destroy", title: "&nbsp;", width: 150}
+                        ],
+                        editable: "inline",
+                    });
+                });
+            </script>
             @endif
 
 
