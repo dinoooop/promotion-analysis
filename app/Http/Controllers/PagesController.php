@@ -49,6 +49,8 @@ class PagesController extends Controller {
 
         $data['promotion'] = Promotion::findOrFail($request->pid);
 
+        Promotion::update_promotion_status($data['promotion']->id, 'active');
+
         if ($data['promotion']['level_of_promotions'] == 'Category') {
             $data['message_level_of_promotions'] = "Since it is a category level of promotion you don't need to fill up STEP 2.";
         } elseif ($data['promotion']['level_of_promotions'] == 'Brand') {
@@ -64,8 +66,17 @@ class PagesController extends Controller {
             $data['message_start_time'] = "The promotion is now under processing. \n";
             $data['message_start_time'] .= "Once the calculation get completed you will be notified by an email. \n";
         }
+        
+        // Hide step view on edit mode 
+        if (isset($request->hsv) && $request->hsv == 1) {
+            $data['hide_step_view'] = true;
+        } 
 
-        return View::make('admin.others.prepare_promotion', $data);
+        if (isset($request->rec) && $request->rec == 1) {
+            return View::make('admin.others.recalculate_promotion', $data);
+        } else {
+            return View::make('admin.others.prepare_promotion', $data);
+        }
     }
 
 }

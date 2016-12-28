@@ -42,41 +42,40 @@ class ItemsController extends Controller {
         $data = array();
 
         $input = Input::get();
+
         $data['pagination_appends'] = $input;
+        $data['href_prepare_result'] = route('prepare_promotion', $data['pagination_appends']);
+        
+        $data['pagination_appends'] = array_merge($data['pagination_appends'], ['rec' => 1]);
+        $data['href_recalculate_promotion'] = route('prepare_promotion', $data['pagination_appends']);
 
-        $query = Item::orderBy('id', 'asc');
-
-        if (isset($input['cvids'])) {
-            $multiple = Multiple::findOrFail($input['cvids']);
-            $query->whereBetween('id', [$multiple->start_id, $multiple->end_id]);
-        }
-
-        if (isset($input['pid'])) {
-            $data['promotion'] = Promotion::findOrFail($input['pid']);
-            $data['promotions_id'] = $input['pid'];
-            $query->where('promotions_id', $input['pid']);
-            if ($data['promotion']->status == 'processing') {
-                return View::make('admin.promotions.editnotallow', $data);
-            }
-            if ($data['promotion']->status == 'completed') {
-                $data['display_recalculate_button'] = true;
-            }
-        }
-
-        if (!isset($input['cvids']) && !isset($input['pid'])) {
+        if (!isset($input['pid'])) {
             return Response::make(View::make('errors.404', ['page_404' => true]), 404);
+        }
+
+
+        $data['promotion'] = Promotion::findOrFail($input['pid']);
+        $data['promotions_id'] = $input['pid'];
+
+        if ($data['promotion']->status == 'processing') {
+            return View::make('admin.promotions.editnotallow', $data);
+        }
+        if ($data['promotion']->status == 'completed') {
+            $data['display_recalculate_button'] = true;
+        }
+        if ($data['promotion']->status == 'sleep') {
+            $data['display_prepare_result_button'] = true;
         }
 
         // Hide step view on edit mode 
         if (isset($input['hsv']) && $input['hsv'] == 1) {
             $data['item_edit_mode_view'] = true;
-        } else {
-            $data['item_edit_mode_view'] = false;
-        }
+        } 
 
-        $data['records'] = $query->paginate(50);
 
-        $data['display_message_items'] = (in_array($data['promotion']->level_of_promotions, ['Brand', 'Category'])) && ($data['records']->count() == 0);
+
+        $data['count'] = Item::where('promotions_id', $input['pid'])->count();
+        $data['display_message_items'] = (in_array($data['promotion']->level_of_promotions, ['Brand', 'Category'])) && ($data['count'] == 0);
 
         return View::make('admin.items.index', $data);
     }
@@ -138,8 +137,6 @@ class ItemsController extends Controller {
 
         foreach ($input['models'] as $key => $value) {
             $value['promotions_id'] = $input['pid'];
-            $value['promotions_startdate'] = date('Y-m-d', strtotime($value['promotions_startdate']));
-            $value['promotions_enddate'] = date('Y-m-d', strtotime($value['promotions_enddate']));
             $value = $this->item->generate_item($value);
             $status = Item::status($value);
             if ($status['status']) {
@@ -196,18 +193,20 @@ class ItemsController extends Controller {
 
         $input = Input::all();
 
-        $status = Item::status($input);
-
-        if ($status['status']) {
-            $record = Item::find($id);
-            $record->update($status['input']);
-            return Redirect::route('items.index', ['pid' => $input['promotions_id']]);
+        if (!isset($input['models'])) {
+            return false;
         }
 
-        return Redirect::route('items.edit', [$id, 'pid' => $input['promotions_id']])
-                        ->withInput()
-                        ->withErrors($status['validation'])
-                        ->with('message', 'Validation error');
+        $models = $input['models'];
+        foreach ($models as $key => $model) {
+            $id = $model['id'];
+            $model = $this->item->generate_item($model);
+            $status = Item::status($model, true);
+            if ($status['status']) {
+                $record = Item::find($id);
+                $record->update($status['input']);
+            }
+        }
     }
 
     /**
@@ -217,7 +216,16 @@ class ItemsController extends Controller {
      * @return Response
      */
     public function destroy($id) {
-        Item::find($id)->delete();
+        $input = Input::all();
+
+        $models = $input['models'];
+        foreach ($models as $key => $value) {
+            $item = Item::find($value['id']);
+            if (isset($item->id)) {
+                $item->delete();
+            }
+        }
+
         exit();
         //return Redirect::route('items.index');
     }

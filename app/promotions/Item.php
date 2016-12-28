@@ -29,7 +29,6 @@ class Item extends Model {
         'promotions_expected_lift',
         'x_plant_material_status',
         'x_plant_status_date',
-        
         'funding_per_unit',
         'forecasted_qty',
         'forecasted_unit_sales',
@@ -49,7 +48,6 @@ class Item extends Model {
         'promotions_budget',
         'promotions_projected_sales',
         'promotions_expected_lift',
-        
         'funding_per_unit',
         'forecasted_qty',
         'forecasted_unit_sales',
@@ -137,6 +135,8 @@ class Item extends Model {
         $sanitize = [
             'material_id' => Dot::sanitize_string('material_id', $input),
             'asin' => Dot::sanitize_string('asin', $input),
+            'promotions_startdate' => date('Y-m-d', strtotime($input['promotions_startdate'])),
+            'promotions_enddate' => date('Y-m-d', strtotime($input['promotions_enddate'])),
             'promotions_budget' => Dot::sanitize_numeric('promotions_budget', $input),
             'promotions_projected_sales' => Dot::sanitize_numeric('promotions_projected_sales', $input),
             'promotions_expected_lift' => Dot::sanitize_numeric('promotions_expected_lift', $input),

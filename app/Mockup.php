@@ -42,7 +42,7 @@ class Mockup {
                 echo "Promotion started for ID : {$this->promotion->id} \n";
                 if ($this->run_validity()) {
                     Promotion::update_promotion_status($this->promotion->id, 'processing');
-                    $this->merge->reset_records($this->promotion->id);
+                    $this->reset_records($this->promotion->id);
                     $this->item_chunk();
 //                    Promotion::update_promotion_status($this->promotion->id, 'completed');
                 }
@@ -53,10 +53,14 @@ class Mockup {
     }
 
     function update_process_status() {
-        if ($this->items_count == 0 && in_array($this->promotion->level_of_promotions, ['Brand', 'Category'])) {
+        if ($this->items_count == 0) {
             // Keep status active
+            // The promotion deosn't contain item means - user may forget add items
+            // It is a category/brand level promotion and system doesn't find items still
             // Promotion::update_promotion_status($this->promotion->id, 'active');
-        } elseif ($this->items_count) {
+            echo "Promotion not contain items, status remain active \n ";
+        } elseif ($this->items_count >= 1) {
+            echo "Promotion contains {$this->items_count} items, status completed \n ";
             Promotion::update_promotion_status($this->promotion->id, 'completed');
         }
     }
@@ -78,7 +82,7 @@ class Mockup {
 
 
         Item::where('promotions_id', $this->promotion->id)->orderBy('id')->chunk(100, function ($items) {
-            $this->items_count = $items->count() + $this->items_count;
+            
             echo "Promotion id {$this->promotion->id} count child items {$items->count()} \n";
 
             foreach ($items as $item) {
@@ -161,6 +165,7 @@ class Mockup {
         }
 
         echo "Execution start for child item id {$this->spinput->promo_child_id} \n";
+        $this->items_count = $this->items_count + 1;
 
         $this->sdcalc = new Sdcalc;
         $this->swcalc = new Swcalc;
@@ -193,6 +198,22 @@ class Mockup {
                 $this->item->insert_items_under_promotion($promotion);
             }
         });
+    }
+    
+     /**
+     * 
+     * Delete records for the item from the table :-
+     * promo_week
+     * promotions_preperations
+     * promotions_results
+     * @param int $promotion_id
+     */
+    function reset_records($promotion_id) {
+        $ids = Item::where('promotions_id', $promotion_id)->distinct()->pluck('id')->toArray();
+
+        Sdcalc::whereIn('promo_child_id', $ids)->delete();
+        Swcalc::whereIn('promo_child_id', $ids)->delete();
+        Spod::whereIn('promo_child_id', $ids)->delete();
     }
 
 }

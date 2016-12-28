@@ -1,30 +1,25 @@
 @extends('admin.layouts.dashboard')
 
-@section('title', 'Prepare promotions results')
+@section('title', 'Promotions Recalculate')
 
 @section('main')
 
 
 <div class="right_col" role="main">
 
-
-    @if(!isset($hide_step_view) || !$hide_step_view)
-    <?php echo App\Temp::step_progress('step_3'); ?>
-    @endif
-    
     <div class="row">
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="x_panel">
 
                 <div class="x_title">
-                    <h3>Prepare Promotions Results</h3>
+                    <h3>Promotions Recalculate</h3>
                     <div class="clearfix"></div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-12">
                         <h2>Success!!!</h2>
-                        <p>You have successfully added the promotion {{$promotion->promotions_name}}.
+                        <p>Your request to recalculate the promotion is successfully submitted.
                             <br/>{{$message_level_of_promotions}}
                             <br/>{{$message_start_time}}</p>
                         

@@ -340,7 +340,7 @@ class AppForms {
                     'type' => 'file_upload',
                     'name' => 'multiple_promotions',
                     'label' => 'Upload promotion (xlsx)',
-                    'description' => '<br /><strong><a href="' . asset('downloads/template-promotions.csv') . '">Download promotions template</a></strong>',
+                    'description' => '<br /><strong><a href="' . asset('downloads/template-promotions-newell.xlsx') . '">Download promotions template</a></strong>',
                 ),
                 array(
                     'type' => 'hidden',

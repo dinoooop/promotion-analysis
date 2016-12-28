@@ -170,21 +170,7 @@ class Merge {
         return $records;
     }
 
-    /**
-     * 
-     * Delete records for the item from the table
-     * promo_week
-     * promotions_preperations
-     * promotions_results
-     * @param int $promotion_id
-     */
-    function reset_records($promotion_id) {
-        $ids = Item::where('promotions_id', $promotion_id)->distinct()->pluck('id')->toArray();
-
-        Sdcalc::whereIn('promo_child_id', $ids)->delete();
-        Swcalc::whereIn('promo_child_id', $ids)->delete();
-        Spod::whereIn('promo_child_id', $ids)->delete();
-    }
+   
 
    
 

@@ -19,6 +19,7 @@ use App\Multiple;
 use App\promotions\Item;
 use App\Merge;
 use App\Dot;
+use App\Stock;
 
 class PromotionsController extends Controller {
 
@@ -59,15 +60,16 @@ class PromotionsController extends Controller {
 
         $query = Promotion::orderBy('id', 'desc');
         if (isset($input['re']) && $input['re'] == 1) {
-
             $query->where('status', 'completed');
             $records = $query->get()->toArray();
-            return response()->json($records);
         } else {
-
             $records = $query->get()->toArray();
-            return response()->json($records);
         }
+
+        foreach ($records as $key => $value) {
+            $records[$key]['status'] = Stock::get_value('status', $value['status']);
+        }
+        return response()->json($records);
     }
 
     /**
@@ -95,9 +97,7 @@ class PromotionsController extends Controller {
     public function store() {
         $input = Input::all();
 
-
         $status = Promotion::status($input);
-
 
         if ($status['status']) {
             $status['input']['status'] = 'sleep';
@@ -145,6 +145,8 @@ class PromotionsController extends Controller {
         if ($data['record']->status == 'processing') {
             return View::make('admin.promotions.editnotallow', $data);
         }
+
+        $data['pagination_appends'] = ['pid' => $id];
 
         $form = $this->gform->set_form(AppForms::form_promotion(), $data['record']);
         $form['form_name'] = 'pv_edit_promotion';
@@ -201,7 +203,9 @@ class PromotionsController extends Controller {
                 $promotion->update($status['input']);
                 $this->item->have_child_items($promotion);
 
-                return Redirect::route('promotions.index');
+                $data['pagination_appends']['pid'] = $id;
+                $data['pagination_appends']['rec'] = 1;
+                return Redirect::route('prepare_promotion', $data['pagination_appends']);
             }
         }
 
@@ -220,6 +224,7 @@ class PromotionsController extends Controller {
     public function destroy($id) {
         $promotion = Promotion::find($id);
         Item::where('promotions_id', $promotion->id)->delete();
+        Option::remove('have_child_items_' . $promotion->id);
         $promotion->delete();
         exit();
         //return Redirect::route('promotions.index');

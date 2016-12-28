@@ -25,7 +25,7 @@ $(function () {
      * 
      * Alert when delete a table record (admin)
      */
-    $("body").on('click', '.row-delete',function (e) {
+    $("body").on('click', '.row-delete', function (e) {
 
         e.preventDefault();
 
@@ -237,19 +237,33 @@ $(function () {
      */
 
     $(".prepare-promotions-results").click(function (e) {
-        var $first_material_id = $("#item-content tr td:first-child input"); // Material id
-        var $ASIN = $("#item-content tr td:nth-child(2) input"); // Material id
-        if ($first_material_id.val() == '' || $first_material_id.length == 0) {
-            if ($ASIN.val() == '' || $ASIN.length == 0) {
-                swal("Oops!", "Please add items under this promotion!!!", "error");
-                e.preventDefault();
-            }
+
+        
+        var gridDataArray = $('#grid').data('kendoGrid')._data;
+        
+        $(".k-grid-save-changes").trigger("click");
+
+        if (gridDataArray.length == 0) {
+            swal("Oops!", "Please add items under this promotion!!!", "error");
+            e.preventDefault();
         }
+
+        gridDataArray.forEach(function (value, index) {
+
+            if (value.material_id == '' || value.material_id == null) {
+                if (value.asin == '' || value.asin == null) {
+                    swal("Oops!", "Please add items under this promotion!!!", "error");
+                    e.preventDefault();
+                }
+            }
+        });
+
+
     });
-    
-    
-    
-    
+
+
+
+
 
 
 });

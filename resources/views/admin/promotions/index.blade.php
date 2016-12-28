@@ -19,13 +19,11 @@
 
 
                 <div id="grid"></div>
-                <script id="scriptTemplate" type="text/x-kendo-template">
-                    Hello, #= promotions_name #
-                </script>
+                
                 <script>
                     $(document).ready(function () {
 
-                        var scriptTemplate = kendo.template($("#scriptTemplate").html());
+                        
                         var grid = $("#grid").kendoGrid({
                             dataSource: {
                                 transport: {
@@ -61,7 +59,7 @@
                                 },
                                 pageSize: 20,
                             },
-                            height: 550,
+                            height: 650,
                             filterable: true,
                             sortable: true,
                             pageable: true,
