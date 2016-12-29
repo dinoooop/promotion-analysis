@@ -4,6 +4,7 @@ namespace App\promotions;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Input;
 use App\Dot;
 use App\Merge;
 use App\Calendar;
@@ -188,6 +189,9 @@ class Promotion extends Model {
         $input->promotions_enddate = date('m/d/Y', strtotime($input->promotions_enddate));
         $input->button_result = Temp::button_result($input);
         $input->status = Stock::get_value('status', $input->status);
+
+        $url_param = ['pid' => $input->promotions_id, 'pci' => $input->promo_child_id];
+        $input->href_preperation_table = route('preparation_table', $url_param);
         return $input;
     }
 

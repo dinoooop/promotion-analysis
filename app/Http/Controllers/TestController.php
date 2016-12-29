@@ -33,6 +33,7 @@ class TestController extends BaseController {
         $this->dsales = new Dsales;
         $this->dchannel = new Dchannel;
         $this->swcalc = new Swcalc;
+        $this->sdcalc = new Sdcalc;
         $this->promotion = new Promotion;
         $this->item = new Item;
         $this->sample = new Sample;
@@ -40,7 +41,7 @@ class TestController extends BaseController {
     }
 
     function test() {
-        $this->import->test();
+        $this->sdcalc->get_preperation_table(1);
         
         
     }

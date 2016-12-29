@@ -5,6 +5,7 @@
             <tr>
                 <th></th>
                 <th></th>
+                <th></th>
                 <th colspan="2">Baseline</th>
                 <th colspan="2">During</th>
                 <th colspan="2">Post</th>
@@ -14,6 +15,7 @@
                 <th></th>
             </tr>
             <tr>
+                <th>Preparation table</th>
                 <th>Material Id</th>
                 <th>ASIN</th>
                 <th>POS Sales</th>
@@ -36,6 +38,7 @@
             @foreach ($records as $record)
             <?php $record = App\promotions\Promotion::display_prepare($record) ?>
             <tr>
+                <td><a href="{{ $record->href_preperation_table }}"><i class="fa fa-database"></i></a></td>
                 <td>{{ $record->material_id }}</td>
                 <td>{{ $record->asin }}</td>
 

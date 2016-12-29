@@ -19,9 +19,9 @@ use App\Spod;
 use App\promotions\Item;
 use App\Merge;
 use App\Dot;
+use App\Sdcalc;
 
 class ResultsController extends Controller {
-
 
     private $formHtmlJq;
     private $posts;
@@ -29,6 +29,7 @@ class ResultsController extends Controller {
 
     public function __construct() {
         $this->model = new Spod;
+        $this->sdcalc = new Sdcalc;
     }
 
     /**
@@ -37,7 +38,7 @@ class ResultsController extends Controller {
      * @return Response
      */
     public function index() {
-        
+
         $data = [];
         $input = Input::get();
 
@@ -45,12 +46,34 @@ class ResultsController extends Controller {
         if (isset($input['pid'])) {
             $data['promotion'] = Promotion::findOrFail($input['pid']);
             $query->where('promotions_id', $input['pid']);
-        }else{
+        } else {
             return Dot::R404();
         }
 
         $data['records'] = $query->paginate(50);
         return View::make('admin.results.index', $data);
+    }
+
+    public function preparation_table() {
+        $input = Input::get();
+        $data = [];
+
+        if (isset($input['pid']) && isset($input['pci'])) {
+            $data['promotion'] = Promotion::findOrFail($input['pid']);
+            $data['item'] = Item::findOrFail($input['pci']);
+        } else {
+            return Dot::R404();
+        }
+
+        $data['kendo_url'] = route('kendo_preparation_table', ['pci'=>1]);
+        $data['records'] = $this->sdcalc->get_preparation_table($input['pci']);
+        return View::make('admin.results.preparation', $data);
+    }
+
+    function kendo_preparation_table() {
+        $input = Input::get();
+        $records = $this->sdcalc->get_preparation_table($input['pci']);
+        return response()->json($records);
     }
 
 }

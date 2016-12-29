@@ -11,7 +11,7 @@
         <div class="x_panel">
 
             <div class="x_title">
-                <h2>Promotion Result</h2>
+                <h3>Promotion Result</h3>
                 <div class="clearfix"></div>
             </div>
 
