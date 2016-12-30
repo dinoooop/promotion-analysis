@@ -20,6 +20,7 @@ use App\promotions\Item;
 use App\Merge;
 use App\Dot;
 use App\Sdcalc;
+use App\Swcalc;
 
 class ResultsController extends Controller {
 
@@ -64,15 +65,34 @@ class ResultsController extends Controller {
         } else {
             return Dot::R404();
         }
+        if ($input['type'] == 'day') {
+        $data['heading'] = "Redshift Data";
+        //preparation-day-walmart
+        }else{
+            $data['heading'] = "Preparation Table";
+        }
+        $retailer = strtolower($data['promotion']->retailer);
+        $data['template'] = "admin/results/tmp-retailer/preparation-{$input['type']}-{$retailer}";
 
-        $data['kendo_url'] = route('kendo_preparation_table', ['pci'=>1]);
-        $data['records'] = $this->sdcalc->get_preparation_table($input['pci']);
+        $data['kendo_url'] = route('kendo_preparation_table', $input);
         return View::make('admin.results.preparation', $data);
     }
 
     function kendo_preparation_table() {
         $input = Input::get();
-        $records = $this->sdcalc->get_preparation_table($input['pci']);
+        $promo_child_id = $input['pci'];
+
+        if ($input['type'] == 'day') {
+            
+            $query = Sdcalc::where('promo_child_id', $promo_child_id);
+            $query->orderBy('date_day', 'desc');
+            $records = $query->get()->toArray();
+        }else{
+            
+            $query = Swcalc::where('promo_child_id', $promo_child_id);
+            $query->orderBy('week', 'desc');
+            $records = $query->get()->toArray();
+        }
         return response()->json($records);
     }
 

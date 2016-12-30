@@ -38,23 +38,13 @@
                         width: 250,
                     },
                     {
-                        field: "normalized_ordered_amount",
-                        title: "Normalized ordered amount",
+                        field: "pos_sales",
+                        title: "pos amount",
                         type: "number",
                     },
                     {
-                        field: "normalized_ordered_units",
-                        title: "Normalized ordered units",
-                        type: "number",
-                    },
-                    {
-                        field: "ordered_amount",
-                        title: "Ordered amount",
-                        type: "number",
-                    },
-                    {
-                        field: "ordered_units",
-                        title: "Ordered units",
+                        field: "pos_units",
+                        title: "pos units",
                     },
                     {
                         field: "invoice_amounts",

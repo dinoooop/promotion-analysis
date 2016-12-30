@@ -17,6 +17,7 @@
                 <th></th>
             </tr>
             <tr>
+                <th>Redshift data</th>
                 <th>Preparation table</th>
                 <th>Material Id</th>
                 <th>ASIN</th>
@@ -44,6 +45,7 @@
             <?php $record = App\promotions\Promotion::display_prepare($record) ?>
             <tr>
                 <td><a href="{{ $record->href_preperation_table }}"><i class="fa fa-database"></i></a></td>
+                <td><a href="{{ $record->href_week_preperation_table }}"><i class="fa fa-database"></i></a></td>
                 <td>{{ $record->material_id }}</td>
                 <td>{{ $record->asin }}</td>
 

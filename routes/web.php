@@ -39,7 +39,7 @@ Route::group([ 'prefix' => 'admin', 'middleware' => 'role'], function() {
 
 
     Route::get('prepare-promotion', 'PagesController@prepare_result')->name('prepare_promotion');
-    Route::get('preparation_table', 'ResultsController@preparation_table')->name('preparation_table');
+    Route::get('preparation-table', 'ResultsController@preparation_table')->name('preparation_table');
     Route::get('items/create-kendo', 'ItemsController@create_kendo');
 });
 

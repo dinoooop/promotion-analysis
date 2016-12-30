@@ -2,7 +2,7 @@
 
     <p>Material ID: {{$item->material_id}} </p>
     <p>ASIN: {{$item->asin}} </p>
-    
+
 
     <div id="grid"></div>
 
@@ -19,7 +19,6 @@
                             cache: false
                         },
                     },
-                    
                     pageSize: 20,
                 },
                 height: 650,
@@ -28,33 +27,22 @@
                 pageable: true,
                 editable: "inline",
                 columns: [
-                    
                     {
                         field: "date_day",
                         title: "Date",
                         format: "{0:MM/dd/yyyy}",
                         type: "date",
                         sortable: true,
-                        width: 250,
+                        width: 100,
                     },
                     {
-                        field: "normalized_pos_sales",
-                        title: "Normalized pos amount",
+                        field: "ordered_amount",
+                        title: "Ordered amount",
                         type: "number",
                     },
                     {
-                        field: "normalized_pos_units",
-                        title: "Normalized pos units",
-                        type: "number",
-                    },
-                    {
-                        field: "pos_sales",
-                        title: "pos amount",
-                        type: "number",
-                    },
-                    {
-                        field: "pos_units",
-                        title: "pos units",
+                        field: "ordered_units",
+                        title: "Ordered units",
                     },
                     {
                         field: "invoice_amounts",

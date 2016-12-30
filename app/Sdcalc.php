@@ -163,13 +163,8 @@ class Sdcalc extends Model {
                         ->where($where_column, $where_value)
                         ->value($column);
     }
-    
-    
+
     function get_preparation_table($promo_child_id) {
-        $query = DB::table('promotions.promotions_preperation as d')->where('d.promo_child_id', $promo_child_id);
-        $query->leftJoin('promotions.promo_week AS w', 'w.week', '=', 'd.week');
-        $query->orderBy('date_day', 'desc');
-        return $query->get()->toArray();
         
     }
 

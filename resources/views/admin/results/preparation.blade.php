@@ -11,23 +11,14 @@
             <div class="x_panel">
 
                 <div class="x_title">
-                    <h3>Preparation table</h3>
+                    <h3>{{$heading}}</h3>
                     <div class="clearfix"></div>
                 </div>
-
-
+                
                 @include('admin/tmp/promotion_item')
-
-                @if (count($records))
-                @if($promotion->retailer == 'Walmart')
-                @include('admin/results/tmp-retailer/preparation-walmart')
-                @else
-                @include('admin/results/tmp-retailer/preparation-amazon')
-                @endif
-                @else
-                <p>There are no records available for this preparation</p>
-                @endif
-
+                
+                @include($template)
+                
             </div>
         </div>
 

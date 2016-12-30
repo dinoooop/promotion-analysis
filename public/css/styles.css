@@ -104,3 +104,7 @@ td.action {
     height: 350px;
     overflow: scroll;
 }
+
+.k-grid-header th.k-header, .k-filter-row th {
+    white-space: normal;
+}

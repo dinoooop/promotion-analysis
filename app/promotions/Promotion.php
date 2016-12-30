@@ -190,8 +190,11 @@ class Promotion extends Model {
         $input->button_result = Temp::button_result($input);
         $input->status = Stock::get_value('status', $input->status);
 
-        $url_param = ['pid' => $input->promotions_id, 'pci' => $input->promo_child_id];
+        $url_param = ['pid' => $input->promotions_id, 'pci' => $input->promo_child_id, 'type' => 'day'];
         $input->href_preperation_table = route('preparation_table', $url_param);
+        
+        $url_param = ['pid' => $input->promotions_id, 'pci' => $input->promo_child_id, 'type' => 'week'];
+        $input->href_week_preperation_table = route('preparation_table', $url_param);
         return $input;
     }
 
