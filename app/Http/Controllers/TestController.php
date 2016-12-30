@@ -41,9 +41,12 @@ class TestController extends BaseController {
     }
 
     function test() {
-        $this->sdcalc->get_preperation_table(1);
-        
-        
+        $test = 'RED,pink,blue';
+        $array1 = explode(',', $test);
+        $array2 = ['pink', 'blue', 'RED'];
+        if (Dot::is_array_eaqual($array1, $array2)) {
+            echo "exist";
+        }
     }
 
     function test_child_items_input() {
@@ -61,7 +64,6 @@ class TestController extends BaseController {
             'promotions_expected_lift',
             'x_plant_material_status',
             'x_plant_status_date',
-            
             'funding_per_unit' => '42.84',
             'forecasted_qty' => 1800,
             'forecasted_unit_sales',

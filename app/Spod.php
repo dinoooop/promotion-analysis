@@ -85,10 +85,9 @@ class Spod extends Model {
 
         // Basilene days (Normalized)
 
-        $row['daily_baseline_ordered_amount'] = $this->swcalc->get_avg_column('normalized_ordered_amount', $this->spinput->calendar_dates['baseline']['start_week'], $this->spinput->calendar_dates['baseline']['end_week']);
-        
-        
-        $row['daily_baseline_ordered_units'] = round($this->swcalc->get_avg_column('normalized_ordered_units', $this->spinput->calendar_dates['baseline']['start_week'], $this->spinput->calendar_dates['baseline']['end_week']));
+        $row['daily_baseline_ordered_amount'] = $this->merge->safe_division($this->swcalc->get_avg_column('normalized_ordered_amount', $this->spinput->calendar_dates['baseline']['start_week'], $this->spinput->calendar_dates['baseline']['end_week']), 7);
+
+        $row['daily_baseline_ordered_units'] = $this->merge->safe_devision($this->swcalc->get_avg_column('normalized_ordered_units', $this->spinput->calendar_dates['baseline']['start_week'], $this->spinput->calendar_dates['baseline']['end_week']), 7, true);
 
         $row['daily_baseline_pos_sales'] = $this->swcalc->get_avg_column('normalized_pos_sales', $this->spinput->calendar_dates['baseline']['start_week'], $this->spinput->calendar_dates['baseline']['end_week']);
         $row['daily_baseline_pos_units'] = round($this->swcalc->get_avg_column('normalized_pos_units', $this->spinput->calendar_dates['baseline']['start_week'], $this->spinput->calendar_dates['baseline']['end_week']));
@@ -121,7 +120,7 @@ class Spod extends Model {
 
         $row['during_incremental_pos_sales'] = $this->calc('during_incremental_pos_sales', $row);
         $row['during_incremental_pos_units'] = $this->calc('during_incremental_pos_units', $row);
-        
+
         $row['during_lift_ordered_amount'] = $this->calc('during_lift_ordered_amount', $row);
         $row['during_lift_ordered_units'] = $this->calc('during_lift_ordered_units', $row);
 
@@ -130,7 +129,7 @@ class Spod extends Model {
 
         $row['post_incremental_pos_sales'] = $this->calc('post_incremental_pos_sales', $row);
         $row['post_incremental_pos_units'] = $this->calc('post_incremental_pos_units', $row);
-        
+
         $row['post_lift_ordered_amount'] = $this->calc('post_lift_ordered_amount', $row);
         $row['post_lift_ordered_units'] = $this->calc('post_lift_ordered_units', $row);
         $row['no_of_promotion_days'] = $this->number_of_promotion_days;
@@ -174,11 +173,11 @@ class Spod extends Model {
             case 'during_lift_ordered_units':
                 return $this->merge->safe_division($row['daily_during_ordered_units'], $row['daily_baseline_ordered_units'], true) - 1;
                 break;
-            
+
             case 'post_lift_ordered_amount':
                 return $this->merge->safe_division($row['daily_post_ordered_amount'], $row['daily_baseline_ordered_amount']) - 1;
                 break;
-            
+
             case 'post_lift_ordered_units':
                 return $this->merge->safe_division($row['daily_post_ordered_units'], $row['daily_baseline_ordered_units'], true) - 1;
                 break;
@@ -186,7 +185,7 @@ class Spod extends Model {
             case 'during_incremental_pos_sales':
                 return ($row['daily_during_pos_sales'] - $row['daily_baseline_pos_sales'] ) * $this->number_of_promotion_days;
                 break;
-            
+
             case 'during_incremental_pos_units':
                 return ($row['daily_during_pos_units'] - $row['daily_baseline_pos_units'] ) * $this->number_of_promotion_days;
                 break;

@@ -54,7 +54,6 @@ class Spinput {
 
         $this->calendar_dates = $this->calendar->init($this->data['promotions_startdate'], $this->data['promotions_enddate'], $this->baseline_weeks, $this->post_weeks);
         
-        
 
         echo "Promotion start date - {$this->data['promotions_startdate']} \n";
         echo "Promotion end date   - {$this->data['promotions_enddate']} \n";

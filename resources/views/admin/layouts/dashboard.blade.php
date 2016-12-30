@@ -28,10 +28,16 @@
         <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
         <script src="{{ asset('js/jquery.min.js') }}"></script>
+        <script src="{{ asset('js/jquery-ui.js') }}"></script>
         <script src="{{ asset('js/app-const.js') }}"></script> 
         <script type="text/javascript">appConst.token = '<?php echo csrf_token(); ?>';</script>
 
-        <script src="{{ asset('js/jquery-ui.js') }}"></script>
+        <!-- jQuery Tag Input -->
+        <link rel="stylesheet" href="{{ asset('assets/jquery-tags-input/jquery.tagsinput.css') }}" />
+        <script src="{{ asset('assets/jquery-tags-input/jquery.tagsinput.js') }}"></script>
+        
+        
+        <!-- MERGE -->
         <script src="{{ asset('js/merge.js') }}"></script>        
 
         <!-- Kento UI -->
@@ -41,7 +47,7 @@
 
         <script src="{{ asset('assets/kendoui/js/kendo.all.min.js') }}"></script>
         <!-- Kento UI END -->
-        
+
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
                 <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>

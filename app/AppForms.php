@@ -166,10 +166,12 @@ class AppForms {
                     'name' => 'brand',
                     'label' => 'Brand',
                 ),
+                
                 array(
-                    'type' => 'auto_complete',
+                    'type' => 'auto_complete_tags',
                     'name' => 'category',
                     'label' => 'Category',
+                    'url' => url('admin/ajax?action=auto_complete_tag&col=category'),
                 ),
 //                        array(
 //                            'type' => 'auto_complete',
@@ -192,6 +194,7 @@ class AppForms {
                     'label_checkbox' => 'YES',
                     'label' => 'Is this promotion annivarsaried?',
                 ),
+                
 //                        array(
 //                            'type' => 'select',
 //                            'name' => 'status',

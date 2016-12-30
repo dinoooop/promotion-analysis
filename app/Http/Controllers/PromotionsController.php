@@ -96,7 +96,7 @@ class PromotionsController extends Controller {
      */
     public function store() {
         $input = Input::all();
-
+        
         $status = Promotion::status($input);
 
         if ($status['status']) {
@@ -104,7 +104,7 @@ class PromotionsController extends Controller {
 
             $promotion = Promotion::create($status['input']);
 
-            if (in_array($input['level_of_promotions'], ['Category', 'Brand'])) {
+            if(in_array($input['level_of_promotions'], ['Category', 'Brand'])) {
                 return Redirect()->route('prepare_promotion', ['pid' => $promotion->id]);
             }
 

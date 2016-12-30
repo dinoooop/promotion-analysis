@@ -235,23 +235,35 @@ class Item extends Model {
         }
 
         if ($promotion->level_of_promotions == 'Category') {
-            $records = Pgquery::get_items_category($promotion->category);
+
+            $categories = explode(',', $promotion->category);
+            foreach ($categories as $key => $category) {
+                echo "Going to find items for the category {$category} \n";
+                $records = Pgquery::get_items_category($category);
+                $count = count($records);
+                echo "Total records for {$category} is {$count } \n";
+
+                foreach ($records as $key => $record) {
+                    $input = $this->prepare_redshift_item($promotion, $record);
+                    $status = self::status($input);
+                    if ($status['status']) {
+                        self::create($input);
+                    }
+                }
+            }
         } elseif ($promotion->level_of_promotions == 'Brand') {
             $records = Pgquery::get_items_brand($promotion->brand);
-        }
-
-        foreach ($records as $key => $record) {
-            $input = $this->prepare_redshift_item($promotion, $record);
-            $status = self::status($input);
-            if ($status['status']) {
-                self::create($input);
+            foreach ($records as $key => $record) {
+                $input = $this->prepare_redshift_item($promotion, $record);
+                $status = self::status($input);
+                if ($status['status']) {
+                    self::create($input);
+                }
             }
         }
-
-        if (!empty($records)) {
-            $this->set_have_child_items($promotion);
-            Promotion::update_promotion_status($promotion->id, 'active');
-        }
+        
+        $this->set_have_child_items($promotion);
+        Promotion::update_promotion_status($promotion->id, 'active');
     }
 
     /**
@@ -266,15 +278,18 @@ class Item extends Model {
         if ($option) {
 
             if ($promotion->level_of_promotions == 'Category') {
-                if (isset($option['category']) && $option['category'] == $promotion->category) {
-
-                    echo "child item exist for the category \n";
-                    return true;
-                } else {
-                    echo "Its look like new category, So remove old items \n";
-                    Promotion::update_promotion_status($promotion->id, 'sleep');
-                    Item::where('promotions_id', $promotion->id)->delete();
-                    return false;
+                if (isset($option['category'])) {
+                    $categories = explode(',', $promotion->category);
+                    $option['category'] = explode(',', $option['category']);
+                    if (Dot::is_array_eaqual($categories, $option['category'])) {
+                        echo "child item exist for the category \n";
+                        return true;
+                    } else {
+                        echo "Its look like new category, So remove old items \n";
+                        Promotion::update_promotion_status($promotion->id, 'sleep');
+                        Item::where('promotions_id', $promotion->id)->delete();
+                        return false;
+                    }
                 }
             }
             if ($promotion->level_of_promotions == 'Brand') {

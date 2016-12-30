@@ -194,7 +194,7 @@ class Mockup {
         Promotion::whereRaw("level_of_promotions ='Category' OR level_of_promotions ='Brand'")->orderBy('id')->chunk(100, function ($promotions) {
             echo "There are {$promotions->count()} records for execute \n";
             foreach ($promotions as $promotion) {
-
+                echo "Find items for the category {$promotion->category} \n";
                 $this->item->insert_items_under_promotion($promotion);
             }
         });

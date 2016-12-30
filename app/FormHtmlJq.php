@@ -259,6 +259,36 @@ class FormHtmlJq {
                 <?php echo '</div>'; ?>
                 <?php
                 break;
+            case 'auto_complete_tags':
+                ?>
+
+                <?php echo $col; ?>
+                <div class="form-group">
+
+                    <label class="control-label" for="<?php echo $id ?>"><?php echo $label ?></label>
+                    <input 
+                        id="<?php echo $id ?>"
+                        type="<?php echo $type; ?>" 
+                        name="<?php echo $name; ?>" 
+                        class="form-control"
+                        value="<?php echo $value; ?>"
+                        placeholder="<?php echo $placeholder ?>">
+
+                    <?php if ($description != ''): ?>
+                        <p class="help-description"><?php echo $description; ?></p>
+                    <?php endif; ?>
+                </div>
+                <script>
+                    $('#<?php echo $id ?>').tagsInput({
+                        'height': '35px',
+                        'width': '100%',
+                        autocomplete_url: '<?php echo $url ?>',
+                        autocomplete: {selectFirst: true, width: '100px', autoFill: true}
+                    });
+                </script>
+                <?php echo '</div>'; ?>
+                <?php
+                break;
 
         endswitch;
         $html = ob_get_contents();

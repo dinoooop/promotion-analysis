@@ -285,7 +285,7 @@ class Dot {
 
         $allow_extension = ['xls', 'xlsx', 'txt', 'bin'];
         $extention = $input->file($field)->extension();
-        
+
         if (!in_array($extention, $allow_extension)) {
             $error['message'][] = 'Please upload valid file with data';
             $error['status'] = false;
@@ -294,12 +294,12 @@ class Dot {
 
 
         $pathinfo = pathinfo($input->file($field)->getClientOriginalName());
-        
+
         $title = $pathinfo['filename'];
         $file_name = date('Y-m-d-h-i-s') . rand(1000, 9999) . '.' . $pathinfo['extension'];
         $path = $input->file($field)->storeAs('csv', $file_name);
         $path = storage_path('app/' . $path);
-        
+
         $output = shell_exec("chmod 777 {$path}");
         Log::info("Changing the permision of uploading file");
         Log::info($output);
@@ -312,6 +312,24 @@ class Dot {
         ];
 
         return $store;
+    }
+
+    /**
+     * 
+     * Check weather the array are equal
+     * @param type $array1
+     * @param type $array2
+     * @return boolean
+     */
+    public static function is_array_eaqual($array1, $array2) {
+        $in = [];
+        foreach ($array1 as $key => $value) {
+            if (in_array($value, $array2)) {
+                $in[] = $value;
+            } 
+        }
+
+        return (count($in) == count($array1) && count($in) == count($array2));
     }
 
 }
