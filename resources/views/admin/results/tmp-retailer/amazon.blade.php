@@ -7,6 +7,7 @@
                 <th></th>
                 <th></th>
                 <th></th>
+                <th></th>
                 <th colspan="2">Baseline</th>
                 <th colspan="2">During</th>
                 <th colspan="2">Post</th>
@@ -21,6 +22,7 @@
                 <th>Preparation table</th>
                 <th>Material Id</th>
                 <th>ASIN</th>
+                
                 <th>Ordered Amount</th>
                 <th>Ordered Units</th>
                 <th>Ordered Amount</th>
@@ -35,6 +37,8 @@
                 <th>Ordered Units</th>
                 <th>Ordered Amount</th>
                 <th>Ordered Units</th>
+                
+                
                 <th>Pro Days</th>
             </tr>
         </thead>
@@ -66,10 +70,10 @@
 
                 <td>{{ $record->during_lift_ordered_amount }}</td>
                 <td>{{ $record->during_lift_ordered_units }}</td>
-
+                
                 <td>{{ $record->post_lift_ordered_amount }}</td>
                 <td>{{ $record->post_lift_ordered_units }}</td>
-
+                
                 <td>{{ $record->no_of_promotion_days }}</td>
             </tr>
             @endforeach

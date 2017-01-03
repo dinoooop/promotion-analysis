@@ -171,6 +171,7 @@ class AppForms {
                     'type' => 'auto_complete_tags',
                     'name' => 'category',
                     'label' => 'Category',
+                    'placeholder' => '',
                     'url' => url('admin/ajax?action=auto_complete_tag&col=category'),
                 ),
 //                        array(

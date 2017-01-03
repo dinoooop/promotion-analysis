@@ -395,8 +395,12 @@ class DBChange {
             $table->double('post_incremental_pos_units', 15, 8)->nullable();
             $table->double('during_lift_ordered_amount', 15, 8)->nullable();
             $table->double('during_lift_ordered_units', 15, 8)->nullable();
+            $table->double('during_lift_pos_sales', 15, 8)->nullable();
+            $table->double('during_lift_pos_units', 15, 8)->nullable();
             $table->double('post_lift_ordered_amount', 15, 8)->nullable();
             $table->double('post_lift_ordered_units', 15, 8)->nullable();
+            $table->double('post_lift_pos_sales', 15, 8)->nullable();
+            $table->double('post_lift_pos_units', 15, 8)->nullable();
             $table->double('calculated_investment_amount', 15, 8)->nullable();
             $table->integer('no_of_promotion_days');
         });

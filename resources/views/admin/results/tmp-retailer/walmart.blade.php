@@ -6,11 +6,15 @@
                 <th></th>
                 <th></th>
                 <th></th>
+                <th></th>
                 <th colspan="2">Baseline</th>
                 <th colspan="2">During</th>
                 <th colspan="2">Post</th>
                 <th colspan="2">During incremental</th>
                 <th colspan="2">Post incremental</th>
+                <th colspan="2">During lift</th>
+                <th colspan="2">Post lift</th>
+                
                 
                 <th></th>
             </tr>
@@ -19,6 +23,11 @@
                 <th>Preparation table</th>
                 <th>Material Id</th>
                 <th>ASIN</th>
+                
+                <th>POS Sales</th>
+                <th>POS Units</th>
+                <th>POS Sales</th>
+                <th>POS Units</th>
                 <th>POS Sales</th>
                 <th>POS Units</th>
                 <th>POS Sales</th>
@@ -58,8 +67,13 @@
 
                 <td>{{ $record->post_incremental_pos_sales }}</td>
                 <td>{{ $record->post_incremental_pos_units }}</td>
-
-
+                
+                <td>{{ $record->during_lift_pos_sales }}</td>
+                <td>{{ $record->during_lift_pos_units }}</td>
+                
+                <td>{{ $record->post_lift_pos_sales }}</td>
+                <td>{{ $record->post_lift_pos_units }}</td>
+                
                 <td>{{ $record->no_of_promotion_days }}</td>
             </tr>
             @endforeach

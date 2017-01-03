@@ -271,8 +271,7 @@ class FormHtmlJq {
                         type="<?php echo $type; ?>" 
                         name="<?php echo $name; ?>" 
                         class="form-control"
-                        value="<?php echo $value; ?>"
-                        placeholder="<?php echo $placeholder ?>">
+                        value="<?php echo $value; ?>">
 
                     <?php if ($description != ''): ?>
                         <p class="help-description"><?php echo $description; ?></p>
@@ -282,6 +281,7 @@ class FormHtmlJq {
                     $('#<?php echo $id ?>').tagsInput({
                         'height': '35px',
                         'width': '100%',
+                        defaultText: '<?php echo $placeholder ?>',
                         autocomplete_url: '<?php echo $url ?>',
                         autocomplete: {selectFirst: true, width: '100px', autoFill: true}
                     });
