@@ -28,14 +28,14 @@ class Kernel extends ConsoleKernel {
 //                  ->everyFiveMinutes();
         $logfile = storage_path('logs/promotions.log');
         if (env('CRON_TIME') == 'development') {
-            $schedule->command('promo process')->everyMinute()->sendOutputTo($logfile);
-            $schedule->command('promo find_items')->everyFiveMinutes()->sendOutputTo($logfile);
+            $schedule->command('promo process')->everyMinute()->appendOutputTo($logfile);
+            $schedule->command('promo find_items')->everyFiveMinutes()->appendOutputTo($logfile);
         } elseif (env('CRON_TIME') == 'production') {
-            $schedule->command('promo process')->hourly()->sendOutputTo($logfile);
-            $schedule->command('promo find_items')->everyFiveMinutes()->sendOutputTo($logfile);
+            $schedule->command('promo process')->hourly()->appendOutputTo($logfile);
+            $schedule->command('promo find_items')->everyFiveMinutes()->appendOutputTo($logfile);
         }
 
-        $schedule->command('promo clear_promo_logs')->weekly()->sendOutputTo($logfile);
+        $schedule->command('promo clear_promo_logs')->weekly()->appendOutputTo($logfile);
     }
 
     /**
