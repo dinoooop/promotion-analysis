@@ -173,7 +173,7 @@ class Mockup {
         $this->sdcalc->inject($this->spinput);
 
         if ($this->sdcalc->record_count) {
-            // $this->sdcalc->set_invoice_price();
+            $this->sdcalc->set_invoice_price();
             $this->swcalc->inject($this->spinput, $this->sdcalc);
             $this->spod->inject($this->spinput, $this->sdcalc, $this->swcalc);
             $this->spod->create_record();
