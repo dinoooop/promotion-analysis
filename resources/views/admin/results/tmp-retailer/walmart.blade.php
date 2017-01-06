@@ -8,9 +8,17 @@
                 <th></th>
                 <th></th>
                 <th colspan="2">Baseline</th>
-                <th colspan="2">During</th>
+                @if($is_single_day)
+                <th colspan="2">During (daily)</th>
+                @else
+                <th colspan="2">During (wkly)</th>
+                @endif
                 <th colspan="2">Post</th>
-                <th colspan="2">During incremental</th>
+                @if($is_single_day)
+                <th colspan="2">During incremental (daily)</th>
+                @else
+                <th colspan="2">During incremental (wkly)</th>
+                @endif
                 <th colspan="2">Post incremental</th>
                 <th colspan="2">During lift</th>
                 <th colspan="2">Post lift</th>

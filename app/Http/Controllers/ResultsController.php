@@ -46,6 +46,7 @@ class ResultsController extends Controller {
         $query = Spod::orderBy('id', 'asc');
         if (isset($input['pid'])) {
             $data['promotion'] = Promotion::findOrFail($input['pid']);
+            $data['is_single_day'] = $data['promotion']['promotions_startdate'] == $data['promotion']['promotions_enddate'];
             $query->where('promotions_id', $input['pid']);
         } else {
             return Dot::R404();

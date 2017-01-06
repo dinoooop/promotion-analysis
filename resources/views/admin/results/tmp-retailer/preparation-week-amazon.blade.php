@@ -48,12 +48,12 @@
                     },
                     {
                         field: "quarter_ordered_amount",
-                        title: "Quarter ordered amount",
+                        title: "13 Week ordered amount",
                         type: "number",
                     },
                     {
                         field: "quarter_ordered_units",
-                        title: "Quarter ordered units",
+                        title: "13 Week ordered units",
                         type: "number",
                     },
                     {

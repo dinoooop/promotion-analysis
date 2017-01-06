@@ -61,7 +61,7 @@ class Swcalc extends Model {
         return $records;
     }
 
-    function basic_quarter_data() {
+    function basic_quarter_data($start_week, $end_week) {
         $raw = [
             'ordered_amount',
             'ordered_units',
@@ -71,7 +71,7 @@ class Swcalc extends Model {
         $sum_raw_select = $this->merge->create_sum_select_raw($raw);
         $records = Sdcalc::selectRaw($sum_raw_select)
                 ->where('promo_child_id', $this->spinput->promo_child_id)
-                ->groupBy('quarter')
+                ->whereBetween('week', [$start_week, $end_week])
                 ->first();
         return $records;
     }
@@ -86,28 +86,31 @@ class Swcalc extends Model {
 
             $raw['promo_child_id'] = $this->spinput->promo_child_id;
             $raw['week'] = $record['week'];
-            $raw['quarter'] = $this->calendar->get_quarter_id($record['week']);
-
+//            $raw['quarter'] = $this->calendar->get_quarter_id($record['week']);
             $raw['ordered_amount'] = $record['ordered_amount'];
             $raw['ordered_units'] = $record['ordered_units'];
             $raw['pos_sales'] = $record['pos_sales'];
             $raw['pos_units'] = $record['pos_units'];
 
             // Normalize the data
-            $records_quarter = $this->basic_quarter_data();
-            $quarter = $this->calendar->get_quarter_info($raw['quarter']);
+            if (in_array($record['week'], $this->spinput->calendar_dates['baseline']['weeks'])) {
+                
+                $range = $this->spinput->calendar_dates['baseline']['range'][$record['week']];
+                $records_quarter = $this->basic_quarter_data($range['start_week'], $range['end_week']);
+                
+                $raw['quarter_ordered_amount'] = $this->merge->safe_division($records_quarter['ordered_amount'], $this->spinput->normalize_weeks_count);
+                $raw['normalized_ordered_amount'] = $this->calc('normalized_ordered_amount', $raw);
+                
+                $raw['quarter_ordered_units'] = $this->merge->safe_division($records_quarter['ordered_units'], $this->spinput->normalize_weeks_count, true);
+                $raw['normalized_ordered_units'] = $this->calc('normalized_ordered_units', $raw);
+                
+                $raw['quarter_pos_sales'] = $this->merge->safe_division($records_quarter['pos_sales'], $this->spinput->normalize_weeks_count);
+                $raw['normalized_pos_sales'] = $this->calc('normalized_pos_sales', $raw);
+                
+                $raw['quarter_pos_units'] = $this->merge->safe_division($records_quarter['pos_units'], $this->spinput->normalize_weeks_count, true);
+                $raw['normalized_pos_units'] = $this->calc('normalized_pos_units', $raw);
+            }
 
-            $raw['quarter_ordered_amount'] = $this->merge->safe_division($records_quarter['ordered_amount'], $quarter['week_count']);
-            $raw['normalized_ordered_amount'] = $this->calc('normalized_ordered_amount', $raw);
-
-            $raw['quarter_ordered_units'] = $this->merge->safe_division($records_quarter['ordered_units'], $quarter['week_count'], true);
-            $raw['normalized_ordered_units'] = $this->calc('normalized_ordered_units', $raw);
-
-            $raw['quarter_pos_sales'] = $this->merge->safe_division($records_quarter['pos_sales'], $quarter['week_count']);
-            $raw['normalized_pos_sales'] = $this->calc('normalized_pos_sales', $raw);
-
-            $raw['quarter_pos_units'] = $this->merge->safe_division($records_quarter['pos_units'], $quarter['week_count'], true);
-            $raw['normalized_pos_units'] = $this->calc('normalized_pos_units', $raw);
 
 
             self::create($raw);

@@ -21,6 +21,7 @@ use App\promotions\Item;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Validator;
 use App\Import;
+use App\TimeMachine;
 
 class TestController extends BaseController {
 
@@ -38,15 +39,19 @@ class TestController extends BaseController {
         $this->item = new Item;
         $this->sample = new Sample;
         $this->import = new Import;
+        $this->time_machine = new TimeMachine;
     }
 
     function test() {
-        $test = 'RED,pink,blue';
-        $array1 = explode(',', $test);
-        $array2 = ['pink', 'blue', 'RED'];
-        if (Dot::is_array_eaqual($array1, $array2)) {
-            echo "exist";
-        }
+        $start_date = '2016-07-12';
+        $end_date = '2016-07-12';
+        $baseline_weeks_count = 4; 
+        $post_weeks_count = 2;
+        $normalize_weeks_count = 13;
+        $dates = $this->time_machine->init($start_date, $end_date, $baseline_weeks_count, $post_weeks_count, $normalize_weeks_count);
+        echo '<pre>', print_r($dates), '</pre>';
+        
+        
     }
 
     function test_child_items_input() {

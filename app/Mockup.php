@@ -35,7 +35,7 @@ class Mockup {
     function promotion_chunk() {
         // Promotion status => active, completed
 
-        Promotion::whereRaw("status ='active' AND newell_status = 'Approved'")->orderBy('id')->chunk(100, function ($promotions) {
+        Promotion::whereRaw("(status ='active') AND newell_status = 'Approved'")->orderBy('id')->chunk(100, function ($promotions) {
             foreach ($promotions as $promotion) {
                 $this->promotion = $promotion;
                 $this->items_count = 0;
@@ -173,7 +173,7 @@ class Mockup {
         $this->sdcalc->inject($this->spinput);
 
         if ($this->sdcalc->record_count) {
-            //$this->sdcalc->set_invoice_price();
+            // $this->sdcalc->set_invoice_price();
             $this->swcalc->inject($this->spinput, $this->sdcalc);
             $this->spod->inject($this->spinput, $this->sdcalc, $this->swcalc);
             $this->spod->create_record();

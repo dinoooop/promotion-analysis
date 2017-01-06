@@ -3,13 +3,13 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 use App\Sdcalc;
 use App\Swcalc;
-use App\Calendar;
 use App\Merge;
 use App\Redshift\Dsales;
 use App\promotions\Item;
-use Illuminate\Support\Facades\Log;
+use App\TimeMachine;
 
 class Spod extends Model {
 
@@ -57,8 +57,8 @@ class Spod extends Model {
 
     function inject($spinput, $sdcalc, $swcalc) {
 
-        $this->calendar = new Calendar;
         $this->merge = new Merge;
+        $this->time_machine = new TimeMachine;
 
         $this->spinput = $spinput;
         $this->sdcalc = $sdcalc;
@@ -72,7 +72,7 @@ class Spod extends Model {
             $this->nod_based_denominator = 7;
         } else {
             echo "Multiple day promotion (POD) \n";
-            $this->number_of_promotion_days = $this->calendar->date_difference($this->spinput->data['promotions_startdate'], $this->spinput->data['promotions_enddate']) + 1;
+            $this->number_of_promotion_days = $this->time_machine->date_difference($this->spinput->data['promotions_startdate'], $this->spinput->data['promotions_enddate']) + 1;
             $this->nod_based_denominator = $this->number_of_promotion_days;
         }
     }
@@ -87,13 +87,12 @@ class Spod extends Model {
         $row['product_name'] = $this->spinput->data['product_name'];
 
         // Basilene days (Normalized)
-
         $row['daily_baseline_ordered_amount'] = $this->merge->safe_division($this->swcalc->get_avg_column('normalized_ordered_amount', $this->spinput->calendar_dates['baseline']['start_week'], $this->spinput->calendar_dates['baseline']['end_week']), 7);
-
         $row['daily_baseline_ordered_units'] = $this->merge->safe_division($this->swcalc->get_avg_column('normalized_ordered_units', $this->spinput->calendar_dates['baseline']['start_week'], $this->spinput->calendar_dates['baseline']['end_week']), 7, true);
 
         $row['daily_baseline_pos_sales'] = $this->swcalc->get_avg_column('normalized_pos_sales', $this->spinput->calendar_dates['baseline']['start_week'], $this->spinput->calendar_dates['baseline']['end_week']);
         $row['daily_baseline_pos_units'] = round($this->swcalc->get_avg_column('normalized_pos_units', $this->spinput->calendar_dates['baseline']['start_week'], $this->spinput->calendar_dates['baseline']['end_week']));
+        
         // Promotion  days
         // For single day promotion order amount is not avg
         if ($this->spinput->is_single_day) {
@@ -111,7 +110,6 @@ class Spod extends Model {
         }
 
         // Post days
-
         $row['daily_post_ordered_amount'] = $this->swcalc->get_avg_column('ordered_amount', $this->spinput->calendar_dates['post']['start_week'], $this->spinput->calendar_dates['post']['end_week']);
         $row['daily_post_ordered_units'] = round($this->swcalc->get_avg_column('ordered_units', $this->spinput->calendar_dates['post']['start_week'], $this->spinput->calendar_dates['post']['end_week']));
         $row['daily_post_pos_sales'] = $this->swcalc->get_avg_column('pos_sales', $this->spinput->calendar_dates['post']['start_week'], $this->spinput->calendar_dates['post']['end_week']);

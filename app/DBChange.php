@@ -325,7 +325,7 @@ class DBChange {
             $table->string('rtl_id')->nullable();
             $table->string('product_name')->nullable();
             $table->date('week');
-            $table->date('quarter');
+//            $table->date('quarter');
             $table->date('date_day');
             $table->double('ordered_amount', 15, 8)->nullable();
             $table->double('ordered_units', 15, 8)->nullable();
@@ -346,7 +346,7 @@ class DBChange {
             $table->bigIncrements('id');
             $table->bigInteger('promo_child_id');
             $table->date('week');
-            $table->date('quarter');
+//            $table->date('quarter');
             $table->double('ordered_amount', 15, 8)->nullable();
             $table->integer('ordered_units')->nullable();
             $table->double('pos_sales', 15, 8)->nullable();

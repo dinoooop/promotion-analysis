@@ -31,7 +31,7 @@
                     
                     {
                         field: "week",
-                        title: "Date",
+                        title: "Week",
                         format: "{0:MM/dd/yyyy}",
                         type: "date",
                         sortable: true,
@@ -48,12 +48,12 @@
                     },
                     {
                         field: "quarter_pos_sales",
-                        title: "Quarter pos sales",
+                        title: "13 Week pos sales",
                         type: "number",
                     },
                     {
                         field: "quarter_pos_units",
-                        title: "Quarter pos units",
+                        title: "13 Week pos units",
                         type: "number",
                     },
                     {

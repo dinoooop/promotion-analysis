@@ -9,6 +9,7 @@ use App\Calendar;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use App\Redshift\Pgquery;
+use App\TimeMachine;
 
 class Sdcalc extends Model {
 
@@ -42,6 +43,7 @@ class Sdcalc extends Model {
 
         $this->calendar = new Calendar;
         $this->merge = new Merge;
+        $this->time_machine = new TimeMachine;
         $this->record_count = 0;
 
         $this->spinput = $input;
@@ -49,33 +51,21 @@ class Sdcalc extends Model {
 
         echo "On Sdcalc, records {$this->record_count} \n";
 
-        $quarters = $this->spinput->calendar_dates['all_quarters'];
+        $this->set_psql_where();
+        $sql = Pgquery::psql_dayily_pos($this->where_id, $this->where_date);
+        $records = DB::connection('redshift')->select($sql);
 
-        echo "total quarters " . count($quarters) . "\n";
+        $this->record_count = count($records);
 
-        foreach ($quarters as $key => $quarter_id) {
-
-            echo "Collecting records on daily bases for the quarter id {$quarter_id} \n";
-
-            $this->quarter_id = $quarter_id;
-            $this->quarter = $this->calendar->get_quarter_info($quarter_id);
-
-            $this->set_psql_where();
-            $sql = Pgquery::new_promotion_query($this->where_id, $this->where_date);
-            $records = DB::connection('redshift')->select($sql);
-
-            $this->record_count = count($records) + $this->record_count;
-
-            echo "Total number of records for the condition {$this->where_id} {$this->record_count} \n";
+        echo "Total number of records in preperation {$this->record_count} \n";
 
 
-            $this->save_records($records);
+        $this->save_records($records);
 
-            if ($this->record_count) {
-                $this->record_one = $records[0];
-                // Set material id again
-                $this->spinput->material_id = $this->record_one['material_id'];
-            }
+        if ($this->record_count) {
+            $this->record_one = $records[0];
+            // Set material id again
+            $this->spinput->material_id = $this->record_one['material_id'];
         }
     }
 
@@ -98,7 +88,7 @@ class Sdcalc extends Model {
             $this->where_id = " m.retailer_sku = '{$this->spinput->retailer_id}' ";
         }
 
-        $this->where_date = " BETWEEN '{$this->quarter['start_date']}' AND '{$this->quarter['end_date']}' ";
+        $this->where_date = " BETWEEN '{$this->spinput->calendar_dates['get']['start_date']}' AND '{$this->spinput->calendar_dates['get']['end_date']}' ";
     }
 
     function prepare($record) {
@@ -107,16 +97,16 @@ class Sdcalc extends Model {
         $row['asin'] = $this->spinput->asin;
         $row['rtl_id'] = $this->spinput->retailer_id;
         $row['product_name'] = $this->spinput->data['product_name'];
-        $row['week'] = $this->calendar->get_week_sat($record['date_day']);
-        $row['quarter'] = $this->calendar->get_quarter_id($record['date_day']);
+        $row['week'] = $this->time_machine->get_week_sat($record['date_day']);
+//        $row['quarter'] = $this->calendar->get_quarter_id($record['date_day']);
         $row['date_day'] = date('Y-m-d', strtotime($record['date_day']));
         $row['ordered_amount'] = Dot::sanitize_numeric($record['ordered_amount'], null, 0);
         $row['ordered_units'] = $record['ordered_units'];
         $row['pos_sales'] = Dot::sanitize_numeric($record['pos_sales'], null, 0);
         $row['pos_units'] = $record['pos_units'];
-        $row['invoice_amounts'] = Dot::sanitize_numeric($record['invoice_sales']);
-        $row['invoice_units'] = Dot::sanitize_numeric($record['invoice_units']);
-        $row['invoice_cost'] = $this->merge->safe_division($row['invoice_amounts'], $row['invoice_units']) * Dot::sanitize_numeric($record['invoice_numerator']);
+//        $row['invoice_amounts'] = Dot::sanitize_numeric($record['invoice_sales']);
+//        $row['invoice_units'] = Dot::sanitize_numeric($record['invoice_units']);
+//        $row['invoice_cost'] = $this->merge->safe_division($row['invoice_amounts'], $row['invoice_units']) * Dot::sanitize_numeric($record['invoice_numerator']);
         return $row;
     }
 

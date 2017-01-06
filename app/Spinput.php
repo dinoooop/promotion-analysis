@@ -5,6 +5,7 @@ namespace App;
 use App\Dot;
 use App\Merge;
 use App\Calendar;
+use App\TimeMachine;
 
 class Spinput {
 
@@ -18,6 +19,7 @@ class Spinput {
 
         $this->merge = new Merge;
         $this->calendar = new Calendar;
+        $this->time_machine = new TimeMachine;
 
         $this->today = date("Y-m-d");
 
@@ -37,6 +39,7 @@ class Spinput {
         $this->post_weeks = $settings['post_weeks'];
         $this->baseline_threshold = $settings['baseline_threshold'];
         $this->post_week_avail_week_count = $this->post_weeks + 1;
+        $this->normalize_weeks_count = 13;
 
         $this->promotions_id = $this->data['promotions_id'];
         $this->promo_child_id = $this->data['promo_child_id'];
@@ -44,17 +47,14 @@ class Spinput {
         $this->promotions_startdate = $this->data['promotions_startdate'];
         $this->promotions_enddate = $this->data['promotions_enddate'];
 
-
         $this->material_id = isset($this->data['material_id']) ? $this->data['material_id'] : '';
         $this->retailer_id = isset($this->data['retailer_id']) ? $this->data['retailer_id'] : '';
         $this->asin = isset($this->data['asin']) ? $this->data['asin'] : '';
 
-
         $this->is_single_day = ($this->data['promotions_startdate'] == $this->data['promotions_enddate']);
-
-        $this->calendar_dates = $this->calendar->init($this->data['promotions_startdate'], $this->data['promotions_enddate'], $this->baseline_weeks, $this->post_weeks);
         
-
+        $this->calendar_dates = $this->time_machine->init($this->data['promotions_startdate'], $this->data['promotions_enddate'], $this->baseline_weeks, $this->post_weeks, $this->normalize_weeks_count);
+        
         echo "Promotion start date - {$this->data['promotions_startdate']} \n";
         echo "Promotion end date   - {$this->data['promotions_enddate']} \n";
     }
