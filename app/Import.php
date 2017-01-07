@@ -96,6 +96,8 @@ class Import {
         foreach ($records as $key => $record) {
 
             $input = $this->match_the_column_promotion($record);
+            echo '<pre>', print_r($input), '</pre>';
+            exit();
             if ($input == false) {
                 return [];
             }
@@ -107,7 +109,7 @@ class Import {
                 $model = Promotion::create($status['input']);
                 $info[] = $model->id;
             } else {
-                Log::info("CSV input failed (item)");
+                Log::info("CSV input failed (promotion)");
                 Log::info($status['validation']->errors());
                 if (isset($input['material_id'])) {
                     Log::info($input['material_id']);

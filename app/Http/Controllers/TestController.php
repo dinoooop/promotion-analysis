@@ -43,13 +43,17 @@ class TestController extends BaseController {
     }
 
     function test() {
+        
+        
         $start_date = '2016-07-12';
         $end_date = '2016-07-12';
         $baseline_weeks_count = 4; 
         $post_weeks_count = 2;
         $normalize_weeks_count = 13;
         $dates = $this->time_machine->init($start_date, $end_date, $baseline_weeks_count, $post_weeks_count, $normalize_weeks_count);
+        $range = $dates['baseline']['range']['2016-07-09'];
         echo '<pre>', print_r($dates), '</pre>';
+        echo '<pre>', print_r($range), '</pre>';
         
         
     }

@@ -68,6 +68,7 @@ class Swcalc extends Model {
             'pos_sales',
             'pos_units',
         ];
+        
         $sum_raw_select = $this->merge->create_sum_select_raw($raw);
         $records = Sdcalc::selectRaw($sum_raw_select)
                 ->where('promo_child_id', $this->spinput->promo_child_id)

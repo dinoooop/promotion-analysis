@@ -47,8 +47,11 @@ class TimeMachine {
     }
 
     function get_recordsOf($dates) {
-        $return['start_date'] = $this->get_week_sun($dates['baseline']['start_week']);
-        $return['end_date'] = $dates['post']['end_week'];
+        $baseline_start_week = $dates['baseline']['start_week'];
+        $post_end_week = $dates['post']['end_week'];
+        $range = $dates['baseline']['range'];
+        $return['start_date'] = $this->get_week_sun($range[$baseline_start_week]['start_week']);
+        $return['end_date'] = $post_end_week;
         return $return;
     }
 
