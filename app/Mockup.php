@@ -35,7 +35,7 @@ class Mockup {
     function promotion_chunk() {
         // Promotion status => active, completed
 
-        Promotion::whereRaw("(status ='active' OR status = 'completed') AND newell_status = 'Approved'")->orderBy('id')->chunk(100, function ($promotions) {
+        Promotion::whereRaw("(status ='active') AND newell_status = 'Approved'")->orderBy('id')->chunk(100, function ($promotions) {
             foreach ($promotions as $promotion) {
                 $this->promotion = $promotion;
                 $this->items_count = 0;
