@@ -96,8 +96,7 @@ class Import {
         foreach ($records as $key => $record) {
 
             $input = $this->match_the_column_promotion($record);
-            echo '<pre>', print_r($input), '</pre>';
-            exit();
+            
             if ($input == false) {
                 return [];
             }
