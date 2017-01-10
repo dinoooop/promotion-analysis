@@ -57,7 +57,7 @@ class Mockup {
             // Keep status active
             // The promotion deosn't contain item means - user may forget add items
             // It is a category/brand level promotion and system doesn't find items still
-            // Promotion::update_promotion_status($this->promotion->id, 'active');
+            Promotion::update_promotion_status($this->promotion->id, 'active');
             echo "Promotion not contain items, status remain active \n ";
         } elseif ($this->items_count >= 1) {
             echo "Promotion contains {$this->items_count} items, status completed \n ";
