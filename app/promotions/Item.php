@@ -261,7 +261,7 @@ class Item extends Model {
                 }
             }
         }
-        
+
         $this->set_have_child_items($promotion);
         Promotion::update_promotion_status($promotion->id, 'active');
     }
@@ -409,6 +409,17 @@ class Item extends Model {
             'price_discount' => Dot::sanitize_numeric('price_discount', $input),
             'reference' => Dot::sanitize_string('reference', $input),
         ];
+    }
+
+    /**
+     * 
+     * Get the list of items based on CSV import
+     * @param type $promotion_start_id
+     * @param type $promotion_end_id
+     */
+    public static function get_items_range($promotion_start_id, $promotion_end_id) {
+        return self::whereBetween('promotions_id', [$promotion_start_id, $promotion_end_id])
+                        ->get();
     }
 
 }

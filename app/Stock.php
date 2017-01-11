@@ -163,7 +163,7 @@ class Stock {
                     'active' => 'Not Processed', // On submit the promotion
                     'processing' => 'In-Progress', // Promotion go through the calculation (do not allow edit on this mode)
                     'completed' => 'Completed', // calculation completed 
-                    'failed' => 'Needs Attention',  //calculation failed
+                    'failed' => 'Needs Attention', //calculation failed
                 ];
                 return $return;
                 break;
@@ -272,6 +272,50 @@ AND ms.date_day BETWEEN '{$start_date}' AND '{$end_date}'";
             'comments' => '',
             'status' => 'Approved'
         ];
+    }
+
+    public static function csv_header($type) {
+        $promotions = [
+            'promotions_name' => 'promotion_name',
+            'promotions_description' => 'promo_description',
+            'promotions_startdate' => 'promo_start_date',
+            'promotions_enddate' => 'promo_end_date',
+            'retailer' => 'retailer',
+            'retailer_country' => 'retailer_country',
+            'newell_status' => 'newell_status',
+            'promotions_type' => 'promotions_type',
+            'level_of_promotions' => 'level_of_promotion',
+            'marketing_type' => 'marketing_type',
+            'annivarsaried' => 'anniversaried',
+            'promotions_budget' => 'promo_budget',
+            'promotions_projected_sales' => 'projected_sales',
+            'promotions_expected_lift' => 'expected_lift',
+            'promotions_budget_type' => 'budget_type',
+            'brand' => 'brand',
+            'category' => 'category',
+            'division' => 'division',
+        ];
+
+        $items = [
+            'promotions_id' => 'promotions_id',
+            'material_id' => 'material_id',
+            'asin' => 'asin',
+            'promotions_startdate' => 'promo_start_date',
+            'promotions_enddate' => 'promo_end_date',
+            'promotions_projected_sales' => 'promotions_projected_sales',
+            'promotions_expected_lift' => 'promotions_expected_lift',
+            'funding_per_unit' => 'funding_per_unit',
+            'forecasted_qty' => 'forecasted_qty',
+            'forecasted_unit_sales' => 'forecasted_unit_sales',
+        ];
+
+        switch ($type) {
+            case 'promotions': return $promotions;
+                break;
+            case 'items': return $items;
+                break;
+        }
+        return [];
     }
 
 }

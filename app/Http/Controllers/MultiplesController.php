@@ -60,22 +60,45 @@ class MultiplesController extends Controller {
 
         $input = Input::get();
 
-
         $data = [];
 
+        if (isset($input['pid'])) {
+
+            // Import items based on single promotion
+
+            $data['pid'] = $input['pid'];
+            $data['disable_item_input'] = false;
+
+            $form = $this->gform->set_form(AppForms::form_multiple_items($data));
+            $form['fields']['type']['value'] = 'pid_items';
+            $form['form_name'] = 'pv_create_multiple';
+            $data['form_multiple_items'] = $this->formHtmlJq->create_form($form);
+
+            return View::make('admin.multiples.create_item', $data);
+        }
+
+        if (isset($input['csvid'])) {
+            // Promotion have imported
+            $multiple = Multiple::findOrFail($input['csvid']);
+            $data['promotions'] = Promotion::whereBetween('id', [$multiple->start_id, $multiple->end_id])->get();
+            $data['items'] = Item::get_items_range($multiple->start_id, $multiple->end_id);
+
+            $data['disable_item_input'] = false;
+            $data['csvid'] = $input['csvid'];
+        } else {
+            // Promotion not imported 
+            $data['disable_item_input'] = true;
+        }
+
+        // Create form that import promotions
         $form = $this->gform->set_form(AppForms::form_multiple_promotion());
         $form['form_name'] = 'pv_create_multiple';
         $data['form_multiple_promotion'] = $this->formHtmlJq->create_form($form);
 
-        $form = $this->gform->set_form(AppForms::form_multiple_items());
+        // Create form that import items
+        $form = $this->gform->set_form(AppForms::form_multiple_items($data));
         $form['form_name'] = 'pv_create_multiple';
         $data['form_multiple_items'] = $this->formHtmlJq->create_form($form);
-
-
-        if (isset($input['csvid'])) {
-            $multiple = Multiple::findOrFail($input['csvid']);
-            $data['promotions'] = Promotion::whereBetween('id', [$multiple->start_id, $multiple->end_id])->get();
-        }
 
         return View::make('admin.multiples.create', $data);
     }
@@ -109,8 +132,10 @@ class MultiplesController extends Controller {
 
         $input['file'] = $pathinfo_csv['basename'];
         $input['type'] = $request->type;
-        
-        $info = $this->import->inject($csv_file, $input['type']);
+        $input['csv_file'] = $csv_file;
+        $input['pid'] = $request->pid;
+
+        $info = $this->import->inject($input);
 
         if (!empty($info)) {
             $input['start_id'] = $info[0];
@@ -122,12 +147,32 @@ class MultiplesController extends Controller {
         $status = Multiple::status($input);
         if ($status['status']) {
             $multiple = Multiple::create($input);
-            return Redirect::route('multiples.create', ['csvid' => $multiple->id]);
+            if ($request->type == "Items") {
+                //append item csv id
+                return Redirect::route('multiples.create', ['csvid' => $request->csvid]);
+            } elseif ($request->type == "pid_items") {
+                return Redirect::route('items.index', ['pid' => $request->pid]);
+            } else {
+                return Redirect::route('multiples.create', ['csvid' => $multiple->id]);
+            }
         } else {
-            return Redirect::route('multiples.create')
-                            ->withInput()
-                            ->withErrors($status['validation'])
-                            ->with('message', 'Validation error');
+
+            if (isset($request->csvid)) {
+                return Redirect::route('multiples.create', ['csvid' => $request->csvid])
+                                ->withInput()
+                                ->withErrors($status['validation'])
+                                ->with('message', 'Validation error');
+            } elseif ($request->type == "pid_items") {
+                return Redirect::route('multiples.create', ['pid' => $request->pid])
+                                ->withInput()
+                                ->withErrors($status['validation'])
+                                ->with('message', 'Validation error');
+            } else {
+                return Redirect::route('multiples.create')
+                                ->withInput()
+                                ->withErrors($status['validation'])
+                                ->with('message', 'Validation error');
+            }
         }
     }
 

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Log;
 use App\promotions\Promotion;
 use App\promotions\Item;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Stock;
 
 class Import {
 
@@ -34,10 +35,12 @@ class Import {
         $inputFileName = public_path('downloads/tp-recreate.csv');
     }
 
-    function inject($file, $type) {
-        $this->file_path = $file;
-        $this->type = $type;
-        
+    function inject($input) {
+        Log::info($input);
+        $this->file_path = $input['csv_file'];
+        $this->type = $input['type'];
+        $this->pid = isset($input['pid']) ? $input['pid'] : null;
+
         if (!is_file($this->file_path) || !file_exists($this->file_path)) {
             Log::info("file does not exist");
             return false;
@@ -46,15 +49,22 @@ class Import {
         $this->return = [];
         Excel::load($this->file_path, function($reader) {
             $results = $reader->get()->toArray();
-            
+
             if (isset($results[0])) {
+                
                 if ($this->type == 'Promotions') {
                     Log::info("Type is promotion");
                     $this->return = $this->import_promotions($results[0]);
                     Log::info("Import completed -");
                 } elseif ($this->type == 'Items') {
                     Log::info("Type is items");
-                    $return = $this->import_items($results[0]);
+                    Log::info($results[0]);
+                    $this->return = $this->import_items($results[0]);
+                } elseif ($this->type == 'pid_items') {
+                    Log::info("Import items for single promotion");
+                    Log::info($results[0]);
+                    
+                    $this->return = $this->import_items($results[0], $this->pid);
                 }
             }
         });
@@ -62,24 +72,39 @@ class Import {
         return $this->return;
     }
 
-    function import_items($records) {
+    function import_items($records, $pid = null) {
 
         $info = [];
         foreach ($records as $key => $record) {
-
-            // Exit the header
-            if ($key == 0) {
-                continue;
+            
+            if(!is_null($pid)){
+                $record['promotions_id'] = $pid;
             }
 
-            $input = $this->item->csv_match_data($record);
+            $input = $this->match_the_column($record, 'items');
+            
+            Log::info("Matched columns");
+            Log::info($input);
+
+            if ($input == false) {
+                return [];
+            }
+            
+
             $input = $this->item->generate_item($input);
+            Log::info("CSV import items value generated");
+            Log::info($input);
+            
+            if ($input == false) {
+                return [];
+            }
+            
             $status = Item::status($input);
             if ($status['status']) {
                 $model = Item::create($status['input']);
                 $info[] = $model->id;
             } else {
-                Log::info("CSV input failed (item)");
+                Log::info("CSV input failed (items)");
                 Log::info($status['validation']->errors());
                 if (isset($input['material_id'])) {
                     Log::info($input['material_id']);
@@ -95,12 +120,12 @@ class Import {
         $info = [];
         foreach ($records as $key => $record) {
 
-            $input = $this->match_the_column_promotion($record);
-            
+            $input = $this->match_the_column($record, 'promotions');
+
             if ($input == false) {
                 return [];
             }
-            
+
             $input['status'] = 'active';
 
             $status = Promotion::status($input);
@@ -138,13 +163,14 @@ class Import {
 
         $excel = $file_path;
         $csv = storage_path('app/csv/' . $pathinfo['filename'] . '.csv');
-        
+
         return (self::PY_CONVERT_TO_CSV($excel, $csv) == true) ? $csv : false;
     }
 
-    function match_the_column_promotion($input) {
+    function match_the_column($input, $type) {
 
-        $records = self::get_arrayOf('default');
+        $records = Stock::csv_header($type);
+        
         $formatted = [];
         $errors = [];
 
@@ -154,51 +180,20 @@ class Import {
                 $dup_input[$key] = '';
             }
         }
-        
+
         foreach ($records as $key => $value) {
             if (!isset($dup_input[$value])) {
                 $errors[] = 1;
             }
         }
-
+        
         if (empty($errors)) {
             foreach ($records as $key => $value) {
                 $formatted[$key] = $input[$value];
             }
         }
+        
         return $formatted;
-    }
-
-    public static function get_arrayOf($param) {
-        $headers = [
-            'promotions_name' => 'promotion_name',
-            'promotions_description' => 'promo_description',
-            'promotions_startdate' => 'promo_start_date',
-            'promotions_enddate' => 'promo_end_date',
-            'retailer' => 'retailer',
-            'retailer_country' => 'retailer_country',
-            'newell_status' => 'newell_status',
-            'promotions_type' => 'promotions_type',
-            'level_of_promotions' => 'level_of_promotion',
-            'marketing_type' => 'marketing_type',
-            'annivarsaried' => 'anniversaried',
-            'promotions_budget' => 'promo_budget',
-            'promotions_projected_sales' => 'projected_sales',
-            'promotions_expected_lift' => 'expected_lift',
-            'promotions_budget_type' => 'budget_type',
-            'brand' => 'brand',
-            'category' => 'category',
-            'division' => 'division',
-        ];
-        switch ($param) {
-            case 'default': return $headers;
-                break;
-            case 'db_table': return array_keys($headers);
-                break;
-            case 'csv': return array_values($headers);
-                break;
-        }
-        return [];
     }
 
     public static function PY_CONVERT_TO_CSV($excel, $csv) {

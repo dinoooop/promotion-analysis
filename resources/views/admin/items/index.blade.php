@@ -18,7 +18,7 @@
 
                 <div class="x_title">
                     <h3 class="pull-left">Add Promoted Items</h3>
-                    <a href="#" class="btn btn-info pull-right">Click here to add multiple items.</a>
+                    <a href="{{route('multiples.create', ['pid' => $promotions_id])}}" class="btn btn-info pull-right">Click here to add multiple items.</a>
                     <div class="clearfix"></div>
                 </div>
 

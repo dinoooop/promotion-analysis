@@ -45,7 +45,7 @@ class ItemsController extends Controller {
 
         $data['pagination_appends'] = $input;
         $data['href_prepare_result'] = route('prepare_promotion', $data['pagination_appends']);
-        
+
         $data['pagination_appends'] = array_merge($data['pagination_appends'], ['rec' => 1]);
         $data['href_recalculate_promotion'] = route('prepare_promotion', $data['pagination_appends']);
 
@@ -70,7 +70,7 @@ class ItemsController extends Controller {
         // Hide step view on edit mode 
         if (isset($input['hsv']) && $input['hsv'] == 1) {
             $data['item_edit_mode_view'] = true;
-        } 
+        }
 
 
 
@@ -218,16 +218,22 @@ class ItemsController extends Controller {
     public function destroy($id) {
         $input = Input::all();
 
-        $models = $input['models'];
-        foreach ($models as $key => $value) {
-            $item = Item::find($value['id']);
-            if (isset($item->id)) {
-                $item->delete();
+        // Delete items from kento
+        if (isset($input['models'])) {
+            $models = $input['models'];
+            foreach ($models as $key => $value) {
+                $item = Item::find($value['id']);
+                if (isset($item->id)) {
+                    $item->delete();
+                }
             }
-        }
 
-        exit();
-        //return Redirect::route('items.index');
+            exit();
+        } else {
+            $record = Item::find($id);
+            $record->delete();
+            exit();
+        }
     }
 
 }

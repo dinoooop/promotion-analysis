@@ -29,10 +29,11 @@
                         <p>Adding multiple promotions for processing is a two steps process. Note, each of the steps have sub-steps. 
                             Over all the process is very simple and will enable you to quickly add multiple number of promotions and their respective promoted items quickly in modeling database.</p>
                         <h2>Step 1: Create promotions</h2>
-                        
+                        @if(!isset($promotions))
                         {{ Form::open(array('route' => 'multiples.store', 'id' => 'pv_create_multiple', 'class'=>'normal_form', 'enctype' => 'multipart/form-data')) }}
                         <?php echo $form_multiple_promotion; ?>
                         {{ Form::close() }}
+                        @endif
 
                     </div>
                 </div>        
@@ -45,15 +46,9 @@
                         @endif
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-sm-12">
-                        <h2>Step 2: Add promoted items</h2>
-                        {{ Form::open(array('route' => 'multiples.store', 'id' => 'pv_create_multiple', 'class'=>'normal_form', 'enctype' => 'multipart/form-data')) }}
-                        <?php echo $form_multiple_items; ?>
-                        {{ Form::close() }}
-
-                    </div>
-                </div>
+                
+                
+                @include('admin/tmp/multiples/create_items')
 
 
             </div>

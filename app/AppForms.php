@@ -166,7 +166,6 @@ class AppForms {
                     'name' => 'brand',
                     'label' => 'Brand',
                 ),
-                
                 array(
                     'type' => 'auto_complete_tags',
                     'name' => 'category',
@@ -195,7 +194,6 @@ class AppForms {
                     'label_checkbox' => 'YES',
                     'label' => 'Is this promotion annivarsaried?',
                 ),
-                
 //                        array(
 //                            'type' => 'select',
 //                            'name' => 'status',
@@ -361,15 +359,16 @@ class AppForms {
      * Create a form to import csv file (promotions)
      * @return array
      */
-    public static function form_multiple_items() {
-        return array(
+    public static function form_multiple_items($param) {
+        $form = array(
             'form_name' => 'form_multiple',
             'submit' => 'Start Import <i class="fa fa-upload" aria-hidden="true"></i>',
             'fields' => array(
                 array(
                     'type' => 'file_upload',
-                    'name' => 'multiple_items',
+                    'name' => 'multiple_promotions',
                     'label' => 'Upload items (xlsx)',
+                    'disabled' => $param['disable_item_input'],
                     'description' => '<br><strong><a href="' . asset('downloads/template-items.csv') . '">Download item template</a></strong>'
                     . '<br />Note: You don\'t need to upload promoted items for promotions that are across brand or category',
                 ),
@@ -380,6 +379,24 @@ class AppForms {
                 ),
             ),
         );
+
+        if(isset($param['csvid'])) {
+            $form['fields'][] = array(
+                'type' => 'hidden',
+                'name' => 'csvid',
+                'value' => $param['csvid'],
+            );
+        }
+        
+        if(isset($param['pid'])) {
+            $form['fields'][] = array(
+                'type' => 'hidden',
+                'name' => 'pid',
+                'value' => $param['pid'],
+            );
+        }
+        
+        return $form;
     }
 
     public static function form_configuration() {

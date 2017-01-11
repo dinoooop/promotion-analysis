@@ -175,12 +175,13 @@ class FormHtmlJq {
                 break;
 
             case 'file_upload':
+                $disabled = (isset($disabled) && $disabled) ? 'disabled="disabled"' : '';
                 ?>
                 <?php echo $col; ?>
                 <div class="form-group">
 
                     <label class="control-label" for="<?php echo $id ?>"><?php echo $label ?></label>
-                    <input 
+                    <input <?php echo $disabled; ?>
                         id="<?php echo $id ?>"
                         type="file" 
                         name="<?php echo $name; ?>" 
@@ -197,6 +198,7 @@ class FormHtmlJq {
             case 'file':
 
                 $placeholder = ($placeholder != '') ? $placeholder : 'Upload';
+                
                 echo Temp::upload_file($field);
                 ?>
                 <?php echo $col; ?>
