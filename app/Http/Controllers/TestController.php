@@ -43,10 +43,7 @@ class TestController extends BaseController {
     }
 
     function test() {
-        
-        
-        echo '<pre>', print_r($this->item->get_items_range(5063, 5064)), '</pre>';
-        exit();
+        echo $this->sdcalc->get_avg_column('ordered_amount', '2016-08-03', '2016-08-24');
         
     }
 

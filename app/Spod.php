@@ -102,11 +102,17 @@ class Spod extends Model {
             $row['daily_during_pos_sales'] = $this->sdcalc->get_column_val('pos_sales', 'date_day', $this->spinput->promotions_startdate);
             $row['daily_during_pos_units'] = $this->sdcalc->get_column_val('pos_units', 'date_day', $this->spinput->promotions_startdate);
         } else {
-            $row['daily_during_ordered_amount'] = $this->swcalc->get_avg_column('ordered_amount', $this->spinput->calendar_dates['during']['start_week'], $this->spinput->calendar_dates['during']['end_week']);
-            $row['daily_during_ordered_units'] = round($this->swcalc->get_avg_column('ordered_units', $this->spinput->calendar_dates['during']['start_week'], $this->spinput->calendar_dates['during']['end_week']));
+            echo "Multiple day promotion \n";
+            
+            echo "Promotion period is {$this->spinput->calendar_dates['during']['start_date']} to {$this->spinput->calendar_dates['during']['end_date']} \n";
+            
+            $row['daily_during_ordered_amount'] =  $this->sdcalc->get_avg_column('ordered_amount', $this->spinput->calendar_dates['during']['start_date'], $this->spinput->calendar_dates['during']['end_date']);
+            
+            echo "daily_during_ordered_amount = {$row['daily_during_ordered_amount']} No.of promotion days {$this->number_of_promotion_days} \n";
+            $row['daily_during_ordered_units'] = round($this->sdcalc->get_avg_column('ordered_units', $this->spinput->calendar_dates['during']['start_date'], $this->spinput->calendar_dates['during']['end_date']));
 
-            $row['daily_during_pos_sales'] = $this->swcalc->get_avg_column('pos_sales', $this->spinput->calendar_dates['during']['start_week'], $this->spinput->calendar_dates['during']['end_week']);
-            $row['daily_during_pos_units'] = round($this->swcalc->get_avg_column('pos_units', $this->spinput->calendar_dates['during']['start_week'], $this->spinput->calendar_dates['during']['end_week']));
+            $row['daily_during_pos_sales'] = $this->sdcalc->get_avg_column('pos_sales', $this->spinput->calendar_dates['during']['start_date'], $this->spinput->calendar_dates['during']['end_date']);
+            $row['daily_during_pos_units'] = round($this->sdcalc->get_avg_column('pos_units', $this->spinput->calendar_dates['during']['start_date'], $this->spinput->calendar_dates['during']['end_date']));
         }
 
         // Post days

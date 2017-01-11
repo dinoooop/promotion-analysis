@@ -119,7 +119,8 @@ class Sdcalc extends Model {
 
     function get_avg_column($column, $start_date, $end_date) {
         return self::whereBetween('date_day', [$start_date, $end_date])
-                        ->where('promo_child_id', $this->promo_child_id)
+                        ->where('promo_child_id', $this->spinput->promo_child_id)
+//                        ->where('promo_child_id', 2)
                         ->avg($column);
     }
 
