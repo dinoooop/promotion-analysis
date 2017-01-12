@@ -19,11 +19,11 @@
             @include('admin/tmp/promotion_item')
 
             @if ($records->count())
-                @if($promotion->retailer == 'Walmart')
-                    @include('admin/results/tmp-retailer/walmart')
-                @else
-                    @include('admin/results/tmp-retailer/amazon')
-                @endif
+            @if($promotion->retailer == 'Walmart')
+            @include('admin/results/tmp-retailer/walmart')
+            @else
+            @include('admin/results/tmp-retailer/amazon')
+            @endif
             @else
             <p>There are no records available for this promotion result</p>
             @endif
@@ -34,7 +34,7 @@
 
     <div class="row">
         <div class="col-md-12">
-            <div class="pull-right">{{ $records->links() }}</div>
+            <div class="pull-right">{{ $records->appends(['pid' => $promotion->id])->links() }}</div>
         </div>
     </div>
 
