@@ -247,16 +247,16 @@ class Promotion extends Model {
             $input->total_post_incremental_ordered_amount = ($input->wkly_post_ordered_amount - $input->wkly_baseline_ordered_amount) * $post_weeks;
             $input->total_post_incremental_ordered_units = ($input->wkly_post_ordered_units - $input->wkly_baseline_ordered_units) * $post_weeks;
 
-            $input->during_lift_ordered_amount = ($input->daily_during_ordered_amount / $input->daily_baseline_ordered_amount) - 1;
+            $input->during_lift_ordered_amount = $merge->safe_division($input->daily_during_ordered_amount, $input->daily_baseline_ordered_amount) - 1;
             $input->during_lift_ordered_amount = round($input->during_lift_ordered_amount, 2);
 
-            $input->during_lift_ordered_units = ($input->during_ordered_units / $input->baseline_ordered_units) - 1;
+            $input->during_lift_ordered_units = $merge->safe_division($input->during_ordered_units, $input->baseline_ordered_units) - 1;
             $input->during_lift_ordered_units = round($input->during_lift_ordered_units);
 
-            $input->post_lift_ordered_amount = ($input->wkly_post_ordered_amount / $input->wkly_baseline_ordered_amount) - 1;
+            $input->post_lift_ordered_amount = $merge->safe_division($input->wkly_post_ordered_amount, $input->wkly_baseline_ordered_amount) - 1;
             $input->post_lift_ordered_amount = round($input->post_lift_ordered_amount, 2);
 
-            $input->post_lift_ordered_units = ($input->wkly_post_ordered_units / $input->wkly_baseline_ordered_units) - 1;
+            $input->post_lift_ordered_units = $merge->safe_division($input->wkly_post_ordered_units, $input->wkly_baseline_ordered_units) - 1;
             $input->post_lift_ordered_units = round($input->post_lift_ordered_units, 2);
         } else {
             // MULTIPLE DAY PROMOTIONS ---------------------------------------------
@@ -292,16 +292,16 @@ class Promotion extends Model {
             $input->total_post_incremental_ordered_amount = round(($input->wkly_post_ordered_amount - $input->wkly_baseline_ordered_amount) * $post_weeks, 2);
             $input->total_post_incremental_ordered_units = round(($input->wkly_post_ordered_units - $input->wkly_baseline_ordered_units) * $post_weeks);
 
-            $input->during_lift_ordered_amount = ($input->wkly_during_ordered_amount / $input->wkly_baseline_ordered_amount) - 1;
+            $input->during_lift_ordered_amount = $merge->safe_division($input->wkly_during_ordered_amount, $input->wkly_baseline_ordered_amount) - 1;
             $input->during_lift_ordered_amount = round($input->during_lift_ordered_amount, 2);
 
-            $input->during_lift_ordered_units = ($input->wkly_during_ordered_units / $input->wkly_baseline_ordered_units) - 1;
+            $input->during_lift_ordered_units = $merge->safe_division($input->wkly_during_ordered_units, $input->wkly_baseline_ordered_units) - 1;
             $input->during_lift_ordered_units = round($input->during_lift_ordered_units, 2);
 
-            $input->post_lift_ordered_amount = ($input->wkly_post_ordered_amount / $input->wkly_baseline_ordered_amount) - 1;
+            $input->post_lift_ordered_amount = $merge->safe_division($input->wkly_post_ordered_amount, $input->wkly_baseline_ordered_amount) - 1;
             $input->post_lift_ordered_amount = round($input->post_lift_ordered_amount, 2);
 
-            $input->post_lift_ordered_units = ($input->wkly_post_ordered_units / $input->wkly_baseline_ordered_units) - 1;
+            $input->post_lift_ordered_units = $merge->safe_division($input->wkly_post_ordered_units, $input->wkly_baseline_ordered_units) - 1;
             $input->post_lift_ordered_units = round($input->post_lift_ordered_units, 2);
         }
         $input->promotions_startdate = date('m/d/Y', strtotime($input->promotions_startdate));
