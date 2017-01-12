@@ -66,6 +66,12 @@ class RawData {
         echo "Cron end time " . date('Y-m-d H:i:s') . "\n";
         echo "------------------------------------------------------------------\n";
     }
+    
+    
+    function set_active_all() {
+        Promotion::where('status', 'processing')
+                    ->update(['status' => 'active']);
+    }
 
     /**
      * 
