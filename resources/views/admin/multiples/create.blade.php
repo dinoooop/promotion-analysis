@@ -49,6 +49,19 @@
                 
                 
                 @include('admin/tmp/multiples/create_items')
+                
+                @if(!$disable_item_input)
+                <div class="row">
+
+                    <div class="col-sm-12">
+                        <br />
+                        <a href="{{$href_prepare_result}}" class="btn btn-danger prepare-promotions-results">Prepare Promotions Results <i class="fa fa-angle-double-right" aria-hidden="true"></i></a>
+                        
+
+                        
+                    </div>
+                </div>
+                @endif
 
 
             </div>

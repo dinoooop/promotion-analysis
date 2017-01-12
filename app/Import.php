@@ -87,7 +87,7 @@ class Import {
             Log::info($input);
 
             if ($input == false) {
-                return [];
+                continue;
             }
             
 
@@ -96,7 +96,7 @@ class Import {
             Log::info($input);
             
             if ($input == false) {
-                return [];
+                continue;
             }
             
             $status = Item::status($input);
@@ -123,10 +123,10 @@ class Import {
             $input = $this->match_the_column($record, 'promotions');
 
             if ($input == false) {
-                return [];
+                continue;
             }
 
-            $input['status'] = 'active';
+            $input['status'] = 'sleep';
 
             $status = Promotion::status($input);
             if ($status['status']) {

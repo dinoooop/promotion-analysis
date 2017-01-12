@@ -85,10 +85,13 @@ class MultiplesController extends Controller {
 
             $data['disable_item_input'] = false;
             $data['csvid'] = $input['csvid'];
+            $data['href_prepare_result'] = route('prepare_promotion', ['csvid' => $input['csvid']]);
         } else {
             // Promotion not imported 
             $data['disable_item_input'] = true;
         }
+        
+        
 
         // Create form that import promotions
         $form = $this->gform->set_form(AppForms::form_multiple_promotion());

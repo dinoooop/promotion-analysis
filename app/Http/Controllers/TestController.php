@@ -43,7 +43,14 @@ class TestController extends BaseController {
     }
 
     function test() {
-        echo $this->sdcalc->get_avg_column('ordered_amount', '2016-08-03', '2016-08-24');
+        $start_date = '2016-08-03';
+        $end_date = '2016-08-24';
+        $baseline_weeks_count = 4;
+        $post_weeks_count = 2;
+        $normalize_weeks_count = 13;
+        $dates = $this->time_machine->init($start_date, $end_date, $baseline_weeks_count, $post_weeks_count, $normalize_weeks_count);
+        
+        echo '<pre>', print_r($dates), '</pre>';
         
     }
 

@@ -47,6 +47,13 @@ class PagesController extends Controller {
 
         $data = [];
 
+        if ($request->csvid) {
+            $multiple = Multiple::findOrFail($request->csvid);
+            Promotion::whereBetween('id', [$multiple->start_id, $multiple->end_id])
+                    ->update(['status' => 'active']);
+            return View::make('admin.others.prepare_promotion_multiple');
+        }
+
         $data['promotion'] = Promotion::findOrFail($request->pid);
 
         Promotion::update_promotion_status($data['promotion']->id, 'active');
@@ -66,11 +73,11 @@ class PagesController extends Controller {
             $data['message_start_time'] = "The promotion is now under processing. \n";
             $data['message_start_time'] .= "Once the calculation get completed you will be notified by an email. \n";
         }
-        
+
         // Hide step view on edit mode 
         if (isset($request->hsv) && $request->hsv == 1) {
             $data['hide_step_view'] = true;
-        } 
+        }
 
         if (isset($request->rec) && $request->rec == 1) {
             return View::make('admin.others.recalculate_promotion', $data);

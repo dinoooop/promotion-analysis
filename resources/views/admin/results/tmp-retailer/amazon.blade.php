@@ -81,7 +81,7 @@
         <tbody>
 
             @foreach ($records as $record)
-            <?php $record = App\promotions\Promotion::display_prepare($record) ?>
+            <?php $record = App\promotions\Promotion::display_prepare_output($record) ?>
             <tr>
                 <td><a href="{{ $record->href_preperation_table }}"><i class="fa fa-database"></i></a></td>
                 <td><a href="{{ $record->href_week_preperation_table }}"><i class="fa fa-database"></i></a></td>
@@ -114,7 +114,7 @@
                 @endif
 
                 <td>{{ $record->wkly_post_incremental_ordered_amount }}</td>
-                <td>{{ $record->wkly_post_incremental_ordered_amount }}</td>
+                <td>{{ $record->wkly_post_incremental_ordered_units }}</td>
                 
                 <td>{{ $record->total_during_incremental_ordered_amount }}</td>
                 <td>{{ $record->total_during_incremental_ordered_units }}</td>
