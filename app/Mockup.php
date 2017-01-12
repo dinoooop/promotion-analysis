@@ -35,22 +35,27 @@ class Mockup {
     function promotion_chunk() {
         // Promotion status => active, completed
 
-        Promotion::whereRaw("(status ='active') AND newell_status = 'Approved'")->orderBy('id')->chunk(100, function ($promotions) {
+        Promotion::whereRaw("(status ='active') AND newell_status = 'Approved'")->orderBy('id')->chunk(10, function ($promotions) {
 //        Promotion::whereRaw("id=3")->orderBy('id')->chunk(100, function ($promotions) {
             foreach ($promotions as $promotion) {
-                $this->promotion = $promotion;
-                $this->items_count = 0;
-                echo "Promotion started for ID : {$this->promotion->id} \n";
-                if ($this->run_validity()) {
-                    Promotion::update_promotion_status($this->promotion->id, 'processing');
-                    $this->reset_records($this->promotion->id);
-                    $this->item_chunk();
-//                    Promotion::update_promotion_status($this->promotion->id, 'completed');
-                }
-                $this->update_process_status();
-                echo "Promotion ends for ID    : {$this->promotion->id} \n";
+                $this->promo_specific($promotion);
             }
         });
+    }
+
+    function promo_specific($promotion) {
+
+        $this->promotion = $promotion;
+        $this->items_count = 0;
+        echo "Promotion started for ID : {$this->promotion->id} \n";
+        if ($this->run_validity()) {
+            Promotion::update_promotion_status($this->promotion->id, 'processing');
+            $this->reset_records($this->promotion->id);
+            $this->item_chunk();
+//                    Promotion::update_promotion_status($this->promotion->id, 'completed');
+        }
+        $this->update_process_status();
+        echo "Promotion ends for ID    : {$this->promotion->id} \n";
     }
 
     function update_process_status() {
@@ -83,7 +88,7 @@ class Mockup {
 
 
         Item::where('promotions_id', $this->promotion->id)->orderBy('id')->chunk(100, function ($items) {
-            
+
             echo "Promotion id {$this->promotion->id} count child items {$items->count()} \n";
 
             foreach ($items as $item) {
@@ -200,8 +205,8 @@ class Mockup {
             }
         });
     }
-    
-     /**
+
+    /**
      * 
      * Delete records for the item from the table :-
      * promo_week

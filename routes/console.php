@@ -49,6 +49,12 @@ Artisan::command('promo {action}', function ($action) {
     
 })->describe('Processing data');
 
+Artisan::command('run_promotion {id}', function ($id) {    
+    $obj = new RawData;
+    $obj->run_promotion($id);
+    
+})->describe('Processing data');
+
 Artisan::command('printm {action}', function ($action) {    
     $obj = new Printm;
     $obj->$action();

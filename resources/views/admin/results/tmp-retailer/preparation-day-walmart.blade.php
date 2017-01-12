@@ -35,7 +35,20 @@
                         format: "{0:MM/dd/yyyy}",
                         type: "date",
                         sortable: true,
-                        width: 250,
+                        width: 100,
+                    },
+                    {
+                        field: "week",
+                        title: "Week",
+                        format: "{0:MM/dd/yyyy}",
+                        type: "date",
+                        sortable: true,
+                        width: 100,
+                    },
+                    {
+                        field: "material_id",
+                        title: "Material id",
+                        type: "number",
                     },
                     {
                         field: "pos_sales",
@@ -46,21 +59,7 @@
                         field: "pos_units",
                         title: "pos units",
                     },
-                    {
-                        field: "invoice_amounts",
-                        title: "Invoice amounts",
-                        type: "number",
-                    },
-                    {
-                        field: "invoice_units",
-                        title: "Invoice units",
-                        type: "number",
-                    },
-                    {
-                        field: "invoice_cost",
-                        title: "Invoice cost",
-                        type: "number",
-                    },
+                    
                 ]
             }).data("kendoGrid");
         });

@@ -60,9 +60,10 @@ class Sdcalc extends Model {
         echo "Total number of records in preperation {$this->record_count} \n";
 
 
-        $this->save_records($records);
+        
 
         if ($this->record_count) {
+            $this->save_records($records);
             $this->record_one = $records[0];
             // Set material id again
             $this->spinput->material_id = $this->record_one['material_id'];

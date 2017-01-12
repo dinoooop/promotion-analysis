@@ -72,6 +72,14 @@ class RawData {
         Promotion::where('status', 'processing')
                     ->update(['status' => 'active']);
     }
+    
+    function run_promotion($id) {
+        Config::set('database.fetch', \PDO::FETCH_ASSOC);
+        $promotion = Promotion::find($id);
+        if(isset($promotion->id)){
+            $this->mockup->promo_specific($promotion);
+        }
+    }
 
     /**
      * 
