@@ -104,11 +104,11 @@ class Spod extends Model {
         $row['no_of_promotion_days'] = $this->number_of_promotion_days;
         echo "Inserting output for child item id {$this->spinput->promo_child_id} \n";
 
-        if ($this->spinput->retailer == 'Walmart') {
-            $this->mark_promoted_items_pos_sales($row);
-        } else {
-            $this->mark_promoted_items_ordered_amount($row);
-        }
+//        if ($this->spinput->retailer == 'Walmart') {
+//            $this->mark_promoted_items_pos_sales($row);
+//        } else {
+//            $this->mark_promoted_items_ordered_amount($row);
+//        }
 
         Spod::create($row);
     }
