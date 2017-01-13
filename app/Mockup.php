@@ -35,9 +35,11 @@ class Mockup {
     function promotion_chunk() {
         // Promotion status => active, completed
 
+        $this->total_promotions_count = Promotion::whereRaw("(status ='active') AND newell_status = 'Approved'")->count();
+        $this->current_promotions_count = 0;
         Promotion::whereRaw("(status ='active') AND newell_status = 'Approved'")->orderBy('id')->chunk(10, function ($promotions) {
-//        Promotion::whereRaw("id=3")->orderBy('id')->chunk(100, function ($promotions) {
             foreach ($promotions as $promotion) {
+                ++$this->current_promotions_count;
                 $this->promo_specific($promotion);
             }
         });
@@ -47,14 +49,14 @@ class Mockup {
 
         $this->promotion = $promotion;
         $this->items_count = 0;
-        echo "Promotion started for ID : {$this->promotion->id} -------------------------- \n";
+        // echo "Promotion started for ID : {$this->promotion->id} -------------------------- \n";
         if ($this->run_validity()) {
             Promotion::update_promotion_status($this->promotion->id, 'processing');
             $this->reset_records($this->promotion->id);
             $this->item_chunk();
         }
         $this->update_process_status();
-        echo "Promotion ends for ID    : {$this->promotion->id} --------------------------- \n";
+        // echo "Promotion ends for ID    : {$this->promotion->id} --------------------------- \n";
     }
 
     function update_process_status() {
@@ -87,7 +89,7 @@ class Mockup {
 
 
         $this->total_items_count = Item::where('promotions_id', $this->promotion->id)->count();
-        echo "Total number of items : {$this->total_items_count} \n";
+        // echo "Total number of items : {$this->total_items_count} \n";
         Item::where('promotions_id', $this->promotion->id)->orderBy('id')->chunk(100, function ($items) {
 
             // echo "Promotion id {$this->promotion->id} count child items {$items->count()} \n";
@@ -173,7 +175,18 @@ class Mockup {
 
         // echo "Execution start for child item id {$this->spinput->promo_child_id} \n";
         $this->items_count = $this->items_count + 1;
-        echo " {$this->items_count}/{$this->total_items_count} pid:{$this->promotion->id} item:{$this->spinput->promo_child_id} \n";
+        
+        
+        // STATUS ==============================================================
+        $item_status = "Item {$this->items_count}/{$this->total_items_count} IID: {$this->spinput->promo_child_id} ";
+        if(isset($this->total_promotions_count)){
+            $promotion_status = "Promotion {$this->current_promotions_count}/{$this->total_promotions_count} PID: {$this->promotion->id} ";
+            echo $promotion_status . $item_status . "\n";
+        }else{
+            echo $item_status . "\n";
+        }
+        
+        
 
         $this->sdcalc = new Sdcalc;
         $this->swcalc = new Swcalc;
