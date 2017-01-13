@@ -66,13 +66,22 @@ class ResultsController extends Controller {
         } else {
             return Dot::R404();
         }
+        
         if ($input['type'] == 'day') {
-        $data['heading'] = "Redshift Data";
-        //preparation-day-walmart
-        }else{
+            $data['heading'] = "Redshift Data";
+            //preparation-day-walmart
+        } elseif ($input['type'] == 'week') {
             $data['heading'] = "Preparation Table";
+        } else {
+            return Dot::R404();
         }
-        $retailer = strtolower($data['promotion']->retailer);
+        
+        if (Dot::is_amazon($data['promotion'])) {
+            $retailer = 'amazon';
+        } else {
+            $retailer = 'walmart';
+        }
+        
         $data['template'] = "admin/results/tmp-retailer/preparation-{$input['type']}-{$retailer}";
 
         $data['kendo_url'] = route('kendo_preparation_table', $input);
@@ -84,12 +93,12 @@ class ResultsController extends Controller {
         $promo_child_id = $input['pci'];
 
         if ($input['type'] == 'day') {
-            
+
             $query = Sdcalc::where('promo_child_id', $promo_child_id);
             $query->orderBy('date_day', 'desc');
             $records = $query->get()->toArray();
-        }else{
-            
+        } else {
+
             $query = Swcalc::where('promo_child_id', $promo_child_id);
             $query->orderBy('week', 'desc');
             $records = $query->get()->toArray();

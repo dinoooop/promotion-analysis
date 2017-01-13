@@ -326,18 +326,20 @@ class Dot {
         foreach ($array1 as $key => $value) {
             if (in_array($value, $array2)) {
                 $in[] = $value;
-            } 
+            }
         }
 
         return (count($in) == count($array1) && count($in) == count($array2));
     }
-    
-    
+
     public static function is_amazon($promotion) {
-        if(strtolower($promotion->retailer) == 'amazon' || strtolower($promotion->retailer) == 'amz'){
+
+        if (isset($promotion->retailer) && (strtolower($promotion->retailer) == 'amazon' || strtolower($promotion->retailer) == 'amz')) {
+            return true;
+        } elseif (isset($promotion['retailer']) && (strtolower($promotion['retailer']) == 'amazon' || strtolower($promotion['retailer']) == 'amz')) {
             return true;
         }
-        
+
         return false;
     }
 
