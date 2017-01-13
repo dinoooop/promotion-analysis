@@ -47,15 +47,14 @@ class Mockup {
 
         $this->promotion = $promotion;
         $this->items_count = 0;
-        echo "Promotion started for ID : {$this->promotion->id} \n";
+        echo "Promotion started for ID : {$this->promotion->id} -------------------------- \n";
         if ($this->run_validity()) {
             Promotion::update_promotion_status($this->promotion->id, 'processing');
             $this->reset_records($this->promotion->id);
             $this->item_chunk();
-//                    Promotion::update_promotion_status($this->promotion->id, 'completed');
         }
         $this->update_process_status();
-        echo "Promotion ends for ID    : {$this->promotion->id} \n";
+        echo "Promotion ends for ID    : {$this->promotion->id} --------------------------- \n";
     }
 
     function update_process_status() {
@@ -64,9 +63,9 @@ class Mockup {
             // The promotion deosn't contain item means - user may forget add items
             // It is a category/brand level promotion and system doesn't find items still
             Promotion::update_promotion_status($this->promotion->id, 'active');
-            echo "Promotion not contain items, status remain active \n ";
+            // echo "Promotion not contain items, status remain active \n ";
         } elseif ($this->items_count >= 1) {
-            echo "Promotion contains {$this->items_count} items, status completed \n ";
+            // echo "Promotion contains {$this->items_count} items, status completed \n ";
             Promotion::update_promotion_status($this->promotion->id, 'completed');
         }
     }
@@ -77,7 +76,7 @@ class Mockup {
      */
     function run_validity() {
         if (!$this->calendar->is_avail_post_week($this->promotion)) {
-            echo "Future promotion since post week not available \n";
+            // echo "Future promotion since post week not available \n";
             return false;
         }
 
@@ -87,9 +86,11 @@ class Mockup {
     function item_chunk() {
 
 
+        $this->total_items_count = Item::where('promotions_id', $this->promotion->id)->count();
+        echo "Total number of items : {$this->total_items_count} \n";
         Item::where('promotions_id', $this->promotion->id)->orderBy('id')->chunk(100, function ($items) {
 
-            echo "Promotion id {$this->promotion->id} count child items {$items->count()} \n";
+            // echo "Promotion id {$this->promotion->id} count child items {$items->count()} \n";
 
             foreach ($items as $item) {
                 $this->item = $item;
@@ -170,8 +171,9 @@ class Mockup {
             return false;
         }
 
-        echo "Execution start for child item id {$this->spinput->promo_child_id} \n";
+        // echo "Execution start for child item id {$this->spinput->promo_child_id} \n";
         $this->items_count = $this->items_count + 1;
+        echo " {$this->items_count}/{$this->total_items_count} pid:{$this->promotion->id} item:{$this->spinput->promo_child_id} \n";
 
         $this->sdcalc = new Sdcalc;
         $this->swcalc = new Swcalc;
@@ -184,11 +186,11 @@ class Mockup {
             $this->spod->inject($this->spinput, $this->sdcalc, $this->swcalc);
             $this->spod->create_record();
         } else {
-            echo "No items found sales table (redshift) \n";
+            // echo "No items found sales table (redshift) \n";
         }
 
 
-        echo "Execution end for child item id {$this->spinput->promo_child_id} \n";
+        // echo "Execution end for child item id {$this->spinput->promo_child_id} \n";
         return true;
     }
 

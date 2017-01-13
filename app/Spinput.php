@@ -44,6 +44,7 @@ class Spinput {
         $this->promotions_id = $this->data['promotions_id'];
         $this->promo_child_id = $this->data['promo_child_id'];
         $this->retailer = $this->data['retailer'];
+        $this->is_amazon = Dot::is_amazon($this->data);
         $this->promotions_startdate = $this->data['promotions_startdate'];
         $this->promotions_enddate = $this->data['promotions_enddate'];
 
@@ -55,21 +56,21 @@ class Spinput {
         
         $this->calendar_dates = $this->time_machine->init($this->data['promotions_startdate'], $this->data['promotions_enddate'], $this->baseline_weeks, $this->post_weeks, $this->normalize_weeks_count);
         
-        echo "Promotion start date - {$this->data['promotions_startdate']} \n";
-        echo "Promotion end date   - {$this->data['promotions_enddate']} \n";
+        // echo "Promotion start date - {$this->data['promotions_startdate']} \n";
+        // echo "Promotion end date   - {$this->data['promotions_enddate']} \n";
     }
 
     function validate() {
 
         if ($this->data['promotions_startdate'] > $this->today) {
-            echo "Skip, future promotion \n";
+            // echo "Skip, future promotion \n";
             return false;
         }
 
         if ((!isset($this->data['material_id']) || $this->data['material_id'] == '')) {
 
             if (!isset($this->data['retailer_id']) || $this->data['retailer_id'] == '') {
-                echo "material_id or retailer_id does't exist \n";
+                // echo "material_id or retailer_id does't exist \n";
                 return false;
             }
         }
@@ -81,12 +82,12 @@ class Spinput {
         }
 
         if ($this->data['promotions_startdate'] > $this->data['promotions_enddate']) {
-            echo "Input date is not  valid since start date greater than end date \n";
+            // echo "Input date is not  valid since start date greater than end date \n";
             return false;
         }
 
         if (!$this->calendar->is_avail_post_week($this->data)) {
-            echo "Future promotion since post week not available \n";
+            // echo "Future promotion since post week not available \n";
             return false;
         }
 

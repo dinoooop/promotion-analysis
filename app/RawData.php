@@ -52,7 +52,8 @@ class RawData {
         echo "Cron end time " . date('Y-m-d H:i:s') . "\n";
         echo "------------------------------------------------------------------\n";
     }
-
+    
+    
     /**
      * 
      * Cron job
@@ -67,18 +68,30 @@ class RawData {
         echo "------------------------------------------------------------------\n";
     }
     
-    
-    function set_active_all() {
-        Promotion::where('status', 'processing')
-                    ->update(['status' => 'active']);
-    }
-    
+    /**
+     * 
+     * Manually run a promotion with id
+     * @param int $id promotion id
+     */
     function run_promotion($id) {
         Config::set('database.fetch', \PDO::FETCH_ASSOC);
         $promotion = Promotion::find($id);
         if(isset($promotion->id)){
             $this->mockup->promo_specific($promotion);
         }
+    }
+    
+    
+    function set_active_all() {
+        Promotion::where('status', 'processing')
+                    ->update(['status' => 'active']);
+    }
+    
+    
+    
+    function run_raw_code() {
+        echo "Reset all non amazon promotions to active \n";
+        Promotion::where('retailer', '<>' ,'Amazon')->update(['status' => 'active']);
     }
 
     /**

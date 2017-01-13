@@ -38,31 +38,31 @@
                         width: 250,
                     },
                     {
-                        field: "pos_sales",
+                        field: "ordered_amount",
                         title: "pos amount",
                         type: "number",
                     },
                     {
-                        field: "pos_units",
+                        field: "ordered_units",
                         title: "pos units",
                     },
                     {
-                        field: "quarter_pos_sales",
+                        field: "quarter_ordered_amount",
                         title: "13 Week pos sales",
                         type: "number",
                     },
                     {
-                        field: "quarter_pos_units",
+                        field: "quarter_ordered_units",
                         title: "13 Week pos units",
                         type: "number",
                     },
                     {
-                        field: "normalized_pos_sales",
+                        field: "normalized_ordered_amount",
                         title: "Normalized pos amount",
                         type: "number",
                     },
                     {
-                        field: "normalized_pos_units",
+                        field: "normalized_ordered_units",
                         title: "Normalized pos units",
                         type: "number",
                     },

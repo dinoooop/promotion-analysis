@@ -134,7 +134,7 @@ class Pgquery {
                         ->first();
     }
 
-    public static function psql_dayily_pos($where_id, $where_date) {
+    public static function psql_preparation_data_amazon($where_id, $where_date) {
 
         $sql = "SELECT
 m.material_id,
@@ -160,6 +160,30 @@ INNER JOIN nwl_pos.metric_online_channel AS moc
 ON ms.item_id = moc.item_id 
 AND ms.retailer_country_id = moc.retailer_country_id
 AND ms.date_day = moc.date_day
+WHERE {$where_id} AND ms.date_day {$where_date}";
+
+        return $sql;
+    }
+
+    public static function psql_preparation_data_nonamazon($where_id, $where_date) {
+
+        $sql = "SELECT
+m.material_id,
+m.retailer_sku AS retailer_id,
+m.material_description,
+m.x_plant_matl_status,
+m.sub_segment,
+m.brand,
+m.product_platform,
+m.business_team,
+m.product_family,
+m.product_line,
+ms.date_day,
+ms.pos_sales AS ordered_amount,
+ms.pos_units AS ordered_units
+FROM nwl_pos.metric_sales AS ms
+INNER JOIN nwl_pos.dim_material AS m 
+ON ms.item_id = m.item_id
 WHERE {$where_id} AND ms.date_day {$where_date}";
 
         return $sql;

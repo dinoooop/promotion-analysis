@@ -19,16 +19,11 @@ class Swcalc extends Model {
         'quarter',
         'ordered_amount',
         'ordered_units',
-        'pos_sales',
-        'pos_units',
+        
         'quarter_ordered_amount',
         'normalized_ordered_amount',
         'quarter_ordered_units',
         'normalized_ordered_units',
-        'quarter_pos_sales',
-        'normalized_pos_sales',
-        'quarter_pos_units',
-        'normalized_pos_units',
     ];
     private $merge;
     private $sdcalc;
@@ -43,13 +38,11 @@ class Swcalc extends Model {
     }
 
     function basic_week_data() {
-        // SELECT SUM(pos_sales) FROM promo_week WHERE promo_child_id = 3
+        // SELECT SUM(ordered_amount) FROM promo_week WHERE promo_child_id = 3
 
         $raw = [
             'ordered_amount',
             'ordered_units',
-            'pos_sales',
-            'pos_units',
         ];
 
         $sum_raw_select = $this->merge->create_sum_select_raw($raw);
@@ -65,8 +58,6 @@ class Swcalc extends Model {
         $raw = [
             'ordered_amount',
             'ordered_units',
-            'pos_sales',
-            'pos_units',
         ];
         
         $sum_raw_select = $this->merge->create_sum_select_raw($raw);
@@ -90,8 +81,6 @@ class Swcalc extends Model {
 //            $raw['quarter'] = $this->calendar->get_quarter_id($record['week']);
             $raw['ordered_amount'] = $record['ordered_amount'];
             $raw['ordered_units'] = $record['ordered_units'];
-            $raw['pos_sales'] = $record['pos_sales'];
-            $raw['pos_units'] = $record['pos_units'];
 
             // Normalize the data
             if (in_array($record['week'], $this->spinput->calendar_dates['baseline']['weeks'])) {
@@ -105,11 +94,6 @@ class Swcalc extends Model {
                 $raw['quarter_ordered_units'] = $this->merge->safe_division($records_quarter['ordered_units'], $this->spinput->normalize_weeks_count, true);
                 $raw['normalized_ordered_units'] = $this->calc('normalized_ordered_units', $raw);
                 
-                $raw['quarter_pos_sales'] = $this->merge->safe_division($records_quarter['pos_sales'], $this->spinput->normalize_weeks_count);
-                $raw['normalized_pos_sales'] = $this->calc('normalized_pos_sales', $raw);
-                
-                $raw['quarter_pos_units'] = $this->merge->safe_division($records_quarter['pos_units'], $this->spinput->normalize_weeks_count, true);
-                $raw['normalized_pos_units'] = $this->calc('normalized_pos_units', $raw);
             }
 
 
@@ -136,22 +120,7 @@ class Swcalc extends Model {
                 }
                 break;
 
-            case 'normalized_pos_sales':
-                if ($input['pos_sales'] > (1 + $this->spinput->baseline_threshold) * $input['quarter_pos_sales']) {
-                    $value = $input['quarter_pos_sales'];
-                } else {
-                    $value = $input['pos_sales'];
-                }
-                return Dot::sanitize_numeric($value);
-                break;
-
-            case 'normalized_pos_units':
-                if ($input['pos_units'] > (1 + $this->spinput->baseline_threshold) * $input['quarter_pos_units']) {
-                    return $input['quarter_pos_units'];
-                } else {
-                    return $input['pos_units'];
-                }
-                break;
+           
         }
 
         return false;
