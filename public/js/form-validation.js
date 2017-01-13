@@ -74,6 +74,19 @@ $.fn.extend({
         }
 
     },
+    cu_require_zero: function () {
+
+        // Return error status Exclude zero
+
+        var value = $(this).cu_getVal();
+
+        if (value == null || value.length == 0 || value == "") {
+            return 1;
+        } else {
+            return 0;
+        }
+
+    },
     cu_getType: function () {
         var type = "";
         var tagName = $(this).prop("tagName");
@@ -173,25 +186,25 @@ $.fn.extend({
                             var message = "Please enter valid promotion duration";
                             $field.cu_error_switch(error, message);
                             break;
-                            
+
                         case 'category':
                             var level_of_promotions = $form.find("[name='level_of_promotions']").val();
                             if (level_of_promotions == 'Category') {
                                 error = $field.cu_require();
                                 $field.cu_error_switch(error, "For a category level of promotion you must specify the category.");
-                            }else{
+                            } else {
                                 error = 0;
                                 $field.cu_error_switch(error, "");
                             }
 
                             break;
-                            
+
                         case 'brand':
                             var level_of_promotions = $form.find("[name='level_of_promotions']").val();
                             if (level_of_promotions == 'Brand') {
                                 error = $field.cu_require();
                                 $field.cu_error_switch(error, "For a brand level of promotion you must specify the brand.");
-                            }else{
+                            } else {
                                 error = 0;
                                 $field.cu_error_switch(error, "");
                             }
@@ -363,10 +376,18 @@ $.fn.extend({
             case 'pv_edit_configuration':
             case 'pv_create_configuration':
                 var value = $field.cu_getVal();
-                var required_fileds = ['promotions_type', 'level_of_promotions', 'retailer', 'baseline_weeks', 'post_weeks', 'baseline_threshold'];
+                var required_fileds = ['promotions_type', 'level_of_promotions', 'retailer', 'baseline_weeks', 'post_weeks'];
                 if (required_fileds.indexOf(name) != -1) {
                     error = $field.cu_require();
                     $field.cu_error_switch(error);
+                }
+                if (!error) {
+                    switch (name) {
+                        case 'baseline_threshold':
+                            error = $field.cu_require_zero();
+                            $field.cu_error_switch(error);
+                            break;
+                    }
                 }
 
                 break;
