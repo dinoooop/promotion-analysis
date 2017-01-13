@@ -331,5 +331,14 @@ class Dot {
 
         return (count($in) == count($array1) && count($in) == count($array2));
     }
+    
+    
+    public static function is_amazon($promotion) {
+        if(strtolower($promotion->retailer) == 'amazon' || strtolower($promotion->retailer) == 'amz'){
+            return true;
+        }
+        
+        return false;
+    }
 
 }
