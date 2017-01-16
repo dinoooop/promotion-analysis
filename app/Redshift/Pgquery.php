@@ -5,6 +5,7 @@ namespace App\Redshift;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
+use App\Dot;
 
 class Pgquery {
 
@@ -92,24 +93,34 @@ class Pgquery {
      * 
      * Get items of category
      */
-    public static function get_items_category($category) {
-        return DB::connection('redshift')
-                        ->table('nwl_pos.dim_material')
-                        ->where('business_team', $category)
-                        ->distinct('material_id')
-                        ->get();
+    public static function get_items_category($category, $retailer) {
+        $query = DB::connection('redshift')->table('nwl_pos.dim_material as m');
+
+        if (!is_null($retailer)) {
+            $query->join('nwl_pos.dim_retailer_channel as rc', 'rc.retailer_country_id', 'm.retailer_country_id');
+            $query->where('rc.retailer', $retailer);
+        }
+
+        $query->where('m.business_team', $category);
+        $query->distinct('m.material_id');
+        return $query->get();
     }
 
     /**
      * 
      * Get items of brand
      */
-    public static function get_items_brand($brand) {
-        return DB::connection('redshift')
-                        ->table('nwl_pos.dim_material')
-                        ->where('brand', $brand)
-                        ->distinct('material_id')
-                        ->get();
+    public static function get_items_brand($brand, $retailer = null) {
+        $query = DB::connection('redshift')->table('nwl_pos.dim_material as m');
+
+        if (!is_null($retailer)) {
+            $query->join('nwl_pos.dim_retailer_channel as rc', 'm.retailer_country_id', '=', 'rc.retailer_country_id');
+            $query->where('rc.retailer', $retailer);
+        }
+        $query->select('rc.retailer', 'm.material_id');
+        $query->where('m.brand', $brand);
+        $query->distinct('m.material_id');
+        return $query->get();
     }
 
     /**
@@ -132,6 +143,88 @@ class Pgquery {
                         ->table('nwl_pos.dim_material')
                         ->where('retailer_sku', $retailer_sku)
                         ->first();
+    }
+
+    public static function laravel_preparation_data_amazon($data) {
+        DB::connection('redshift')->enableQueryLog();
+        extract($data);
+        
+        // m   : dim_material
+        // ms  : metric_sales
+        // rc  : dim_retailer_channel
+        // moc : metric_online_channel
+        $select = [
+            'm.material_id',
+            'm.retailer_sku as retailer_id',
+            'm.material_description as material_description',
+            'm.x_plant_matl_status',
+            'm.sub_segment',
+            'm.brand',
+            'm.product_platform',
+            'm.business_team',
+            'm.product_family',
+            'm.product_line',
+            'ms.date_day',
+        ];
+
+        if (Dot::is_amazon($promotion)) {
+            $select[] = 'moc.ordered_amount';
+            $select[] = 'moc.ordered_units';
+        } else {
+            $select[] = 'ms.pos_sales as ordered_amount';
+            $select[] = 'ms.pos_units as ordered_units';
+        }
+
+        //$select_str = implode(', ', $select);
+        
+        // QUERY BUILDER 
+
+        $query = DB::connection('redshift')->table('nwl_pos.metric_sales as ms');
+        
+        $query->join('nwl_pos.dim_material as m', 'ms.item_id', 'm.item_id');
+
+        if (Dot::is_amazon($promotion)) {
+            $query->join('nwl_pos.metric_online_channel as moc', function ($join) {
+                $join->on('ms.item_id', 'moc.item_id');
+                $join->on('ms.retailer_country_id', 'moc.retailer_country_id');
+                $join->on('ms.date_day', 'moc.date_day');
+            });
+        }
+
+        if ($promotion->category != '') {
+            
+            $query->where('m.business_team', $promotion->category);
+        }
+
+        if ($promotion->brand != '') {
+            
+            $query->where('brand', $promotion->brand);
+        }
+
+        if ($promotion->retailer != '') {
+            
+            $query->join('nwl_pos.dim_retailer_channel as rc', 'ms.retailer_country_id', 'rc.retailer_country_id');
+            $query->where('rc.retailer', $promotion->retailer);
+        }
+
+        // WHERE ID
+        if ($item->material_id == '' || $item->material_id == 'BPEUNKNOWN') {
+            
+            if ($item->asin == '' || $item->asin == 0) {
+                return false;
+            } else {
+                $query->where('m.retailer_sku', $item->asin);
+            }
+        } else {
+            
+            $query->where('m.material_id', $item->material_id);
+        }
+
+        // WHERE DATE
+        $query->whereBetween('ms.date_day', [$start_date, $end_date]);
+
+        $query->select($select);
+        return $query->get();
     }
 
     public static function psql_preparation_data_amazon($where_id, $where_date) {

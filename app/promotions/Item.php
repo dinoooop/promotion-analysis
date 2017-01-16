@@ -239,7 +239,7 @@ class Item extends Model {
             $categories = explode(',', $promotion->category);
             foreach ($categories as $key => $category) {
                 echo "Going to find items for the category {$category} \n";
-                $records = Pgquery::get_items_category($category);
+                $records = Pgquery::get_items_category($category, $promotion->retailer);
                 $count = count($records);
                 echo "Total records for {$category} is {$count } \n";
 
@@ -252,7 +252,7 @@ class Item extends Model {
                 }
             }
         } elseif ($promotion->level_of_promotions == 'Brand') {
-            $records = Pgquery::get_items_brand($promotion->brand);
+            $records = Pgquery::get_items_brand($promotion->brand, $promotion->retailer);
             foreach ($records as $key => $record) {
                 $input = $this->prepare_redshift_item($promotion, $record);
                 $status = self::status($input);

@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Validator;
 use App\Import;
 use App\TimeMachine;
+use App\Redshift\Pgquery;
 
 class TestController extends BaseController {
 
@@ -43,6 +44,16 @@ class TestController extends BaseController {
     }
 
     function test() {
+        $data['promotion'] = Promotion::find(1);
+        $data['item'] = Item::find(1);
+        $data['start_date'] = '2016-07-12';
+        $data['end_date'] = '2016-07-12';
+        
+        $result = Pgquery::laravel_preparation_data_amazon($data);
+        
+    }
+    
+    function test_date() {
         $start_date = '2016-08-03';
         $end_date = '2016-08-24';
         $baseline_weeks_count = 4;
@@ -51,7 +62,6 @@ class TestController extends BaseController {
         $dates = $this->time_machine->init($start_date, $end_date, $baseline_weeks_count, $post_weeks_count, $normalize_weeks_count);
         
         echo '<pre>', print_r($dates), '</pre>';
-        
     }
 
     function test_child_items_input() {
