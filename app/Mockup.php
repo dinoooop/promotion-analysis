@@ -247,6 +247,7 @@ class Mockup {
         Promotion::whereRaw("level_of_promotions ='Category' OR level_of_promotions ='Brand'")->orderBy('id')->chunk(100, function ($promotions) {
             foreach ($promotions as $promotion) {
                 if (!in_array($promotion->id, $avoid)) {
+                    Dot::iecho("Reseting items under promotion id: {$promotion->id}");
                     Item::where('promotions_id', $promotion->id)->delete();
                     $this->item->insert_items_under_promotion($promotion);
                     $this->item->set_have_child_items($promotion);
