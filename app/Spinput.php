@@ -53,41 +53,44 @@ class Spinput {
         $this->asin = isset($this->data['asin']) ? $this->data['asin'] : '';
 
         $this->is_single_day = ($this->data['promotions_startdate'] == $this->data['promotions_enddate']);
+        if ($this->is_amazon && !$this->is_single_day) {
+            $this->baseline_threshold = 1 + $this->baseline_threshold;
+        }
         
         $this->calendar_dates = $this->time_machine->init($this->data['promotions_startdate'], $this->data['promotions_enddate'], $this->baseline_weeks, $this->post_weeks, $this->normalize_weeks_count);
+        Dot::iecho("Promotion start date - {$this->data['promotions_startdate']}");
+        Dot::iecho("Promotion end date   - {$this->data['promotions_enddate']}");
         
-        // echo "Promotion start date - {$this->data['promotions_startdate']} \n";
-        // echo "Promotion end date   - {$this->data['promotions_enddate']} \n";
     }
 
     function validate() {
 
         if ($this->data['promotions_startdate'] > $this->today) {
-            // echo "Skip, future promotion \n";
+            Dot::iecho("Skip, future promotion");
             return false;
         }
 
         if ((!isset($this->data['material_id']) || $this->data['material_id'] == '')) {
 
             if (!isset($this->data['retailer_id']) || $this->data['retailer_id'] == '') {
-                // echo "material_id or retailer_id does't exist \n";
+                Dot::iecho("material_id or retailer_id does't exist :(");
                 return false;
             }
         }
 
 
         if (!Dot::validate_date($this->data['promotions_startdate']) || !Dot::validate_date($this->data['promotions_enddate'])) {
-            echo "Input date is not valid \n";
+            Dot::iecho("Input date is not valid");
             return false;
         }
 
         if ($this->data['promotions_startdate'] > $this->data['promotions_enddate']) {
-            // echo "Input date is not  valid since start date greater than end date \n";
+            Dot::iecho("Input date is not  valid since start date greater than end date");
             return false;
         }
 
         if (!$this->calendar->is_avail_post_week($this->data)) {
-            // echo "Future promotion since post week not available \n";
+            Dot::iecho("Future promotion since post week not available");
             return false;
         }
 

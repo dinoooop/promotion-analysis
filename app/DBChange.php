@@ -27,6 +27,7 @@ class DBChange {
             $table->date('promotions_startdate');
             $table->date('promotions_enddate');
             $table->string('retailer');
+            $table->string('retail_ecommerce')->nullable();
             $table->string('retailer_country_id')->nullable();
             $table->string('retailer_country')->nullable();
             $table->string('newell_status')->nullable();
@@ -50,7 +51,7 @@ class DBChange {
     function master_input_seed() {
 
         $create = [
-            // Item Level Promotion example
+            // Single day promotion - Item level (Amazon)
             [
                 'promotions_name' => 'Graco Black Friday',
                 'promotions_description' => 'All BF products with promotions',
@@ -77,7 +78,57 @@ class DBChange {
                 'division' => 'Baby',
                 'status' => 'active',
             ],
-            // Category Level Promotion example
+            // Multiple Day (Amazon)
+            [
+                'promotions_name' => 'Best Deals',
+                'promotions_description' => '',
+                'promotions_startdate' => '08/03/2016',
+                'promotions_enddate' => '08/24/2016',
+                'retailer' => 'Amazon',
+                'retailer_country_id' => '',
+                'retailer_country' => 'US',
+                'newell_status' => 'Approved',
+                'promotions_status' => 'Not Started',
+                'promotions_type' => 'Best Deals',
+                'level_of_promotions' => 'Item Level',
+                'marketing_type' => 'Price Promotion',
+                'annivarsaried' => 0,
+                'promotions_budget' => 0,
+                'promotions_projected_sales' => 0,
+                'promotions_expected_lift',
+                'promotions_budget_type' => '',
+                'brand_id' => '',
+                'brand' => 'GRACO',
+                'category' => '',
+                'product_family' => '',
+                'product_line' => '',
+                'division' => 'Baby',
+                'status' => 'active',
+            ],
+            // Non Amazon
+            [
+                'promotions_name' => '2016 Mar wk 4',
+                'promotions_description' => 'up to 15% off all Graco, $25 GC with $125',
+                'promotions_startdate' => '03/20/2016',
+                'promotions_enddate' => '03/26/2016',
+                'retailer' => 'Target',
+                'retailer_country' => 'US',
+                'newell_status' => 'Approved',
+                'promotions_type' => 'DOTD',
+                'level_of_promotions' => 'Brand',
+                'marketing_type' => 'Price Promotion',
+                'annivarsaried' => false,
+                'promotions_budget' => '',
+                'promotions_projected_sales' => '',
+                'promotions_expected_lift' => '',
+                'promotions_budget_type' => 'Checkbook',
+                'brand_id' => '',
+                'brand' => 'GRACO',
+                'category' => '',
+                'product_family' => '',
+                'product_line' => '',
+                'division' => 'Baby'
+            ],
             [
                 'promotions_name' => 'Sample test category level',
                 'promotions_description' => 'sample',
@@ -106,8 +157,13 @@ class DBChange {
             ],
         ];
 
-        foreach ($create as $key => $value) {
-            Promotion::create($value);
+        foreach ($create as $key => $input) {
+            $status = Promotion::status($input);
+            if ($status['status']) {
+                $status['input']['status'] = 'sleep';
+                $promotion = Promotion::create($status['input']);
+            }
+            
         }
     }
 
@@ -166,7 +222,30 @@ class DBChange {
                 'percent_discount',
                 'price_discount',
                 'reference',
-            ]
+            ],
+            [
+                'promotions_id' => 2,
+                'promotions_startdate' => '08/03/2016',
+                'promotions_enddate' => '08/24/2016',
+                'material_id' => '1954840',
+                'product_name' => '',
+                'asin' => 'B01ABQBYSO',
+                'rtl_id' => 'B01ABQBYSO',
+                'promotions_budget',
+                'promotions_projected_sales',
+                'promotions_expected_lift',
+                'x_plant_material_status' => Null,
+                'x_plant_status_date' => Null,
+                'funding_per_unit' => '42.84',
+                'forecasted_qty' => 1800,
+                'forecasted_unit_sales',
+                'promoted',
+                'user_input',
+                'validated',
+                'percent_discount',
+                'price_discount',
+                'reference',
+            ],
         ];
 
         foreach ($records as $value) {
@@ -406,6 +485,12 @@ class DBChange {
             $table->boolean('annivarsaried')->default(0);
             $table->string('status');
             $table->timestamps();
+        });
+    }
+
+    function change_16_01_2017() {
+        Schema::table('promotions.promotions_master_input', function (Blueprint $table) {
+            $table->string('retail_ecommerce')->after('retailer')->nullable();
         });
     }
 

@@ -39,31 +39,31 @@
                     },
                     {
                         field: "ordered_amount",
-                        title: "pos amount",
+                        title: "POS Sales",
                         type: "number",
                     },
                     {
                         field: "ordered_units",
-                        title: "pos units",
+                        title: "POS Units",
                     },
                     {
                         field: "quarter_ordered_amount",
-                        title: "13 Week pos sales",
+                        title: "13 weeks Rollback avg. (POS Sales)",
                         type: "number",
                     },
                     {
                         field: "quarter_ordered_units",
-                        title: "13 Week pos units",
+                        title: "13 weeks Rollback avg. (POS Units)",
                         type: "number",
                     },
                     {
                         field: "normalized_ordered_amount",
-                        title: "Normalized pos amount",
+                        title: "Normalized POS Sales",
                         type: "number",
                     },
                     {
                         field: "normalized_ordered_units",
-                        title: "Normalized pos units",
+                        title: "Normalized POS Units",
                         type: "number",
                     },
                 ]

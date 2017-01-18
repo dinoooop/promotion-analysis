@@ -34,6 +34,14 @@ class Merge {
 
         return implode(', ', $str);
     }
+    function create_avg_select_raw($array) {
+        $str = [];
+        foreach ($array as $key => $value) {
+            $str[] = "avg({$value}) as {$value}";
+        }
+
+        return implode(', ', $str);
+    }
 
     function admin_settings($promotion) {
 

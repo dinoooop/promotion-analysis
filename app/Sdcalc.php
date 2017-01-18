@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use App\Redshift\Pgquery;
 use App\TimeMachine;
+use App\promotions\Promotion;
+use App\promotions\Item;
 
 class Sdcalc extends Model {
 
@@ -41,27 +43,27 @@ class Sdcalc extends Model {
         $this->merge = new Merge;
         $this->time_machine = new TimeMachine;
         $this->record_count = 0;
-
+        
         $this->spinput = $input;
+        
+        Dot::iecho("On Sdcalc");
+        
+        $data = [
+            'promotion' => Promotion::find($this->spinput->promotions_id),
+            'item' => Item::find($this->spinput->promo_child_id),
+            'start_date' => $this->spinput->calendar_dates['get']['start_date'],
+            'end_date' => $this->spinput->calendar_dates['get']['end_date'],
+        ];
+        
+        $records = Pgquery::laravel_preparation_data_amazon($data);
+        // echo '<pre>', print_r(DB::connection('redshift')->getQueryLog()), '</pre>';
+        
+        
+        //$records = DB::connection('redshift')->select($sql);
 
+        $this->record_count = $records->count();
 
-        // echo "On Sdcalc \n";
-
-        $this->set_psql_where();
-        if ($this->spinput->is_amazon) {
-            $sql = Pgquery::psql_preparation_data_amazon($this->where_id, $this->where_date);
-        } else {
-
-            $sql = Pgquery::psql_preparation_data_nonamazon($this->where_id, $this->where_date);
-            // echo "A non amzon retailer working query \n";
-            // echo $sql;
-            // echo "\n";
-        }
-        $records = DB::connection('redshift')->select($sql);
-
-        $this->record_count = count($records);
-
-        // echo "Total number of records in preperation {$this->record_count} \n";
+        Dot::iecho("Total number of records in preperation {$this->record_count}");
 
         if ($this->record_count) {
             $this->save_records($records);
@@ -71,6 +73,10 @@ class Sdcalc extends Model {
         }
     }
 
+    /**
+     * 
+     * @trashed
+     */
     function set_psql_where() {
         if ($this->spinput->material_id != '') {
             $this->where_id = " m.material_id = '{$this->spinput->material_id}' ";
@@ -120,7 +126,7 @@ class Sdcalc extends Model {
     }
 
     function set_invoice_price() {
-        // echo "Setting invoice price \n";
+        Dot::iecho("Setting invoice price");
         self::where('promo_child_id', $this->spinput->promo_child_id)->orderBy('id')->chunk(100, function ($items) {
             foreach ($items as $item) {
                 $invoice = Pgquery::get_invoice($this->spinput->material_id, $item->date_day);

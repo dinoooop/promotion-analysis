@@ -76,6 +76,15 @@ class Stock {
                 return array_combine($country, $country);
                 break;
 
+            case 'retail_ecommerce':
+                return [
+                    'all' => 'All',
+                    'ecommerce' => 'Ecommerce',
+                    'store' => 'Store',
+                ];
+                
+                break;
+
             case 'newell_status':
                 $return = [
                     'Approved',

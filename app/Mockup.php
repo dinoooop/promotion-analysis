@@ -49,14 +49,14 @@ class Mockup {
 
         $this->promotion = $promotion;
         $this->items_count = 0;
-        // echo "Promotion started for ID : {$this->promotion->id} -------------------------- \n";
+        Dot::iecho("Promotion started for ID : {$this->promotion->id} --------------------------");
         if ($this->run_validity()) {
             Promotion::update_promotion_status($this->promotion->id, 'processing');
             $this->reset_records($this->promotion->id);
             $this->item_chunk();
         }
         $this->update_process_status();
-        // echo "Promotion ends for ID    : {$this->promotion->id} --------------------------- \n";
+        Dot::iecho("Promotion ends for ID    : {$this->promotion->id} ---------------------------");
     }
 
     function update_process_status() {
@@ -65,9 +65,9 @@ class Mockup {
             // The promotion deosn't contain item means - user may forget add items
             // It is a category/brand level promotion and system doesn't find items still
             Promotion::update_promotion_status($this->promotion->id, 'active');
-            // echo "Promotion not contain items, status remain active \n ";
+            Dot::iecho("Promotion not contain items, status remain active");
         } elseif ($this->items_count >= 1) {
-            // echo "Promotion contains {$this->items_count} items, status completed \n ";
+            Dot::iecho("Promotion contains {$this->items_count} items, status completed");
             Promotion::update_promotion_status($this->promotion->id, 'completed');
         }
     }
@@ -78,7 +78,7 @@ class Mockup {
      */
     function run_validity() {
         if (!$this->calendar->is_avail_post_week($this->promotion)) {
-            // echo "Future promotion since post week not available \n";
+            Dot::iecho("Future promotion since post week not available");
             return false;
         }
 
@@ -89,17 +89,27 @@ class Mockup {
 
 
         $this->total_items_count = Item::where('promotions_id', $this->promotion->id)->count();
-        // echo "Total number of items : {$this->total_items_count} \n";
+        Dot::iecho("Total number of items : {$this->total_items_count}");
         Item::where('promotions_id', $this->promotion->id)->orderBy('id')->chunk(100, function ($items) {
-
-            // echo "Promotion id {$this->promotion->id} count child items {$items->count()} \n";
-
+            Dot::iecho("Promotion id {$this->promotion->id} count child items {$items->count()}");
             foreach ($items as $item) {
                 $this->item = $item;
                 $input = $this->set_input_array();
                 $this->process($input);
             }
         });
+    }
+
+    function item_specific($item) {
+
+        $this->item = $item;
+
+        if (isset($this->item->id)) {
+            $this->promotion = Promotion::find($item->promotions_id);
+            $this->reset_item($this->item->id);
+            $input = $this->set_input_array();
+            $this->process($input);
+        }
     }
 
     function set_input_array() {
@@ -169,24 +179,29 @@ class Mockup {
         $this->spinput->set_vars($input);
 
         if (!$this->spinput->validate) {
-            echo "The given child item input is not valid \n";
+            Dot::iecho("The given child item input is not valid");
             return false;
         }
 
-        // echo "Execution start for child item id {$this->spinput->promo_child_id} \n";
-        $this->items_count = $this->items_count + 1;
-        
-        
+
+
+
         // STATUS ==============================================================
-        $item_status = "Item {$this->items_count}/{$this->total_items_count} IID: {$this->spinput->promo_child_id} ";
-        if(isset($this->total_promotions_count)){
-            $promotion_status = "Promotion {$this->current_promotions_count}/{$this->total_promotions_count} PID: {$this->promotion->id} ";
-            echo $promotion_status . $item_status . "\n";
-        }else{
-            echo $item_status . "\n";
+        $process_status = '';
+
+        if (isset($this->items_count) && isset($this->total_items_count)) {
+            Dot::iecho("Execution start for child item id {$this->spinput->promo_child_id}");
+            $this->items_count = $this->items_count + 1;
+            $process_status .= "Item {$this->items_count}/{$this->total_items_count} IID: {$this->spinput->promo_child_id} ";
         }
-        
-        
+
+        if (isset($this->total_promotions_count)) {
+            $process_status .= "Promotion {$this->current_promotions_count}/{$this->total_promotions_count} PID: {$this->promotion->id} ";
+        }
+
+        Dot::iecho($process_status, true);
+
+
 
         $this->sdcalc = new Sdcalc;
         $this->swcalc = new Swcalc;
@@ -199,11 +214,11 @@ class Mockup {
             $this->spod->inject($this->spinput, $this->sdcalc, $this->swcalc);
             $this->spod->create_record();
         } else {
-            // echo "No items found sales table (redshift) \n";
+            Dot::iecho("No items found sales table (redshift)");
         }
 
 
-        // echo "Execution end for child item id {$this->spinput->promo_child_id} \n";
+        Dot::iecho("Execution end for child item id {$this->spinput->promo_child_id}");
         return true;
     }
 
@@ -213,9 +228,7 @@ class Mockup {
      */
     function find_items() {
         Promotion::whereRaw("level_of_promotions ='Category' OR level_of_promotions ='Brand'")->orderBy('id')->chunk(100, function ($promotions) {
-            echo "There are {$promotions->count()} records for execute \n";
             foreach ($promotions as $promotion) {
-                echo "Find items for the category {$promotion->category} \n";
                 $this->item->insert_items_under_promotion($promotion);
             }
         });
@@ -235,6 +248,13 @@ class Mockup {
         Sdcalc::whereIn('promo_child_id', $ids)->delete();
         Swcalc::whereIn('promo_child_id', $ids)->delete();
         Spod::whereIn('promo_child_id', $ids)->delete();
+    }
+
+    function reset_item($item_id) {
+        Dot::iecho("resetting items");
+        Sdcalc::where('promo_child_id', $item_id)->delete();
+        Swcalc::where('promo_child_id', $item_id)->delete();
+        Spod::where('promo_child_id', $item_id)->delete();
     }
 
 }

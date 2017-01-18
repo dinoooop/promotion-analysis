@@ -88,6 +88,19 @@ class AppForms {
                     'default' => 'Amazon',
                 ),
                 array(
+                    'type' => 'select',
+                    'name' => 'retailer_country',
+                    'label' => 'Retailer Country',
+                    'options' => Stock::get('retailer_country'),
+                    'default' => 'US'
+                ),
+                array(
+                    'type' => 'select',
+                    'name' => 'retail_ecommerce',
+                    'label' => 'Retail / Ecommerce',
+                    'options' => Stock::get('retail_ecommerce'),
+                ),
+                array(
                     'type' => 'textarea',
                     'name' => 'promotions_description',
                     'label' => 'Promotions Description',
@@ -167,6 +180,11 @@ class AppForms {
                     'label' => 'Brand',
                 ),
                 array(
+                    'type' => 'auto_complete',
+                    'name' => 'division',
+                    'label' => 'Division',
+                ),
+                array(
                     'type' => 'auto_complete_tags',
                     'name' => 'category',
                     'label' => 'Category',
@@ -183,11 +201,7 @@ class AppForms {
 //                            'name' => 'product_line',
 //                            'label' => 'Product Line',
 //                        ),
-                array(
-                    'type' => 'auto_complete',
-                    'name' => 'division',
-                    'label' => 'Division',
-                ),
+                
                 array(
                     'type' => 'boolean_checkbox',
                     'name' => 'annivarsaried',
@@ -380,22 +394,22 @@ class AppForms {
             ),
         );
 
-        if(isset($param['csvid'])) {
+        if (isset($param['csvid'])) {
             $form['fields'][] = array(
                 'type' => 'hidden',
                 'name' => 'csvid',
                 'value' => $param['csvid'],
             );
         }
-        
-        if(isset($param['pid'])) {
+
+        if (isset($param['pid'])) {
             $form['fields'][] = array(
                 'type' => 'hidden',
                 'name' => 'pid',
                 'value' => $param['pid'],
             );
         }
-        
+
         return $form;
     }
 

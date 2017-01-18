@@ -238,10 +238,10 @@ class Item extends Model {
 
             $categories = explode(',', $promotion->category);
             foreach ($categories as $key => $category) {
-                echo "Going to find items for the category {$category} \n";
+                Dot::iecho("Going to find items for the category {$category}");
                 $records = Pgquery::get_items_category($category, $promotion->retailer);
                 $count = count($records);
-                echo "Total records for {$category} is {$count } \n";
+                Dot::iecho("Total records for {$category} is {$count }");
 
                 foreach ($records as $key => $record) {
                     $input = $this->prepare_redshift_item($promotion, $record);
@@ -282,10 +282,10 @@ class Item extends Model {
                     $categories = explode(',', $promotion->category);
                     $option['category'] = explode(',', $option['category']);
                     if (Dot::is_array_eaqual($categories, $option['category'])) {
-                        echo "child item exist for the category \n";
+                        Dot::iecho("child item exist for the category, pid: {$promotion->id}");
                         return true;
                     } else {
-                        echo "Its look like new category, So remove old items \n";
+                        Dot::iecho("Its look like new/changed category, pid: {$promotion->id}");
                         Promotion::update_promotion_status($promotion->id, 'sleep');
                         Item::where('promotions_id', $promotion->id)->delete();
                         return false;
@@ -294,10 +294,10 @@ class Item extends Model {
             }
             if ($promotion->level_of_promotions == 'Brand') {
                 if (isset($option['brand']) && $option['brand'] == $promotion->brand) {
-                    // child item exist for the brand
+                    Dot::iecho("child item exist for the brand, pid: {$promotion->id}");
                     return true;
                 } else {
-                    // Its look like new brand, So remove old items
+                    Dot::iecho("Its look like new/changed brand, pid: {$promotion->id}");
                     Promotion::update_promotion_status($promotion->id, 'sleep');
                     Item::where('promotions_id', $promotion->id)->delete();
                     return false;
@@ -341,14 +341,14 @@ class Item extends Model {
             'promotions_startdate' => $promotion->promotions_startdate,
             'promotions_enddate' => $promotion->promotions_enddate,
             'material_id' => $record->material_id,
-            'product_name' => $record->material_description,
-            'asin' => $record->retailer_sku,
-            'rtl_id' => $record->retailer_sku,
+            'product_name' => Dot::get_obj_array_val('material_description', $record),
+            'asin' => Dot::get_obj_array_val('retailer_sku', $record),
+            'rtl_id' => Dot::get_obj_array_val('retailer_sku', $record),
             'promotions_budget' => null,
             'promotions_projected_sales' => null,
             'promotions_expected_lift' => null,
-            'x_plant_material_status' => $record->x_plant_matl_status,
-            'x_plant_status_date' => $record->x_plant_valid_from,
+            'x_plant_material_status' => Dot::get_obj_array_val('x_plant_matl_status', $record),
+            'x_plant_status_date' => Dot::get_obj_array_val('x_plant_valid_from', $record),
             'funding_per_unit' => null,
             'forecasted_qty' => null,
             'forecasted_unit_sales' => null,

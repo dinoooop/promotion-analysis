@@ -93,7 +93,7 @@ class Pgquery {
      * 
      * Get items of category
      */
-    public static function get_items_category($category, $retailer) {
+    public static function get_items_category($category, $retailer = null) {
         $query = DB::connection('redshift')->table('nwl_pos.dim_material as m');
 
         if (!is_null($retailer)) {
@@ -148,7 +148,7 @@ class Pgquery {
     public static function laravel_preparation_data_amazon($data) {
         DB::connection('redshift')->enableQueryLog();
         extract($data);
-        
+
         // m   : dim_material
         // ms  : metric_sales
         // rc  : dim_retailer_channel
@@ -175,12 +175,11 @@ class Pgquery {
             $select[] = 'ms.pos_units as ordered_units';
         }
 
-        //$select_str = implode(', ', $select);
-        
+        // $select_str = implode(', ', $select);
         // QUERY BUILDER 
 
         $query = DB::connection('redshift')->table('nwl_pos.metric_sales as ms');
-        
+
         $query->join('nwl_pos.dim_material as m', 'ms.item_id', 'm.item_id');
 
         if (Dot::is_amazon($promotion)) {
@@ -192,31 +191,47 @@ class Pgquery {
         }
 
         if ($promotion->category != '') {
-            
+
             $query->where('m.business_team', $promotion->category);
         }
 
         if ($promotion->brand != '') {
-            
+
             $query->where('brand', $promotion->brand);
         }
 
         if ($promotion->retailer != '') {
-            
+
             $query->join('nwl_pos.dim_retailer_channel as rc', 'ms.retailer_country_id', 'rc.retailer_country_id');
             $query->where('rc.retailer', $promotion->retailer);
         }
 
+        //Store/Ecommerce
+        $where_store = "(rc.retail_ecommerce ilike '%store%' or rc.retail_ecommerce ilike '%retail%')";
+        $where_ecommerce = "(rc.retail_ecommerce ilike '%e-commerce%' or rc.retail_ecommerce ilike '%ecommerce%')";
+        //$where_ecommerce = "(rc.retail_ecommerce = 'E-commerce' or rc.retail_ecommerce = 'E-COMMERCE' or rc.retail_ecommerce = 'Ecommerce')";
+        if ($promotion->retail_ecommerce == 'store') {
+            Dot::iecho("For Stire/Retailers");
+            
+            $query->whereRaw($where_store);
+        } elseif ($promotion->retail_ecommerce == 'ecommerce') {
+            Dot::iecho("For E-commerce");
+            $query->whereRaw($where_ecommerce);
+        } else {
+            Dot::iecho("retail_ecommerce  for all");
+            $query->whereRaw( "(". $where_store . " or " . $where_ecommerce . ") AND rc.retail_ecommerce <> 'Unknown'");
+        }
+
         // WHERE ID
         if ($item->material_id == '' || $item->material_id == 'BPEUNKNOWN') {
-            
+
             if ($item->asin == '' || $item->asin == 0) {
                 return false;
             } else {
                 $query->where('m.retailer_sku', $item->asin);
             }
         } else {
-            
+
             $query->where('m.material_id', $item->material_id);
         }
 
@@ -224,7 +239,20 @@ class Pgquery {
         $query->whereBetween('ms.date_day', [$start_date, $end_date]);
 
         $query->select($select);
+        $query->distinct('ms.date_day');
+        
+        
         return $query->get();
+    }
+
+    public static function sample_retail() {
+        $query = DB::connection('redshift')->table('nwl_pos.dim_retailer_channel as rc');
+
+        $where_ecommerce = "(rc.retail_ecommerce ilike '%e-commerce%' or rc.retail_ecommerce ilike '%ecommerce%') AND rc.retail_ecommerce <> 'Unknown'";
+        $query->whereRaw($where_ecommerce);
+        $query->take(30);
+        $REC = $query->get();
+        echo '<pre>', print_r($REC), '</pre>';
     }
 
     public static function psql_preparation_data_amazon($where_id, $where_date) {

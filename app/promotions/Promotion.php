@@ -22,6 +22,7 @@ class Promotion extends Model {
         'promotions_startdate',
         'promotions_enddate',
         'retailer',
+        'retail_ecommerce',
         'retailer_country_id',
         'retailer_country',
         'newell_status',
@@ -137,10 +138,7 @@ class Promotion extends Model {
      * @return type
      */
     public static function sanitize($input) {
-
-
-
-
+        
         $default = [
             'retailer' => 'Amazon',
             'retailer_country' => 'US',

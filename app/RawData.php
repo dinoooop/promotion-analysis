@@ -45,29 +45,28 @@ class RawData {
      */
     function process() {
 
-        echo "Cron Name : Promotion analysis calculation \n";
-        echo "Cron Start time " . date('Y-m-d H:i:s') . "\n";
+        Dot::iecho("Cron Name : Promotion analysis calculation");
+        Dot::iecho("Cron Start time " . date('Y-m-d H:i:s'));
         Config::set('database.fetch', \PDO::FETCH_ASSOC);
         $this->mockup->promotion_chunk();
-        echo "Cron end time " . date('Y-m-d H:i:s') . "\n";
-        echo "------------------------------------------------------------------\n";
+        Dot::iecho("Cron end time " . date('Y-m-d H:i:s'));
+        Dot::iecho("------------------------------------------------------------");
     }
-    
-    
+
     /**
      * 
      * Cron job
      * Find items for category level and brand level
      */
     function find_items() {
-        echo "Cron Name : Find items for category level and brand level \n";
-        echo "Cron Start time " . date('Y-m-d H:i:s') . "\n";
+        Dot::iecho("Cron Name : Find items for category level and brand level");
+        Dot::iecho("Cron Start time " . date('Y-m-d H:i:s'));
 
         $this->mockup->find_items();
-        echo "Cron end time " . date('Y-m-d H:i:s') . "\n";
-        echo "------------------------------------------------------------------\n";
+        Dot::iecho("Cron end time " . date('Y-m-d H:i:s'));
+        Dot::iecho("------------------------------------------------------------");
     }
-    
+
     /**
      * 
      * Manually run a promotion with id
@@ -76,23 +75,34 @@ class RawData {
     function run_promotion($id) {
         Config::set('database.fetch', \PDO::FETCH_ASSOC);
         $promotion = Promotion::find($id);
-        if(isset($promotion->id)){
+        if (isset($promotion->id)) {
             $this->mockup->promo_specific($promotion);
         }
     }
-    
-    
+    /**
+     * 
+     * Manually run a promotion with id
+     * @param int $id promotion id
+     */
+    function run_item($id) {
+        Config::set('database.fetch', \PDO::FETCH_ASSOC);
+        $item = Item::find($id);
+        if (isset($item->id)) {
+            $this->mockup->item_specific($item);
+        }
+    }
+
     function set_active_all() {
         Promotion::where('status', 'processing')
-                    ->update(['status' => 'active']);
+                ->update(['status' => 'active']);
     }
-    
-    
-    
+
     function run_raw_code() {
-        echo "Reset all non amazon promotions to active \n";
-        Promotion::where('retailer', '<>' ,'Amazon')->update(['status' => 'active']);
+        Dot::iecho("Reset all non amazon promotions to active");
+        Promotion::where('retailer', '<>', 'Amazon')->update(['status' => 'active']);
     }
+
+    
 
     /**
      * 
@@ -182,7 +192,7 @@ class RawData {
         ftruncate($handle, 0);
         rewind($handle);
         fclose($handle);
-        echo "Logs cleared on " . date('Y-m-d H:i:s') . " \n";
+        Dot::iecho("Logs cleared on " . date('Y-m-d H:i:s'));
     }
 
     function test() {

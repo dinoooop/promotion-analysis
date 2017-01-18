@@ -43,17 +43,16 @@ Artisan::command('redshiftimport_dchannel', function () {
 })->describe('Importing redshift data');
 
 
-Artisan::command('promo {action}', function ($action) {    
+Artisan::command('promo {action}', function ($action) {
     $obj = new RawData;
     $obj->$action();
     
 })->describe('Processing data');
 
-Artisan::command('run_promotion {id}', function ($id) {    
+Artisan::command('specific {action} {id}', function ($action, $id) {
     $obj = new RawData;
-    $obj->run_promotion($id);
-    
-})->describe('Processing data');
+    $obj->$action($id);
+})->describe('specific record process');
 
 Artisan::command('printm {action}', function ($action) {    
     $obj = new Printm;

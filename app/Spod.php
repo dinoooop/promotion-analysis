@@ -45,11 +45,11 @@ class Spod extends Model {
 
         if ($this->spinput->is_single_day) {
             // Number of days based denominator for single day it is 7
-            // echo "Single day promotion (POD) \n";
+            Dot::iecho("Single day promotion (POD)");
             $this->number_of_promotion_days = 1;
             $this->nod_based_denominator = 7;
         } else {
-            // echo "Multiple day promotion (POD) \n";
+            Dot::iecho("Multiple day promotion (POD)");
             $this->number_of_promotion_days = $this->time_machine->date_difference($this->spinput->data['promotions_startdate'], $this->spinput->data['promotions_enddate']) + 1;
             $this->nod_based_denominator = $this->number_of_promotion_days;
         }
@@ -86,7 +86,7 @@ class Spod extends Model {
 
 
         $row['no_of_promotion_days'] = $this->number_of_promotion_days;
-        // echo "Inserting output for child item id {$this->spinput->promo_child_id} \n";
+        Dot::iecho("Inserting output for child item id {$this->spinput->promo_child_id}");
 
         //$this->mark_promoted_items($row);
         Spod::create($row);
@@ -94,7 +94,7 @@ class Spod extends Model {
 
     function mark_promoted_items($row) {
 
-        // echo "Marking the promoted items \n";
+        Dot::iecho("Marking the promoted items");
 
         $drop = $require = [];
         $swcalc = $this->swcalc->get_swcalc_week($this->spinput->calendar_dates['baseline']['start_week'], $this->spinput->calendar_dates['baseline']['end_week']);
@@ -116,10 +116,10 @@ class Spod extends Model {
 
         if ($row['discount'] >= 0.03) {
             $row['promoted'] = true;
-            // echo "Promoted is : true \n";
+            Dot::iecho("Promoted is : true");
         } else {
             $row['promoted'] = false;
-            // echo "Promoted is : false \n";
+            Dot::iecho("Promoted is : false");
         }
 
 

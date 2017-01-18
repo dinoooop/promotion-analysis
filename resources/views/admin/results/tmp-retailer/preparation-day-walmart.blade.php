@@ -52,12 +52,12 @@
                     },
                     {
                         field: "ordered_amount",
-                        title: "pos amount",
+                        title: "POS Sales",
                         type: "number",
                     },
                     {
                         field: "ordered_units",
-                        title: "pos units",
+                        title: "POS Units",
                     },
                     
                 ]

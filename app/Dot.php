@@ -157,6 +157,20 @@ class Dot {
         Log::info($contents);
     }
 
+    /**
+     * 
+     * Round the integer value for the database
+     * @param array $input
+     */
+    public static function general_round($input, $precision = 2) {
+        foreach ($input as $key => $value) {
+            if (is_numeric($value)) {
+                $input[$key] = round($value, $precision);
+            }
+        }
+        return $input;
+    }
+
     public static function sanitize_numeric($key, $input = null, $round = 2) {
 
         // If input not exist key is an integer given to round
@@ -341,6 +355,24 @@ class Dot {
         }
 
         return false;
+    }
+
+    public static function iecho($string, $force = null) {
+        $app_env = env('IECHO');
+        if ($app_env == 'on') {
+            echo $string . "\n";
+        } elseif (!is_null($force)) {
+            echo $string . "\n";
+        }
+    }
+
+    public static function get_obj_array_val($key, $stack) {
+
+        if (is_array($stack)) {
+            return isset($stack[$key]) ? $stack[$key] : null;
+        } else {
+            return isset($stack->$key) ? $stack->$key : null;
+        }
     }
 
 }

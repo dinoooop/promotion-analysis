@@ -44,18 +44,15 @@ class TestController extends BaseController {
     }
 
     function test() {
-        $data['promotion'] = Promotion::find(1);
-        $data['item'] = Item::find(1);
-        $data['start_date'] = '2016-07-12';
-        $data['end_date'] = '2016-07-12';
         
-        $result = Pgquery::laravel_preparation_data_amazon($data);
+        
+        $this->test_date();
         
     }
     
     function test_date() {
-        $start_date = '2016-08-03';
-        $end_date = '2016-08-24';
+        $start_date = '2016-03-20';
+        $end_date = '2016-03-26';
         $baseline_weeks_count = 4;
         $post_weeks_count = 2;
         $normalize_weeks_count = 13;
