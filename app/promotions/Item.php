@@ -229,19 +229,15 @@ class Item extends Model {
      * Category level promotion may not contain items, create items
      */
     function insert_items_under_promotion($promotion) {
-
-        if ($this->have_child_items($promotion)) {
-            return true;
-        }
-
+        
         if ($promotion->level_of_promotions == 'Category') {
 
             $categories = explode(',', $promotion->category);
             foreach ($categories as $key => $category) {
-                Dot::iecho("Going to find items for the category {$category}");
+                Dot::iecho("Finding items for the category {$category}");
                 $records = Pgquery::get_items_category($category, $promotion->retailer);
                 $count = count($records);
-                Dot::iecho("Total records for {$category} is {$count }");
+                Dot::iecho("Total records for {$category} is {$records->count()}");
 
                 foreach ($records as $key => $record) {
                     $input = $this->prepare_redshift_item($promotion, $record);
@@ -262,8 +258,6 @@ class Item extends Model {
             }
         }
 
-        $this->set_have_child_items($promotion);
-        Promotion::update_promotion_status($promotion->id, 'active');
     }
 
     /**
