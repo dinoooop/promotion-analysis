@@ -37,6 +37,7 @@ class RawData {
         $this->printm = new Printm;
         $this->mockup = new Mockup;
         $this->dbchange = new DBChange;
+        $this->item = new Item;
     }
 
     /**
@@ -65,6 +66,25 @@ class RawData {
         $this->mockup->find_items();
         Dot::iecho("Cron end time " . date('Y-m-d H:i:s'));
         Dot::iecho("------------------------------------------------------------");
+    }
+    
+    /**
+     * 
+     * Refresh items under category/Brand
+     */
+    function refresh_items_under_category_brand() {
+        
+        Promotion::whereRaw("level_of_promotions ='Category' OR level_of_promotions ='Brand'")->orderBy('id')->chunk(100, function ($promotions) {
+            foreach ($promotions as $promotion) {
+                if (!in_array($promotion->id, [217])) {
+                    Dot::iecho("Reseting items under promotion id: {$promotion->id}");
+                    Item::where('promotions_id', $promotion->id)->delete();
+                    $this->item->insert_items_under_promotion($promotion);
+                    $this->item->set_have_child_items($promotion);
+                    Promotion::update_promotion_status($promotion->id, 'active');
+                }
+            }
+        });
     }
 
     /**
@@ -101,8 +121,6 @@ class RawData {
         Dot::iecho("Reset all non amazon promotions to active");
         Promotion::where('retailer', '<>', 'Amazon')->update(['status' => 'active']);
     }
-
-    
 
     /**
      * 

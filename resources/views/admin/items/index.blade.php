@@ -110,6 +110,9 @@
                                     toolbar: ["create", "save", "cancel"],
                                     columns: [
                                         {command: "destroy", title: "&nbsp;", width: 100},
+                                        <?php if(env('APP_ENV') == 'local'): ?>
+                                        {field: "id", title: "Item Id", width: 120, sortable: true},
+                                        <?php endif; ?>
                                         {field: "material_id", title: "Material Id", width: 120, sortable: true},
                                         {field: "asin", title: "ASIN", width: 120, sortable: true},
                                         {field: "promotions_startdate", title: "Start date", format: '{0:MM/dd/yyyy}', width: 100, sortable: true},

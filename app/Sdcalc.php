@@ -43,26 +43,26 @@ class Sdcalc extends Model {
         $this->merge = new Merge;
         $this->time_machine = new TimeMachine;
         $this->record_count = 0;
-        
+
         $this->spinput = $input;
-        
+
         Dot::iecho("On Sdcalc");
-        
+
         $data = [
             'promotion' => Promotion::find($this->spinput->promotions_id),
             'item' => Item::find($this->spinput->promo_child_id),
             'start_date' => $this->spinput->calendar_dates['get']['start_date'],
             'end_date' => $this->spinput->calendar_dates['get']['end_date'],
         ];
-        
+
         $records = Pgquery::laravel_preparation_data_amazon($data);
         // echo '<pre>', print_r(DB::connection('redshift')->getQueryLog()), '</pre>';
-        
-        
         //$records = DB::connection('redshift')->select($sql);
 
-        $this->record_count = $records->count();
-
+        if ($records) {
+            $this->record_count = $records->count();
+        }
+        
         Dot::iecho("Total number of records in preperation {$this->record_count}");
 
         if ($this->record_count) {
