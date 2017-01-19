@@ -206,20 +206,19 @@ class Pgquery {
             $query->where('rc.retailer', $promotion->retailer);
         }
 
-        //Store/Ecommerce
+        // Store/Ecommerce
         $where_store = "(rc.retail_ecommerce ilike '%store%' or rc.retail_ecommerce ilike '%retail%')";
         $where_ecommerce = "(rc.retail_ecommerce ilike '%e-commerce%' or rc.retail_ecommerce ilike '%ecommerce%')";
-        //$where_ecommerce = "(rc.retail_ecommerce = 'E-commerce' or rc.retail_ecommerce = 'E-COMMERCE' or rc.retail_ecommerce = 'Ecommerce')";
+        
         if ($promotion->retail_ecommerce == 'store') {
             Dot::iecho("For Stire/Retailers");
-            
             $query->whereRaw($where_store);
-        } elseif ($promotion->retail_ecommerce == 'ecommerce') {
+        } elseif ($promotion->retail_ecommerce == 'all') {
+            Dot::iecho("retail_ecommerce  for all");
+            $query->whereRaw("(" . $where_store . " or " . $where_ecommerce . ") AND rc.retail_ecommerce <> 'Unknown'");
+        } else {
             Dot::iecho("For E-commerce");
             $query->whereRaw($where_ecommerce);
-        } else {
-            Dot::iecho("retail_ecommerce  for all");
-            $query->whereRaw( "(". $where_store . " or " . $where_ecommerce . ") AND rc.retail_ecommerce <> 'Unknown'");
         }
 
         // WHERE ID
@@ -240,8 +239,8 @@ class Pgquery {
 
         $query->select($select);
         $query->distinct('ms.date_day');
-        
-        
+
+
         return $query->get();
     }
 

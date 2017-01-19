@@ -27,10 +27,11 @@ class Kernel extends ConsoleKernel {
 //         $schedule->command('db_change master_input_refresh')
 //                  ->everyFiveMinutes();
         $logfile = storage_path('logs/promotions.log');
-        if (env('CRON_TIME') == 'development') {
+        $CRON_TIME = env('CRON_TIME');
+        if ($CRON_TIME == 'development') {
             $schedule->command('promo process')->everyMinute()->appendOutputTo($logfile);
             $schedule->command('promo find_items')->everyFiveMinutes()->appendOutputTo($logfile);
-        } elseif (env('CRON_TIME') == 'production') {
+        } elseif ($CRON_TIME == 'production') {
             $schedule->command('promo process')->hourly()->appendOutputTo($logfile);
             $schedule->command('promo find_items')->everyFiveMinutes()->appendOutputTo($logfile);
         }

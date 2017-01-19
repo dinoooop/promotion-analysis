@@ -186,16 +186,16 @@ class Mockup {
 
 
         // STATUS ==============================================================
-        $process_status = '';
+        $process_status = "MID: {$this->spinput->material_id} ASIN: {$this->spinput->asin} ";
 
         if (isset($this->items_count) && isset($this->total_items_count)) {
             Dot::iecho("Execution start for child item id {$this->spinput->promo_child_id}");
             $this->items_count = $this->items_count + 1;
-            $process_status .= "Item {$this->items_count}/{$this->total_items_count} IID: {$this->spinput->promo_child_id} ";
+            $process_status .= "Item: {$this->items_count}/{$this->total_items_count} IID: {$this->spinput->promo_child_id} ";
         }
 
         if (isset($this->total_promotions_count)) {
-            $process_status .= "Promotion {$this->current_promotions_count}/{$this->total_promotions_count} PID: {$this->promotion->id} ";
+            $process_status .= "Promotion: {$this->current_promotions_count}/{$this->total_promotions_count} PID: {$this->promotion->id} ";
         }
 
         Dot::iecho($process_status, true);

@@ -78,9 +78,9 @@ class Stock {
 
             case 'retail_ecommerce':
                 return [
-                    'all' => 'All',
                     'ecommerce' => 'Ecommerce',
                     'store' => 'Store',
+                    'all' => 'All',
                 ];
                 
                 break;
