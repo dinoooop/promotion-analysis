@@ -116,8 +116,10 @@ class Item extends Model {
         $input = self::sanitize($input);
 
         if (is_null($update)) {
+            // Create
             $validation = Validator::make($input, self::store_rules($input), self::$messages);
         } else {
+            // Update
             $validation = Validator::make($input, self::store_rules_update($input), self::$messages);
         }
 
@@ -236,9 +238,8 @@ class Item extends Model {
             foreach ($categories as $key => $category) {
                 Dot::iecho("Finding items for the category {$category}");
                 $records = Pgquery::get_items_category($category, $promotion->retailer);
-                $count = count($records);
                 Dot::iecho("Total records for {$category} is {$records->count()}");
-
+                
                 foreach ($records as $key => $record) {
                     $input = $this->prepare_redshift_item($promotion, $record);
                     $status = self::status($input);

@@ -31,8 +31,10 @@
             <tr>
                 <th>Redshift data</th>
                 <th>Preparation table</th>
+                <th>Item Id</th>
                 <th>Material Id</th>
                 <th>ASIN</th>
+                
                 <!-- Baseline (daily) -->
                 <th>POS Sales</th>
                 <th>POS Units</th>
@@ -85,6 +87,8 @@
             <tr>
                 <td><a href="{{ $record->href_preperation_table }}"><i class="fa fa-database"></i></a></td>
                 <td><a href="{{ $record->href_week_preperation_table }}"><i class="fa fa-database"></i></a></td>
+                
+                <td>{{ $record->promo_child_id }}</td>
                 <td>{{ $record->material_id }}</td>
                 <td>{{ $record->asin }}</td>
 

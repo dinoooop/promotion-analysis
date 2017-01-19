@@ -58,6 +58,7 @@ class DBChange {
                 'promotions_startdate' => '07/12/2016',
                 'promotions_enddate' => '07/12/2016',
                 'retailer' => 'Amazon',
+                'retail_ecommerce' => 'ecommerce',
                 'retailer_country_id' => '',
                 'retailer_country' => 'US',
                 'newell_status' => 'Approved',
@@ -85,6 +86,7 @@ class DBChange {
                 'promotions_startdate' => '08/03/2016',
                 'promotions_enddate' => '08/24/2016',
                 'retailer' => 'Amazon',
+                'retail_ecommerce' => 'ecommerce',
                 'retailer_country_id' => '',
                 'retailer_country' => 'US',
                 'newell_status' => 'Approved',
@@ -105,36 +107,38 @@ class DBChange {
                 'division' => 'Baby',
                 'status' => 'active',
             ],
-            // Non Amazon
-            [
-                'promotions_name' => '2016 Mar wk 4',
-                'promotions_description' => 'up to 15% off all Graco, $25 GC with $125',
-                'promotions_startdate' => '03/20/2016',
-                'promotions_enddate' => '03/26/2016',
-                'retailer' => 'Target',
-                'retailer_country' => 'US',
-                'newell_status' => 'Approved',
-                'promotions_type' => 'DOTD',
-                'level_of_promotions' => 'Brand',
-                'marketing_type' => 'Price Promotion',
-                'annivarsaried' => false,
-                'promotions_budget' => '',
-                'promotions_projected_sales' => '',
-                'promotions_expected_lift' => '',
-                'promotions_budget_type' => 'Checkbook',
-                'brand_id' => '',
-                'brand' => 'GRACO',
-                'category' => '',
-                'product_family' => '',
-                'product_line' => '',
-                'division' => 'Baby'
-            ],
+            /*
+              [
+              'promotions_name' => '2016 Mar wk 4',
+              'promotions_description' => 'up to 15% off all Graco, $25 GC with $125',
+              'promotions_startdate' => '03/20/2016',
+              'promotions_enddate' => '03/26/2016',
+              'retailer' => 'Target',
+              'retailer_country' => 'US',
+              'newell_status' => 'Approved',
+              'promotions_type' => 'DOTD',
+              'level_of_promotions' => 'Brand',
+              'marketing_type' => 'Price Promotion',
+              'annivarsaried' => false,
+              'promotions_budget' => '',
+              'promotions_projected_sales' => '',
+              'promotions_expected_lift' => '',
+              'promotions_budget_type' => 'Checkbook',
+              'brand_id' => '',
+              'brand' => 'GRACO',
+              'category' => '',
+              'product_family' => '',
+              'product_line' => '',
+              'division' => 'Baby'
+              ],
+             */
             [
                 'promotions_name' => 'Sample test category level',
                 'promotions_description' => 'sample',
                 'promotions_startdate' => '2016-11-18',
                 'promotions_enddate' => '2016-11-25',
-                'retailer' => 'Amazon',
+                'retailer' => 'Target',
+                'retail_ecommerce' => 'ecommerce',
                 'retailer_country_id' => '',
                 'retailer_country' => 'US',
                 'newell_status' => 'Approved',
@@ -149,7 +153,7 @@ class DBChange {
                 'promotions_budget_type' => '',
                 'brand_id' => '',
                 'brand' => 'GRACO',
-                'category' => 'Car Seats',
+                'category' => 'Nursery & Care',
                 'product_family' => '',
                 'product_line' => '',
                 'division' => 'Baby',
@@ -163,7 +167,6 @@ class DBChange {
                 $status['input']['status'] = 'sleep';
                 $promotion = Promotion::create($status['input']);
             }
-            
         }
     }
 

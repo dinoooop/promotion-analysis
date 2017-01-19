@@ -78,7 +78,10 @@ class RawData {
             foreach ($promotions as $promotion) {
                 if (!in_array($promotion->id, [0])) {
                     Dot::iecho("Reseting items under promotion id: {$promotion->id}");
+                    
+                    $this->mockup->reset_records($promotion->id);
                     Item::where('promotions_id', $promotion->id)->delete();
+                    
                     $this->item->insert_items_under_promotion($promotion);
                     $this->item->set_have_child_items($promotion);
                     Promotion::update_promotion_status($promotion->id, 'active');
