@@ -117,7 +117,7 @@ class Pgquery {
             $query->join('nwl_pos.dim_retailer_channel as rc', 'm.retailer_country_id', '=', 'rc.retailer_country_id');
             $query->where('rc.retailer', $retailer);
         }
-        $query->select('rc.retailer', 'm.material_id');
+        
         $query->where('m.brand', $brand);
         $query->distinct('m.material_id');
         return $query->get();
