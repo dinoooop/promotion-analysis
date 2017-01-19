@@ -49,6 +49,7 @@
                                             promotions_name: {type: "string"},
                                             promotions_startdate: {type: "date"},
                                             promotions_enddate: {type: "date"},
+                                            retailer: {type: "string"},
                                             brand: {type: "string"},
                                             promotions_budget: {type: "number"},
                                             promotions_projected_sales: {type: "number"},
@@ -67,9 +68,14 @@
                             columns: [
                                 {
                                     field: "id",
-                                    title: "Id",
-                                    filterable: false,
-                                    width: 50,
+                                    title: "ID",
+                                    sortable: true,
+                                    width: 55,
+                                },
+                                {
+                                    command: "destroy",
+                                    title: "&nbsp;",
+                                    width: 105,
                                 },
                                 {
                                     field: "promotions_name",
@@ -90,8 +96,16 @@
                                     format: "{0:MM/dd/yyyy}"
                                 },
                                 {
+                                    field: "retailer",
+                                    title: "Retailer"
+                                },
+                                {
                                     field: "brand",
                                     title: "Brand"
+                                },
+                                {
+                                    field: "status",
+                                    title: "Status"
                                 },
                                 {
                                     field: "promotions_budget",
@@ -106,26 +120,18 @@
                                     title: "Promotions expected lift"
                                 },
                                 {
-                                    field: "status",
-                                    title: "Status"
-                                },
-                                {
                                     title: "Items",
                                     width: 80,
                                     template: '<a href="' + appConst.base_url + '/admin/items?pid=#=id#&hsv=1"><i class="fa fa-database" aria-hidden="true"></i></a>'
                                 },
-                                        <?php if (isset($display_result_view_button) && $display_result_view_button): ?>
-                                    {
-                                    title: "Result",
-                                            template: '<a href="' + appConst.base_url + '/admin/results?pid=#=id#"><i class="fa fa-database" aria-hidden="true"></i></a>',
-                                            width: 60,
-                                    },
-<?php endif; ?>
+                                <?php if (isset($display_result_view_button) && $display_result_view_button): ?>
                                 {
-                                    command: "destroy",
-                                    title: "&nbsp;",
-                                    width: 105,
+                                    title: "Result",
+                                    template: '<a href="' + appConst.base_url + '/admin/results?pid=#=id#"><i class="fa fa-database" aria-hidden="true"></i></a>',
+                                    width: 60,
                                 },
+                                <?php endif; ?>
+                                
                             ]
                         }).data("kendoGrid");
                     });

@@ -140,7 +140,7 @@ class UsersController extends Controller {
         if (isset($input['username'], $input['password'])) {
 
             if (Auth::attempt(array('username' => $input['username'], 'password' => $input['password']))) {
-                return Redirect::to('admin/promotions/create');
+                return Redirect::to('admin/promotions');
             } else {
                 $message = "Invalid username or password.";
                 return View::make('admin.users.login', compact('message'));
@@ -148,7 +148,7 @@ class UsersController extends Controller {
         }
 
         if (Auth::check()) {
-            return Redirect::to('admin/promotions/create');
+            return Redirect::to('admin/promotions');
         } else {
             return View::make('admin.users.login');
         }
