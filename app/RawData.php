@@ -46,12 +46,12 @@ class RawData {
      */
     function process() {
 
-        Dot::iecho("Cron Name : Promotion analysis calculation");
-        Dot::iecho("Cron Start time " . date('Y-m-d H:i:s'));
+        Dot::iecho("Cron Name : Promotion analysis calculation------------------", true);
+        Dot::iecho("Cron Start time " . date('Y-m-d H:i:s'), true);
         Config::set('database.fetch', \PDO::FETCH_ASSOC);
         $this->mockup->promotion_chunk();
-        Dot::iecho("Cron end time " . date('Y-m-d H:i:s'));
-        Dot::iecho("------------------------------------------------------------");
+        Dot::iecho("Cron end time " . date('Y-m-d H:i:s'), true);
+        Dot::iecho("------------------------------------------------------------", true);
     }
 
     /**
@@ -60,23 +60,23 @@ class RawData {
      * Find items for category level and brand level
      */
     function find_items() {
-        Dot::iecho("Cron Name : Find items for category level and brand level");
-        Dot::iecho("Cron Start time " . date('Y-m-d H:i:s'));
+        Dot::iecho("Cron Name : Find items for category level and brand level---", true);
+        Dot::iecho("Cron Start time " . date('Y-m-d H:i:s'), true);
 
         $this->mockup->find_items();
-        Dot::iecho("Cron end time " . date('Y-m-d H:i:s'));
-        Dot::iecho("------------------------------------------------------------");
+        Dot::iecho("Cron end time " . date('Y-m-d H:i:s'), true);
+        Dot::iecho("------------------------------------------------------------", true);
     }
-    
+
     /**
      * 
      * Refresh items under category/Brand
      */
-    function refresh_items_under_category_brand() {
-        
+    function refresh_items_under_all_promotions() {
+
         Promotion::whereRaw("level_of_promotions ='Category' OR level_of_promotions ='Brand'")->orderBy('id')->chunk(100, function ($promotions) {
             foreach ($promotions as $promotion) {
-                if (!in_array($promotion->id, [3])) {
+                if (!in_array($promotion->id, [0])) {
                     Dot::iecho("Reseting items under promotion id: {$promotion->id}");
                     Item::where('promotions_id', $promotion->id)->delete();
                     $this->item->insert_items_under_promotion($promotion);
@@ -85,6 +85,22 @@ class RawData {
                 }
             }
         });
+    }
+
+    /**
+     * 
+     * Refresh items under promotion of $id
+     */
+    function refresh_items_under_promotion($id) {
+
+        $promotion = Promotion::find($id);
+        if (isset($promotion->id)) {
+            Dot::iecho("Reseting items under promotion id: {$promotion->id}");
+            Item::where('promotions_id', $promotion->id)->delete();
+            $this->item->insert_items_under_promotion($promotion);
+            $this->item->set_have_child_items($promotion);
+            Promotion::update_promotion_status($promotion->id, 'active');
+        }
     }
 
     /**
@@ -99,10 +115,11 @@ class RawData {
             $this->mockup->promo_specific($promotion);
         }
     }
+
     /**
      * 
      * Manually run a promotion with id
-     * @param int $id promotion id
+     * @param int $id item id
      */
     function run_item($id) {
         Config::set('database.fetch', \PDO::FETCH_ASSOC);
@@ -111,9 +128,23 @@ class RawData {
             $this->mockup->item_specific($item);
         }
     }
-
-    function set_active_all() {
+    
+    /**
+     * 
+     * Change promotion status
+     */
+    function set_status_processing_active() {
         Promotion::where('status', 'processing')
+                ->update(['status' => 'active']);
+    }
+
+    
+    /**
+     * 
+     * Change promotion status
+     */
+    function set_status_completed_active() {
+        Promotion::where('status', 'completed')
                 ->update(['status' => 'active']);
     }
 
