@@ -117,7 +117,7 @@
                                         {field: "asin", title: "ASIN", width: 120, sortable: true},
                                         {field: "promotions_startdate", title: "Start date", format: '{0:MM/dd/yyyy}', width: 100, sortable: true},
                                         {field: "promotions_enddate", title: "End date", format: '{0:MM/dd/yyyy}', width: 100, sortable: true},
-                                        {field: "promotions_budget", title: "Budget", width: 100, sortable: true},
+                                        {field: "promotions_budget", title: "Budgets", width: 100, sortable: true},
                                         {field: "promotions_projected_sales", title: "Projected sales", width: 100, sortable: true},
                                         {field: "promotions_expected_lift", title: "Expected lift", width: 120, sortable: true},
                                         {field: "funding_per_unit", title: "Funding per unit", width: 120, sortable: true},
