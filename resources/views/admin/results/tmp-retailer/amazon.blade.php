@@ -6,6 +6,9 @@
             <tr>
                 <th></th>
                 <th></th>
+                @if(env('APP_ENV') == 'local')
+                <th></th>
+                @endif
                 <th></th>
                 <th></th>
                 <th colspan="2">Baseline (daily)</th>
@@ -31,6 +34,9 @@
             <tr>
                 <th>Redshift data</th>
                 <th>Preparation table</th>
+                @if(env('APP_ENV') == 'local')
+                <th>Item Id</th>
+                @endif
                 <th>Material Id</th>
                 <th>ASIN</th>
                 <!-- Baseline (daily) -->
@@ -85,6 +91,8 @@
             <tr>
                 <td><a href="{{ $record->href_preperation_table }}"><i class="fa fa-database"></i></a></td>
                 <td><a href="{{ $record->href_week_preperation_table }}"><i class="fa fa-database"></i></a></td>
+                
+                <td>{{ $record->promo_child_id }}</td>
                 <td>{{ $record->material_id }}</td>
                 <td>{{ $record->asin }}</td>
 

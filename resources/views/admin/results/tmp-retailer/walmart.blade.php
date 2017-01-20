@@ -6,6 +6,9 @@
             <tr>
                 <th></th>
                 <th></th>
+                @if(env('APP_ENV') == 'local')
+                <th></th>
+                @endif
                 <th></th>
                 <th></th>
                 <th colspan="2">Baseline (daily)</th>
@@ -31,7 +34,9 @@
             <tr>
                 <th>Redshift data</th>
                 <th>Preparation table</th>
+                @if(env('APP_ENV') == 'local')
                 <th>Item Id</th>
+                @endif
                 <th>Material Id</th>
                 <th>ASIN</th>
                 
