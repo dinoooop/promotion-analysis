@@ -92,7 +92,9 @@
                 <td><a href="{{ $record->href_preperation_table }}"><i class="fa fa-database"></i></a></td>
                 <td><a href="{{ $record->href_week_preperation_table }}"><i class="fa fa-database"></i></a></td>
                 
+                @if(env('APP_ENV') == 'local')
                 <td>{{ $record->promo_child_id }}</td>
+                @endif
                 <td>{{ $record->material_id }}</td>
                 <td>{{ $record->asin }}</td>
 
