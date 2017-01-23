@@ -76,14 +76,23 @@ class Spod extends Model {
             $row['during_ordered_units'] = $this->sdcalc->get_column_val('ordered_units', 'date_day', $this->spinput->promotions_startdate);
         } else {
 
-            $row['during_ordered_amount'] = $this->sdcalc->get_avg_column_week('ordered_amount', $this->spinput->calendar_dates['during']['start_week'], $this->spinput->calendar_dates['during']['end_week']);
-            $row['during_ordered_units'] = $this->sdcalc->get_avg_column_week('ordered_units', $this->spinput->calendar_dates['during']['start_week'], $this->spinput->calendar_dates['during']['end_week']);
+            if ($this->spinput->is_amazon) {
+                $row['during_ordered_amount'] = $this->sdcalc->get_avg_column_week('ordered_amount', $this->spinput->calendar_dates['during']['start_week'], $this->spinput->calendar_dates['during']['end_week']);
+                $row['during_ordered_units'] = $this->sdcalc->get_avg_column_week('ordered_units', $this->spinput->calendar_dates['during']['start_week'], $this->spinput->calendar_dates['during']['end_week']);
+            } else {
+                $row['during_ordered_amount'] = $this->swcalc->get_avg_column('ordered_amount', $this->spinput->calendar_dates['during']['start_week'], $this->spinput->calendar_dates['during']['end_week']);
+                $row['during_ordered_units'] = $this->swcalc->get_avg_column('ordered_units', $this->spinput->calendar_dates['during']['start_week'], $this->spinput->calendar_dates['during']['end_week']);
+            }
         }
 
         // Post days
-        $row['post_ordered_amount'] = $this->sdcalc->get_avg_column_week('ordered_amount', $this->spinput->calendar_dates['post']['start_week'], $this->spinput->calendar_dates['post']['end_week']);
-        $row['post_ordered_units'] = $this->sdcalc->get_avg_column_week('ordered_units', $this->spinput->calendar_dates['post']['start_week'], $this->spinput->calendar_dates['post']['end_week']);
-
+        if ($this->spinput->is_amazon) {
+            $row['post_ordered_amount'] = $this->sdcalc->get_avg_column_week('ordered_amount', $this->spinput->calendar_dates['post']['start_week'], $this->spinput->calendar_dates['post']['end_week']);
+            $row['post_ordered_units'] = $this->sdcalc->get_avg_column_week('ordered_units', $this->spinput->calendar_dates['post']['start_week'], $this->spinput->calendar_dates['post']['end_week']);
+        } else {
+            $row['post_ordered_amount'] = $this->swcalc->get_avg_column('ordered_amount', $this->spinput->calendar_dates['post']['start_week'], $this->spinput->calendar_dates['post']['end_week']);
+            $row['post_ordered_units'] = $this->swcalc->get_avg_column('ordered_units', $this->spinput->calendar_dates['post']['start_week'], $this->spinput->calendar_dates['post']['end_week']);
+        }
 
         $row['no_of_promotion_days'] = $this->number_of_promotion_days;
         Dot::iecho("Inserting output for child item id {$this->spinput->promo_child_id}");
@@ -125,7 +134,5 @@ class Spod extends Model {
 
         Item::where('id', $this->spinput->promo_child_id)->update(['promoted' => $row['promoted']]);
     }
-
-    
 
 }

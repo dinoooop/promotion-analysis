@@ -40,7 +40,7 @@ class Spinput {
         $this->baseline_threshold = $settings['baseline_threshold'];
         $this->post_week_avail_week_count = $this->post_weeks + 1;
         $this->normalize_weeks_count = 13;
-
+        Dot::iecho("Settings {$this->baseline_weeks} {$this->post_weeks} {$this->baseline_threshold}", true);
         $this->promotions_id = $this->data['promotions_id'];
         $this->promo_child_id = $this->data['promo_child_id'];
         $this->retailer = $this->data['retailer'];

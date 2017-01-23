@@ -138,7 +138,7 @@ class Promotion extends Model {
      * @return type
      */
     public static function sanitize($input) {
-        
+
         $default = [
             'retailer' => 'Amazon',
             'retailer_country' => 'US',
@@ -262,19 +262,34 @@ class Promotion extends Model {
             $input->daily_baseline_ordered_amount = $input->baseline_ordered_amount;
             $input->daily_baseline_ordered_units = round($input->baseline_ordered_units);
 
-            // Baseline (wkly) 
+
+            // Baseline (wkly)
             $input->wkly_baseline_ordered_amount = $input->baseline_ordered_amount * 7;
             $input->wkly_baseline_ordered_units = round($input->baseline_ordered_units * 7);
 
 
 
-            // During (wkly)
-            $input->wkly_during_ordered_amount = $input->during_ordered_amount * 7;
-            $input->wkly_during_ordered_units = round($input->during_ordered_units * 7);
 
-            //Post (wkly)
-            $input->wkly_post_ordered_amount = $input->post_ordered_amount * 7;
-            $input->wkly_post_ordered_units = round($input->post_ordered_units * 7);
+            if (Dot::is_amazon($promotion)) {
+                // During (wkly)
+                $input->wkly_during_ordered_amount = $input->during_ordered_amount * 7;
+                $input->wkly_during_ordered_units = round($input->during_ordered_units * 7);
+
+                //Post (wkly)
+                $input->wkly_post_ordered_amount = $input->post_ordered_amount * 7;
+                $input->wkly_post_ordered_units = round($input->post_ordered_units * 7);
+            } else {
+                // During (wkly)
+                $input->wkly_during_ordered_amount = $input->during_ordered_amount;
+                $input->wkly_during_ordered_units = round($input->during_ordered_units);
+                
+                //Post (wkly)
+                $input->wkly_post_ordered_amount = $input->post_ordered_amount;
+                $input->wkly_post_ordered_units = round($input->post_ordered_units);
+            }
+
+
+
 
             //DURING_INCREMENTAL
             $input->wkly_during_incremental_ordered_amount = round($input->wkly_during_ordered_amount - $input->wkly_baseline_ordered_amount, 2);

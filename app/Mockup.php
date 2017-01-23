@@ -173,35 +173,30 @@ class Mockup {
     }
 
     function process($input) {
-
+        
         $this->spinput = new Spinput;
         $this->spinput->set_vars($input);
-
+        
         if (!$this->spinput->validate) {
             Dot::iecho("The given child item input is not valid");
             return false;
         }
-
-
-
-
+        
         // STATUS ==============================================================
         $process_status = "MID: {$this->spinput->material_id} ASIN: {$this->spinput->asin} ";
-
+        
         if (isset($this->items_count) && isset($this->total_items_count)) {
             Dot::iecho("Execution start for child item id {$this->spinput->promo_child_id}");
             $this->items_count = $this->items_count + 1;
             $process_status .= "Item: {$this->items_count}/{$this->total_items_count} IID: {$this->spinput->promo_child_id} ";
         }
-
+        
         if (isset($this->total_promotions_count)) {
             $process_status .= "Promotion: {$this->current_promotions_count}/{$this->total_promotions_count} PID: {$this->promotion->id} ";
         }
-
+        
         Dot::iecho($process_status, true);
-
-
-
+        
         $this->sdcalc = new Sdcalc;
         $this->swcalc = new Swcalc;
         $this->spod = new Spod;
