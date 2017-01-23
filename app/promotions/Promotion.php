@@ -209,6 +209,7 @@ class Promotion extends Model {
         $promotion = Promotion::find($input->promotions_id)->toArray();
         $settings = $merge->admin_settings($promotion);
         $post_weeks = $settings['post_weeks'];
+        $is_amazon = Dot::is_amazon($promotion);
 
 
         if ($promotion['promotions_startdate'] == $promotion['promotions_enddate']) {
@@ -227,9 +228,13 @@ class Promotion extends Model {
             $input->daily_during_ordered_units = $input->during_ordered_units;
 
             //Post (wkly)
-            $input->wkly_post_ordered_amount = $input->post_ordered_amount * 7;
-            $input->wkly_post_ordered_units = round($input->post_ordered_units * 7);
-
+            if ($is_amazon) {
+                $input->wkly_post_ordered_amount = $input->post_ordered_amount * 7;
+                $input->wkly_post_ordered_units = round($input->post_ordered_units * 7);
+            } else {
+                $input->wkly_post_ordered_amount = $input->post_ordered_amount;
+                $input->wkly_post_ordered_units = round($input->post_ordered_units);
+            }
             //DURING_INCREMENTAL
             $input->daily_during_incremental_ordered_amount = $input->daily_during_ordered_amount - $input->daily_baseline_ordered_amount;
             $input->daily_during_incremental_ordered_units = $input->daily_during_ordered_units - $input->daily_baseline_ordered_units;
@@ -262,15 +267,12 @@ class Promotion extends Model {
             $input->daily_baseline_ordered_amount = $input->baseline_ordered_amount;
             $input->daily_baseline_ordered_units = round($input->baseline_ordered_units);
 
-
             // Baseline (wkly)
             $input->wkly_baseline_ordered_amount = $input->baseline_ordered_amount * 7;
             $input->wkly_baseline_ordered_units = round($input->baseline_ordered_units * 7);
 
+            if ($is_amazon) {
 
-
-
-            if (Dot::is_amazon($promotion)) {
                 // During (wkly)
                 $input->wkly_during_ordered_amount = $input->during_ordered_amount * 7;
                 $input->wkly_during_ordered_units = round($input->during_ordered_units * 7);
@@ -282,13 +284,11 @@ class Promotion extends Model {
                 // During (wkly)
                 $input->wkly_during_ordered_amount = $input->during_ordered_amount;
                 $input->wkly_during_ordered_units = round($input->during_ordered_units);
-                
+
                 //Post (wkly)
                 $input->wkly_post_ordered_amount = $input->post_ordered_amount;
                 $input->wkly_post_ordered_units = round($input->post_ordered_units);
             }
-
-
 
 
             //DURING_INCREMENTAL

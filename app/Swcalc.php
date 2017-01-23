@@ -189,7 +189,7 @@ class Swcalc extends Model {
         
         switch ($find) {
             case 'normalized_ordered_amount':
-                if ($input['ordered_amount'] > ($this->spinput->baseline_threshold * $input['quarter_ordered_amount'])) {
+                if (abs($input['ordered_amount']) > abs($this->spinput->baseline_threshold * $input['quarter_ordered_amount'])) {
                     return $input['quarter_ordered_amount'];
                 } else {
                     return $input['ordered_amount'];
@@ -197,7 +197,7 @@ class Swcalc extends Model {
                 break;
                 
             case 'normalized_ordered_units':
-                if ($input['ordered_units'] > ($this->spinput->baseline_threshold * $input['quarter_ordered_units'])) {
+                if (abs($input['ordered_units']) > abs($this->spinput->baseline_threshold * $input['quarter_ordered_units'])) {
                     return $input['quarter_ordered_units'];
                 } else {
                     return $input['ordered_units'];
