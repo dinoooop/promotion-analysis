@@ -42,17 +42,15 @@ class ResultsController extends Controller {
 
         $data = [];
         $input = Input::get();
+        $data['kendo_url'] = route('kendo_results', $input);
 
-        $query = Spod::orderBy('id', 'asc');
         if (isset($input['pid'])) {
             $data['promotion'] = Promotion::findOrFail($input['pid']);
             $data['is_single_day'] = $data['promotion']['promotions_startdate'] == $data['promotion']['promotions_enddate'];
-            $query->where('promotions_id', $input['pid']);
         } else {
             return Dot::R404();
         }
 
-        $data['records'] = $query->paginate(50);
         return View::make('admin.results.index', $data);
     }
 
@@ -66,7 +64,7 @@ class ResultsController extends Controller {
         } else {
             return Dot::R404();
         }
-        
+
         if ($input['type'] == 'day') {
             $data['heading'] = "Redshift Data";
             //preparation-day-walmart
@@ -75,13 +73,13 @@ class ResultsController extends Controller {
         } else {
             return Dot::R404();
         }
-        
+
         if (Dot::is_amazon($data['promotion'])) {
             $retailer = 'amazon';
         } else {
             $retailer = 'walmart';
         }
-        
+
         $data['template'] = "admin/results/tmp-retailer/preparation-{$input['type']}-{$retailer}";
 
         $data['kendo_url'] = route('kendo_preparation_table', $input);
@@ -104,6 +102,28 @@ class ResultsController extends Controller {
             $records = $query->get()->toArray();
         }
         return response()->json($records);
+    }
+
+    function kendo_results() {
+
+        $input = Input::get();
+        $records = [];
+        
+        
+        
+
+        if (isset($input['pid'])) {
+            $query = Spod::orderBy('id', 'asc');
+            $query->where('promotions_id', $input['pid']);
+            $records = $query->get();
+            
+            foreach ($records as $record){
+                $record = Promotion::display_prepare_output($record);
+            }
+        }
+
+        return response()->json($records);
+        
     }
 
 }
