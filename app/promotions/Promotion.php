@@ -11,7 +11,8 @@ use App\Calendar;
 use App\Temp;
 use App\Stock;
 use App\Spinput;
-
+use App\AppForms;
+use App\Gform;
 class Promotion extends Model {
 
     protected $table = 'promotions.promotions_master_input';
@@ -349,6 +350,37 @@ class Promotion extends Model {
 
     function csv_validate_file($records) {
         return $this->csv === $records;
+    }
+
+    public static function grid_fields() {
+        $column = [
+            'id',
+            'promotions_name',
+            'promotions_startdate',
+            'promotions_enddate',
+            'retailer',
+            'brand',
+            'promotions_budget',
+            'promotions_projected_sales',
+            'promotions_expected_lift',
+            'promotions_budget_type',
+            'status'
+        ];
+
+        $gform = new Gform();
+        $form = $gform->set_form(AppForms::form_promotion());
+        
+        $return = [];
+        foreach ($form['fields'] as $key => $value) {
+            if(in_array($key, $column)){
+                $return[] = [
+                    'field' => $value['name'],
+                    'title' => $value['label'],
+                ];
+            }
+        }
+        
+        return json_encode($return);
     }
 
 }
