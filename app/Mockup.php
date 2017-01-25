@@ -131,6 +131,7 @@ class Mockup {
             'promotions_status' => $this->promotion['promotions_status'],
             'promotions_type' => $this->promotion['promotions_type'],
             'retailer' => $this->promotion['retailer'],
+            'retail_ecommerce' => $this->promotion['retail_ecommerce'],
             'retailer_country' => $this->promotion['retailer_country'],
             'retailer_country_id' => $this->promotion['retailer_country_id'],
             'status' => $this->promotion['status'],
