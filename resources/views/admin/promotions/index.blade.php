@@ -29,9 +29,9 @@
                     var _dataSource = new kendo.data.DataSource({
                     transport: {
                     read: {
-                    url: "<?php echo $kendo_url; ?>",
-                            dataType: 'json',
-                            cache: false
+                        url: "<?php echo $kendo_url; ?>",
+                        dataType: 'json',
+                        cache: false
                     },
                             destroy: {
                             url: function (options) {
@@ -62,12 +62,12 @@
                             pageSize: 20,
                     });
                     var grid = $("#grid").kendoGrid({
-                    dataSource: _dataSource,
+                            dataSource: _dataSource,
                             filterable: { extra: false },
                             height: 650,
                             sortable: true,
                             pageable: true,
-                            editable: true,
+                            editable: 'inline',
                             columns: [
                             {
                                     field: "id",

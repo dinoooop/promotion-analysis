@@ -30,16 +30,9 @@ $(function () {
         e.preventDefault();
 
         var $row = $(this);
-
-        swal({
-            title: "Are you sure?",
-            text: "You can not undo this action!",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Yes, delete it!",
-            closeOnConfirm: false
-        }, function () {
+        
+        var r = confirm("Are you sure you want to delete this record?");
+        if(r){
             var url = $row.attr("href");
             $row.parents("tr").remove();
             $.ajax({
@@ -47,11 +40,12 @@ $(function () {
                 type: 'DELETE',
                 data: {_token: appConst.token},
                 success: function (result) {
-                    swal("Deleted!", "That record has been deleted successfully!!!", "success");
+                    
                 }
             });
+        }
 
-        });
+
     });
 
     /**
@@ -244,7 +238,7 @@ $(function () {
         $(".k-grid-save-changes").trigger("click");
 
         if (gridDataArray.length == 0) {
-            swal("Oops!", "Please add items under this promotion!!!", "error");
+            alert("Please add items under this promotion.");
             e.preventDefault();
         }
 
@@ -252,7 +246,7 @@ $(function () {
 
             if (value.material_id == '' || value.material_id == null) {
                 if (value.asin == '' || value.asin == null) {
-                    swal("Oops!", "Please add items under this promotion!!!", "error");
+                    alert("Please add items under this promotion.");
                     e.preventDefault();
                 }
             }
