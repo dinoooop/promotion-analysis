@@ -52,6 +52,11 @@ class PromotionsController extends Controller {
             $data['page_heading'] = 'Promotion Overview';
             $data['kendo_url'] = url('kendo/promotions');
         }
+        
+        $form = $this->gform->set_form(AppForms::show_hide_column());
+        $form['hide_submit_button'] = true;
+        $data['form_show_hide_column'] = $this->formHtmlJq->create_form($form);
+        
         return View::make('admin.promotions.index', $data);
     }
 

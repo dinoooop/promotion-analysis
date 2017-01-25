@@ -144,5 +144,53 @@ class Temp {
         ob_end_clean();
         return $html;
     }
+    
+    public static function get_form_columns() {
+        
+    }
+    
+    public static function lightbox($data = array()) {
+
+        $default = array(
+            'id' => 'lightbox_sample',
+            'heading' => 'ACTION',
+            'submit' => 'OK',
+            'body' => '<h3>Sample</h3>',
+        );
+
+        $data = array_merge($default, $data);
+
+        ob_start();
+        ?>
+        <!-- <a href="#" class="bten" data-toggle="modal" data-target="#lightbox_sample">Sample Lightbox</a> -->
+        <div id="<?php echo $data['id']; ?>" class="modal fade" tabindex="-1" role="dialog">
+            <form action="" method="post" id="<?php echo $data['form_id']; ?>">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title text-left"><?php echo $data['heading']; ?></h4>
+                        </div>
+                        <div class="modal-body">
+                            <?php echo $data['body']; ?>
+                            
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary pull-right lb-ok-button" data-dismiss="modal"><i class="fa fa-pencil-square-o"></i> <?php echo $data['submit']; ?></button>
+                            <button type="button" class="btn btn-default pull-left lb-cancel-button" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <?php
+        $contents = ob_get_contents();
+        ob_end_clean();
+
+        return $contents;
+    }
 
 }

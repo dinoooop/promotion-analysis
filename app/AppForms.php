@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Gform;
+
 class AppForms {
 
     public static function get_form($form_name, $param = null) {
@@ -156,6 +158,13 @@ class AppForms {
                 ),
                 array(
                     'type' => 'number',
+                    'name' => 'promotions_budget',
+                    'label' => 'Promotions Budget($)',
+                    'step' => '0.01',
+                    'placeholder' => '$',
+                ),
+                array(
+                    'type' => 'number',
                     'name' => 'promotions_projected_sales',
                     'label' => 'Promotions Projected Sales ($)',
                     'step' => '0.01',
@@ -201,7 +210,6 @@ class AppForms {
 //                            'name' => 'product_line',
 //                            'label' => 'Product Line',
 //                        ),
-                
                 array(
                     'type' => 'boolean_checkbox',
                     'name' => 'annivarsaried',
@@ -472,6 +480,46 @@ class AppForms {
                 ),
             ),
         );
+    }
+
+    public static function show_hide_column() {
+        
+        $column = [
+            'promotions_startdate',
+            'promotions_enddate',
+            'retailer',
+            'brand',
+            'status',
+            'promotions_budget',
+            'promotions_projected_sales',
+            'promotions_expected_lift',
+        ];
+        
+        $gform = new Gform();
+        $form_promotion = $gform->set_form(AppForms::form_promotion());
+        
+        $options = [];
+        foreach ($form_promotion['fields'] as $key => $value) {
+            if (in_array($key, $column)) {
+                $options[$value['name']] = $value['label'];
+            }
+        }
+
+        $form = [
+            'form_name' => 'show_hide_column',
+            'fields' => [
+                [
+                    'type' => 'checkbox',
+                    'name' => 'show_hide_column',
+                    'label' => 'Show columns',
+                    'options' => $options,
+                    'vertical' => true,
+                    'col' => 12,
+                ]
+            ],
+        ];
+
+        return $form;
     }
 
 }

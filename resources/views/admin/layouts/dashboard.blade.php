@@ -45,6 +45,7 @@
         <link rel="stylesheet" href="{{ asset('assets/kendoui/styles/kendo.default.mobile.min.css') }}" />
 
         <script src="{{ asset('assets/kendoui/js/kendo.all.min.js') }}"></script>
+        <script src="{{ asset('assets/kendoui/js/jszip.min.js') }}"></script>
         <!-- Kento UI END -->
 
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->

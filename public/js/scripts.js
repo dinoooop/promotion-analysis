@@ -19,6 +19,8 @@ $(function () {
         }
     });
 
+    
+
 
     /**
      * 
@@ -30,9 +32,9 @@ $(function () {
         e.preventDefault();
 
         var $row = $(this);
-        
+
         var r = confirm("Are you sure you want to delete this record?");
-        if(r){
+        if (r) {
             var url = $row.attr("href");
             $row.parents("tr").remove();
             $.ajax({
@@ -40,7 +42,7 @@ $(function () {
                 type: 'DELETE',
                 data: {_token: appConst.token},
                 success: function (result) {
-                    
+
                 }
             });
         }
@@ -232,9 +234,9 @@ $(function () {
 
     $(".prepare-promotions-results").click(function (e) {
 
-        
+
         var gridDataArray = $('#grid').data('kendoGrid')._data;
-        
+
         $(".k-grid-save-changes").trigger("click");
 
         if (gridDataArray.length == 0) {

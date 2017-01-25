@@ -169,6 +169,28 @@ class FormHtmlJq {
                 break;
 
 
+            case 'checkbox':
+                ?>
+                <?php echo $col; ?>
+                <div class="form-group">
+                    <label class="control-label"><?php echo $label; ?></label>
+                    <div class="checkbox">
+                        <?php foreach ($options as $key => $option_value): ?>
+                        <?php $checked = (in_array($key, $value)) ? true : false; ?>
+                        <label>
+                            <input type="checkbox" value="<?php echo $key; ?>" name="<?php echo $name .'[]'; ?>" <?php echo $checked; ?>> <?php echo $option_value; ?>
+                        </label>
+                        <?php if(isset($vertical) && $vertical): ?>
+                            <br />
+                        <?php endif; ?>
+                        <?php endforeach ?>
+                    </div>
+                </div>
+                <?php
+                echo '</div>';
+                break;
+
+
 
             case 'hidden':
                 ?><input type="hidden" id="<?php echo $id ?>" name="<?php echo $name; ?>" value="<?php echo $value; ?>"><?php
@@ -198,7 +220,7 @@ class FormHtmlJq {
             case 'file':
 
                 $placeholder = ($placeholder != '') ? $placeholder : 'Upload';
-                
+
                 echo Temp::upload_file($field);
                 ?>
                 <?php echo $col; ?>
