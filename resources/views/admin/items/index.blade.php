@@ -42,6 +42,7 @@
                     <div class="col-sm-12">
                         
                         <div id="grid"></div>
+                        <div id="pager"></div>
 
                         <script>
                             $(document).ready(function () {
@@ -103,7 +104,7 @@
                                 $("#grid").kendoGrid({
                                     dataSource: dataSource,
                                     navigatable: true,
-                                    pageable: true,
+                                    pageable: false,
                                     height: 550,
                                     sortable: true,
                                     filterable: true,
@@ -125,6 +126,11 @@
                                         {field: "forecasted_unit_sales", title: "Forecasted unit sales", width: 120, sortable: true},
                                     ],
                                     editable: true,
+                                });
+                                
+                                $("#pager").kendoPager({
+                                    dataSource: dataSource,
+                                    pageSizes: [10,20,50,100]
                                 });
                             });
                         </script>

@@ -5,33 +5,18 @@
 <script>
     $(document).ready(function () {
 
-
-    var grid = $("#grid").kendoGrid({
-    toolbar: ["excel"],
-            excel: {
-            fileName: "promotion-analysis-result.xlsx",
-                    filterable: true
-            },
-            dataSource: {
-            transport: {
-            read: {
-            url: "<?php echo $kendo_url; ?>",
-                    dataType: 'json',
-                    cache: false
-            },
-                    destroy: {
-                    url: function (options) {
-                    return appConst.base_url + "/admin/promotions/" + options.id
+    var _dataSource = {
+                transport: {
+                    read: {
+                        url: "<?php echo $kendo_url; ?>",
+                        dataType: 'json',
+                        cache: false
                     },
-                            data: {_token: appConst.token},
-                            dataType: 'json',
-                            type: 'DELETE',
-                    },
-            },
-                    schema: {
+                },
+                schema: {
                     model: {
-                    fields: {
-                    daily_baseline_ordered_amount: { type: "number" },
+                        fields: {
+                            daily_baseline_ordered_amount: { type: "number" },
                             daily_baseline_ordered_units: { type: "number" },
                             wkly_baseline_ordered_amount: { type: "number" },
                             wkly_baseline_ordered_units: { type: "number" },
@@ -56,15 +41,23 @@
                             post_lift_ordered_amount: { type: "number" },
                             post_lift_ordered_units: { type: "number" },
                             no_of_promotion_days: { type: "number" },
+                        }
                     }
-                    }
-                    },
-                    pageSize: 20,
+                },
+                pageSize: 20,
+            };
+            
+        var grid = $("#grid").kendoGrid({
+            toolbar: ["excel"],
+            excel: {
+                fileName: "promotion-analysis-result.xlsx",
+                filterable: true
             },
+            dataSource: _dataSource,
             height: 650,
             filterable: true,
             sortable: true,
-            pageable: true,
+            pageable: false,
             editable: "inline",
             columns: [
             {
@@ -282,5 +275,6 @@
             },
             ]
     }).data("kendoGrid");
+        $("#pager").kendoPager({ dataSource: _dataSource, pageSizes: [10,20,50,100] });
     });
 </script>

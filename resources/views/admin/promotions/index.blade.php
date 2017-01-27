@@ -32,6 +32,7 @@ echo App\Temp::lightbox([
                 <div class="row">
                     <div class="col-md-12">
                         <div id="grid"></div>
+                        <div id="pager"></div>
                     </div>
                 </div>
 
@@ -71,7 +72,7 @@ echo App\Temp::lightbox([
                                     }
                                 }
                             },
-                            pageSize: 20,
+                            pageSize: 10,
                         });
 
 
@@ -85,7 +86,7 @@ echo App\Temp::lightbox([
                             filterable: {extra: false},
                             height: 650,
                             sortable: true,
-                            pageable: true,
+                            pageable: false,
                             editable: 'inline',
                             columns: [
                                 {
@@ -158,6 +159,12 @@ echo App\Temp::lightbox([
 
                             ]
                         }).data("kendoGrid");
+                        
+                        
+                        $("#pager").kendoPager({
+                            dataSource: _dataSource,
+                            pageSizes: [10,20,50,100]
+                          });
 
                         grid.bind("filterMenuInit", function (e) {
                             if (e.field == 'status') {
