@@ -511,7 +511,7 @@ class AppForms {
                 [
                     'type' => 'checkbox',
                     'name' => 'show_hide_column',
-                    'label' => 'Show columns',
+                    'label' => 'Hide columns',
                     'options' => $options,
                     'vertical' => true,
                     'col' => 12,
