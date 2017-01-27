@@ -189,7 +189,7 @@ class AppForms {
                     'label' => 'Brand',
                 ),
                 array(
-                    'type' => 'auto_complete',
+                    'type' => 'text',
                     'name' => 'division',
                     'label' => 'Division',
                 ),

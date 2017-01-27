@@ -19,7 +19,7 @@ $(function () {
         }
     });
 
-    
+
 
 
     /**
@@ -179,6 +179,38 @@ $(function () {
         },
         minLength: 2,
     });
+
+    $(".auto-complete").blur(function () {
+        var $this = $(this);
+        var val = $this.val();
+        if (val != '') {
+            $.ajax({
+                url: appConst.url_ajax,
+                dataType: "json",
+                data: {
+                    value: val,
+                    col: auto_complete_col,
+                    action: 'validate_auto_complete',
+                },
+                success: function (data) {
+                    if (data.status && data.result.length > 0) {
+                        $this.cu_error_switch(false);
+                        $this.toggle_disable_submit(false);
+                    } else {
+                        $this.cu_error_switch(true, "The given input is not valid");
+                        $this.toggle_disable_submit(true);
+                    }
+                }
+            });
+        } else {
+            $this.cu_error_switch(false);
+            $this.toggle_disable_submit(false);
+        }
+    });
+
+
+
+
 
     /**
      * 

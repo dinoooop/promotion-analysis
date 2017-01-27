@@ -46,6 +46,9 @@ class AjaxController extends Controller {
             case 'auto_complete':
                 $this->auto_complete($input);
                 break;
+            case 'validate_auto_complete':
+                $this->validate_auto_complete($input);
+                break;
 
             case 'auto_complete_tag':
                 $this->auto_complete_tag($input);
@@ -78,7 +81,18 @@ class AjaxController extends Controller {
     }
 
     function auto_complete($input) {
-        $result = Pgquery::get_distinct_column_values($input['col'], $input['term']);
+        if (isset($input['term']) && $input['term'] != '') {
+            $result = Pgquery::get_distinct_column_values($input['col'], $input['term']);
+        } else {
+            $result = Pgquery::get_distinct_column_values($input['col']);
+        }
+        echo Dot::json_boolean_response($result);
+    }
+    function validate_auto_complete($input) {
+        $result = [];
+        if(isset($input['value'])){
+            $result = Pgquery::get_distinct_column_values($input['col'], null, $input['value']);
+        }
         echo Dot::json_boolean_response($result);
     }
 

@@ -61,6 +61,14 @@ $.fn.extend({
         }
 
     },
+    toggle_disable_submit: function (error) {
+        var $submit = $(this).parents("form").find("[type='submit']");
+        if (error){
+            $submit.prop("disabled", true);
+        }else{
+            $submit.prop("disabled", false);
+        }
+    },
     cu_require: function () {
 
         // Return error status

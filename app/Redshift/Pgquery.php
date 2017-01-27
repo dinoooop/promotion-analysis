@@ -9,47 +9,73 @@ use App\Dot;
 
 class Pgquery {
 
-    public static function get_distinct_column_values($column, $term = null) {
+    public static function get_distinct_column_values($column, $term = null, $value = null) {
 
-        if (is_null($term)) {
+        if (is_null($term) && !in_array($column, ['retailer', 'brand', 'category', 'division'])) {
             return false;
         }
 
         switch ($column) {
             case 'retailer':
-                return DB::connection('redshift')
-                                ->table('nwl_pos.dim_retailer_channel')
-                                ->where('retailer', 'ilike', '%' . $term . '%')
-                                ->distinct()
-                                ->limit(5)
-                                ->pluck('retailer');
+                $query = DB::connection('redshift')->table('nwl_pos.dim_retailer_channel');
+                if (!is_null($term)) {
+                    $query->where('retailer', 'ilike', '%' . $term . '%');
+                    $query->limit(5);
+                }
+
+                if (!is_null($value)) {
+                    $query->where('retailer', $value);
+                }
+
+                $query->distinct('retailer');
+
+                return $query->pluck('retailer');
                 break;
             case 'brand':
-                return DB::connection('redshift')
-                                ->table('nwl_pos.dim_material')
-                                ->where('brand', 'ilike', '%' . $term . '%')
-                                ->distinct()
-                                ->limit(5)
-                                ->pluck('brand');
+                $query = DB::connection('redshift')->table('nwl_pos.dim_material');
+                if (!is_null($term)) {
+                    $query->where('brand', 'ilike', '%' . $term . '%');
+                    $query->limit(5);
+                }
+
+                if (!is_null($value)) {
+                    $query->where('brand', $value);
+                }
+
+                $query->distinct('brand');
+                return $query->pluck('brand');
                 break;
 
             case 'category':
-                return DB::connection('redshift')
-                                ->table('nwl_pos.dim_material')
-                                ->where('business_team', 'ilike', '%' . $term . '%')
-                                ->distinct()
-                                ->limit(5)
-                                ->pluck('business_team');
+                $query = DB::connection('redshift')->table('nwl_pos.dim_material');
+                if (!is_null($term)) {
+                    $query->where('business_team', 'ilike', '%' . $term . '%');
+                    $query->limit(5);
+                }
+
+                if (!is_null($value)) {
+                    $query->where('business_team', $value);
+                }
+
+                $query->distinct('business_team');
+                return $query->pluck('business_team');
                 break;
 
             case 'division':
-                return DB::connection('redshift')
-                                ->table('nwl_pos.dim_material')
-                                ->where('division', 'ilike', '%' . $term . '%')
-                                ->distinct()
-                                ->limit(5)
-                                ->pluck('division');
+                $query = DB::connection('redshift')->table('nwl_pos.dim_material');
+                if (!is_null($term)) {
+                    $query->where('division', 'ilike', '%' . $term . '%');
+                    $query->limit(5);
+                }
+
+                if (!is_null($value)) {
+                    $query->where('division', $value);
+                }
+
+                $query->distinct('division');
+                return $query->pluck('division');
                 break;
+
             case 'material_id':
                 return DB::connection('redshift')
                                 ->table('nwl_pos.dim_material')
@@ -117,7 +143,7 @@ class Pgquery {
             $query->join('nwl_pos.dim_retailer_channel as rc', 'm.retailer_country_id', '=', 'rc.retailer_country_id');
             $query->where('rc.retailer', $retailer);
         }
-        
+
         $query->where('m.brand', $brand);
         $query->distinct('m.material_id');
         return $query->get();
@@ -209,7 +235,7 @@ class Pgquery {
         // Store/Ecommerce
         $where_store = "(rc.retail_ecommerce ilike '%store%' or rc.retail_ecommerce ilike '%retail%')";
         $where_ecommerce = "(rc.retail_ecommerce ilike '%e-commerce%' or rc.retail_ecommerce ilike '%ecommerce%')";
-        
+
         if ($promotion->retail_ecommerce == 'store') {
             Dot::iecho("For Stire/Retailers");
             $query->whereRaw($where_store);
