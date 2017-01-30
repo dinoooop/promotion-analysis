@@ -4,18 +4,43 @@ $(function () {
      * 
      * When submit a normal form
      */
-
     $("form.normal_form").submit(function (e) {
         var $form = $(this);
         var error = $form.cu_validate_form();
 
-        if (error) {
-
-            $form.fieldMsgError('Error: There are errors in your form.');
+        if (error || appConst.formErrorOnBlur.length > 0) {
+            alert("Error: There are errors in your form");
             e.preventDefault();
-
         } else {
             $form.fieldMsgError('');
+        }
+    });
+
+
+
+    /**
+     * 
+     * 
+     * Field validation on blur
+     */
+    $(".onblur").blur(function () {
+        var $this = $(this);
+        var value = $this.val();
+        var name = $this.attr("name");
+
+        var required_fileds = ["promotions_name", "retailer"];
+        var fileds_validate_auto_complete = ["retailer", "brand"];
+
+        // Required field validation
+        if (required_fileds.indexOf(name) != -1) {
+            var error = $this.cu_require();
+            $this.cu_error_switch(error);
+            $this.set_formErrorOnBlur(error);
+        }
+
+        // Autocomplete validation
+        if (fileds_validate_auto_complete.indexOf(name) != -1) {
+            $(this).validate_auto_complete();
         }
     });
 
@@ -117,7 +142,6 @@ $(function () {
      * auto_populate
      * Auto populate item fields
      */
-
     $("#pv_form_item_material_id").blur(function () {
         var $field = $(this);
         var msg = 'Please wait... this form may auto-populate with the given material id.';
@@ -159,11 +183,15 @@ $(function () {
      * Form input field like retailer 
      */
     var auto_complete_col = '';
+    var $auto_complete_field = '';
     $(".auto-complete").focus(function () {
-        auto_complete_col = $(this).data('coll');
+        $auto_complete_field = $(this);
+        auto_complete_col = $auto_complete_field.data('coll');
+        $auto_complete_field.toggle_disable_submit(true);
     });
     $(".auto-complete").autocomplete({
         source: function (request, response) {
+
             $.ajax({
                 url: appConst.url_ajax,
                 dataType: "json",
@@ -173,44 +201,14 @@ $(function () {
                     action: 'auto_complete',
                 },
                 success: function (data) {
+                    $auto_complete_field.toggle_disable_submit(false);
                     response(data.result);
+
                 }
             });
         },
         minLength: 2,
     });
-
-    $(".auto-complete").blur(function () {
-        var $this = $(this);
-        var val = $this.val();
-        if (val != '') {
-            $.ajax({
-                url: appConst.url_ajax,
-                dataType: "json",
-                data: {
-                    value: val,
-                    col: auto_complete_col,
-                    action: 'validate_auto_complete',
-                },
-                success: function (data) {
-                    if (data.status && data.result.length > 0) {
-                        $this.cu_error_switch(false);
-                        $this.toggle_disable_submit(false);
-                    } else {
-                        $this.cu_error_switch(true, "The given input is not valid");
-                        $this.toggle_disable_submit(true);
-                    }
-                }
-            });
-        } else {
-            $this.cu_error_switch(false);
-            $this.toggle_disable_submit(false);
-        }
-    });
-
-
-
-
 
     /**
      * 
@@ -243,20 +241,6 @@ $(function () {
             var years = moment().diff(start, 'years');
         });
     });
-
-
-//    $("name=['level_of_promotions']").change(function () {
-//        var $this = $(this);
-//        var val = $this.val();
-//        var data = {
-//            action: 'change_level_of_promotions',
-//            val: val,
-//        };
-//        
-//        $.get(appConst.url_ajax, data, function (html) {
-//            $this.after(html);
-//        }, 'html');
-//    });
 
     /**
      * 

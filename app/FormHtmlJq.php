@@ -38,21 +38,16 @@ class FormHtmlJq {
         $col = (!isset($col) || $col == 6) ? '<div class="col-sm-6 col-md-6">' : '<div class="col-sm-' . $col . '">';
 
         switch ($type):
-
-
             case 'email':
             case 'password':
             case 'phone':
             case 'text':
             case 'number':
             case 'url':
-
-
-
                 //For number
                 $step = (isset($step) && $step != '') ? ' step="' . $step . '" ' : '';
+                $onblur = (isset($onblur) && $onblur) ? ' onblur ' : '';
                 ?>
-
                 <?php echo $col; ?>
                 <div class="form-group">
 
@@ -61,14 +56,12 @@ class FormHtmlJq {
                         id="<?php echo $id ?>"
                         type="<?php echo $type; ?>" 
                         name="<?php echo $name; ?>" 
-                        class="form-control"
+                        class="form-control <?php echo $onblur; ?>"
                         value="<?php echo $value; ?>"
                         placeholder="<?php echo $placeholder ?>"
                         <?php echo $step; ?>>
+                    <p class="help-block animated fadeInDown"><?php echo $description; ?></p>
 
-                    <?php if ($description != ''): ?>
-                        <p class="help-description"><?php echo $description; ?></p>
-                    <?php endif; ?>
                 </div>
                 <?php echo '</div>'; ?>
 
@@ -88,10 +81,9 @@ class FormHtmlJq {
                         name="<?php echo $name; ?>" 
                         class="form-control" 
                         placeholder="<?php echo $placeholder ?>"><?php echo $value; ?></textarea>
+                    <p class="help-block animated fadeInDown"><?php echo $description; ?></p>
                 </div>
-                <?php if ($description != ''): ?>
-                    <p class="help-description"><?php echo $description; ?></p>
-                <?php endif; ?>
+
                 <?php echo '</div>'; ?>
 
                 <?php
@@ -119,16 +111,13 @@ class FormHtmlJq {
                             </option>
                         <?php endforeach; ?>
                     </select>
-                    <?php if ($description != ''): ?><p class="help-description"><?php echo $description; ?></p><?php endif; ?>
+                    <p class="help-block animated fadeInDown"><?php echo $description; ?></p>
                 </div>
                 <?php echo '</div>'; ?>
                 <?php
                 break;
 
             case 'select-multiple':
-
-
-                $description = (isset($description) && $description != '') ? $description : '';
                 ?>
                 <?php echo $col; ?>
                 <div class="form-group">
@@ -145,7 +134,7 @@ class FormHtmlJq {
                             </option>
                         <?php endforeach; ?>
                     </select>
-                    <?php if ($description != ''): ?><p class="help-description"><?php echo $description; ?></p><?php endif; ?>
+                    <p class="help-block animated fadeInDown"><?php echo $description; ?></p>
                 </div>
                 <?php echo '</div>'; ?>
                 <?php
@@ -161,6 +150,7 @@ class FormHtmlJq {
 
                         <label>
                             <input type="checkbox"  value="1" name="<?php echo $name; ?>" <?php echo $checked; ?>> <?php echo $label_checkbox ?>
+                            <p class="help-block animated fadeInDown"><?php echo $description; ?></p>
                         </label>
                     </div>
                 </div>
@@ -176,13 +166,14 @@ class FormHtmlJq {
                     <label class="control-label"><?php echo $label; ?></label>
                     <div class="checkbox">
                         <?php foreach ($options as $key => $option_value): ?>
-                        <?php $checked = (in_array($key, $value)) ? true : false; ?>
-                        <label>
-                            <input type="checkbox" value="<?php echo $key; ?>" name="<?php echo $name .'[]'; ?>" <?php echo $checked; ?>> <?php echo $option_value; ?>
-                        </label>
-                        <?php if(isset($vertical) && $vertical): ?>
-                            <br />
-                        <?php endif; ?>
+                            <?php $checked = (in_array($key, $value)) ? true : false; ?>
+                            <label>
+                                <input type="checkbox" value="<?php echo $key; ?>" name="<?php echo $name . '[]'; ?>" <?php echo $checked; ?>> <?php echo $option_value; ?>
+                            </label>
+                            <?php if (isset($vertical) && $vertical): ?>
+                                <br />
+                            <?php endif; ?>
+                            <p class="help-block animated fadeInDown"><?php echo $description; ?></p>
                         <?php endforeach ?>
                     </div>
                 </div>
@@ -242,8 +233,6 @@ class FormHtmlJq {
                 <?php
                 break;
 
-
-
             case 'clearfix':
                 echo '<div class="clearfix"></div>';
                 break;
@@ -254,8 +243,8 @@ class FormHtmlJq {
                 <?php echo $col; ?>
                 <div class="form-group">
                     <label><?php echo $label; ?></label>
-                    <p class="help-description"><?php echo $description; ?></p>
                     <input type="text" name="<?php echo $name; ?>" class="form-control" value="<?php echo $value; ?>" />
+                    <p class="help-block animated fadeInDown"><?php echo $description; ?></p>
                 </div>
                 <?php echo '</div>'; ?>
 
@@ -274,11 +263,13 @@ class FormHtmlJq {
                 break;
 
             case 'auto_complete':
+                $onblur = (isset($onblur) && $onblur) ? ' onblur ' : '';
                 ?>
                 <?php echo $col; ?>
                 <div class="form-group ui-widget">
                     <label><?php echo $label; ?></label>
-                    <input id="<?php echo $id ?>" class="form-control auto-complete" value="<?php echo $value; ?>" name="<?php echo $name; ?>" data-coll="<?php echo $name; ?>">
+                    <input id="<?php echo $id ?>" class="form-control auto-complete <?php echo $onblur; ?>" value="<?php echo $value; ?>" name="<?php echo $name; ?>" data-coll="<?php echo $name; ?>">
+                    <p class="help-block animated fadeInDown"><?php echo $description; ?></p>
                 </div>
                 <?php echo '</div>'; ?>
                 <?php
@@ -297,9 +288,7 @@ class FormHtmlJq {
                         class="form-control"
                         value="<?php echo $value; ?>">
 
-                    <?php if ($description != ''): ?>
-                        <p class="help-description"><?php echo $description; ?></p>
-                    <?php endif; ?>
+                    <p class="help-block animated fadeInDown"><?php echo $description; ?></p>
                 </div>
                 <script>
                     $('#<?php echo $id ?>').tagsInput({

@@ -82,12 +82,14 @@ class AppForms {
                     'type' => 'text',
                     'name' => 'promotions_name',
                     'label' => 'Promotions Name',
+                    'onblur' => true,
                 ),
                 array(
                     'type' => 'auto_complete',
                     'name' => 'retailer',
                     'label' => 'Retailer',
                     'default' => 'Amazon',
+                    'onblur' => true,
                 ),
                 array(
                     'type' => 'select',
@@ -187,6 +189,7 @@ class AppForms {
                     'type' => 'auto_complete',
                     'name' => 'brand',
                     'label' => 'Brand',
+                    'onblur' => true,
                 ),
                 array(
                     'type' => 'text',
@@ -441,11 +444,14 @@ class AppForms {
                     'type' => 'auto_complete',
                     'name' => 'retailer',
                     'label' => 'Retailer',
+                    'default' => 'Amazon',
+                    'onblur' => true,
                 ),
                 array(
                     'type' => 'auto_complete',
                     'name' => 'brand',
                     'label' => 'Brand',
+                    'onblur' => true,
                 ),
                 array(
                     'type' => 'auto_complete',

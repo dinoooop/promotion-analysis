@@ -33,7 +33,8 @@ $.fn.extend({
             }
         });
         return o;
-    }
+    },
+    
 
 });
 

@@ -16,9 +16,11 @@ $.fn.extend({
         });
 
         for (var i = 0; i < fields.length; i++) {
-            var $field = $(this).find("[name='" + fields[i] + "']");
-            var dot = $(this).cu_custom_validation(fields[i]);
-            error.push(dot);
+            if (appConst.formErrorOnBlur.indexOf(fields[i]) == -1) {
+                var $field = $(this).find("[name='" + fields[i] + "']");
+                var dot = $(this).cu_custom_validation(fields[i]);
+                error.push(dot);
+            }
         }
 
         return (error.indexOf(1) < 0) ? false : true;
@@ -27,8 +29,10 @@ $.fn.extend({
     },
     cu_display_error: function (message) {
 
+        var $formGroup = $(this).parents(".form-group");
+
         if (typeof message != "undefined" && message == 0) {
-            $(this).parents(".form-group").addClass("has-error");
+            $formGroup.addClass("has-error");
             return false;
         }
 
@@ -42,31 +46,76 @@ $.fn.extend({
 
 
 
-        var next = $(this).next(".help-block");
+        var helpBlock = $formGroup.find(".help-block")
 
-        if (next.length == 0) {
-            $(this).parents(".form-group").addClass("has-error");
+        if (helpBlock.length == 0) {
+            $formGroup.addClass("has-error");
             var html = '';
-            html = '<span class="help-block animated fadeInDown" style="display:block">' + message + '</span>';
+            html = '<p class="help-block animated fadeInDown" style="display:block">' + message + '</p>';
             $(this).after(html);
         } else {
-            next.text(message);
+            $formGroup.addClass("has-error");
+            helpBlock.text(message);
         }
     },
     cu_remove_error: function () {
         var next = $(this).next(".help-block");
         $(this).parents(".form-group").removeClass("has-error");
         if (next.length != 0) {
-            next.remove();
+            next.html("&nbsp");
         }
 
     },
     toggle_disable_submit: function (error) {
         var $submit = $(this).parents("form").find("[type='submit']");
-        if (error){
+        if (error) {
             $submit.prop("disabled", true);
-        }else{
+        } else {
             $submit.prop("disabled", false);
+        }
+    },
+    validate_auto_complete: function () {
+
+        var $this = $(this);
+        var value = $this.val();
+        var name = $this.attr("name");
+        var col = $(this).data("coll");
+
+        if (value == '') {
+            $this.toggle_disable_submit(false);
+            return false;
+        }
+
+        $this.toggle_disable_submit(true);
+        $.ajax({
+            url: appConst.url_ajax,
+            dataType: "json",
+            data: {
+                value: value,
+                col: col,
+                action: 'validate_auto_complete',
+            },
+            success: function (data) {
+                $this.toggle_disable_submit(false);
+                if (data.status && data.result.length > 0) {
+                    // No errors
+                    $this.cu_error_switch(false);
+                    $this.set_formErrorOnBlur(false);
+
+                } else {
+                    $this.cu_error_switch(true, "The given input is not valid");
+                    $this.set_formErrorOnBlur(true);
+                }
+
+            }
+        });
+    },
+    set_formErrorOnBlur: function (error) {
+        var name = $(this).attr("name");
+        if (error) {
+            appConst.formErrorOnBlur.pushArrayValue(name)
+        } else {
+            appConst.formErrorOnBlur.removeArrayValue(name)
         }
     },
     cu_require: function () {
@@ -173,7 +222,7 @@ $.fn.extend({
             case "pv_create_promotion":
 
                 var value = $field.cu_getVal();
-                var required_fileds = ["promotions_name", "promotions_startdate", "promotions_enddate", "retailer"];
+                var required_fileds = ["promotions_name", "retailer", "promotions_startdate", "promotions_enddate", "retailer"];
                 if (required_fileds.indexOf(name) != -1) {
                     error = $field.cu_require();
                     $field.cu_error_switch(error);
@@ -181,6 +230,10 @@ $.fn.extend({
 
                 if (!error) {
                     switch (name) {
+
+//                        case 'retailer':
+//                            $field.validate_auto_complete();
+//                            break;
 
                         case 'promotions_enddate':
 

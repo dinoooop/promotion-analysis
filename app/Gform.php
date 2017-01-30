@@ -44,7 +44,7 @@ class Gform {
                 $new_fields[$key]['id'] = $this->form_name . '_' . $key;
 
                 $new_fields[$key]['placeholder'] = (isset($field['placeholder'])) ? $field['placeholder'] : '';
-                $new_fields[$key]['description'] = (isset($field['description'])) ? $field['description'] : '';
+                $new_fields[$key]['description'] = (isset($field['description'])) ? $field['description'] : '&nbsp';
                 
                 $new_fields[$key]['value'] = $this->get_field_value($field);
             }

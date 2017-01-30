@@ -58,6 +58,7 @@
         <!-- MERGE -->
         <link href="{{ asset('css/styles.css') }}" rel="stylesheet" type="text/css" />
         <script src="{{ asset('js/merge.js') }}"></script>        
+        <script src="{{ asset('js/prototype.js') }}"></script>        
 
     </head>
 

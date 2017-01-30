@@ -61,7 +61,7 @@ class UsersController extends Controller {
 
             User::create($input);
 
-            return Redirect::route('users.index');
+            return Redirect::to('users.index');
         }
 
         return Redirect::route('users.create')
@@ -114,7 +114,7 @@ class UsersController extends Controller {
         if ($validation->passes() && $password_update) {
             $user = User::find($id);
             $user->update($input);
-            return Redirect::route('users.index');
+            return Redirect::to('admin/profile');
         }
 
         return Redirect::route('users.edit', $id)
