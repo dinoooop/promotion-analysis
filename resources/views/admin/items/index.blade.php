@@ -40,7 +40,7 @@
                 @else
                 <div class="row">
                     <div class="col-sm-12">
-                        
+
                         <div id="grid"></div>
                         <div id="pager"></div>
 
@@ -48,61 +48,61 @@
                             $(document).ready(function () {
 
 
-                                appConst.promotion_id = <?php echo $promotions_id ?>;
-                                var dataSource = new kendo.data.DataSource({
-                                    transport: {
-                                        read: {
-                                            url: appConst.base_url + "/kendo/items?pid=<?php echo $promotions_id ?>",
-                                            dataType: "json"
-                                        },
-                                        update: {
-                                            url: appConst.base_url + "/admin/items/0",
+                            appConst.promotion_id = <?php echo $promotions_id ?>;
+                            var dataSource = new kendo.data.DataSource({
+                            transport: {
+                            read: {
+                            url: appConst.base_url + "/kendo/items?pid=<?php echo $promotions_id ?>",
+                                    dataType: "json"
+                            },
+                                    update: {
+                                    url: appConst.base_url + "/admin/items/0",
                                             data: {_token: appConst.token},
                                             dataType: 'json',
                                             type: 'PATCH',
-                                        },
-                                        destroy: {
-                                            url: appConst.base_url + "/admin/items/0",
+                                    },
+                                    destroy: {
+                                    url: appConst.base_url + "/admin/items/0",
                                             data: {_token: appConst.token},
                                             dataType: 'json',
                                             type: 'DELETE',
                                             cache: false
-                                        },
-                                        create: {
-                                            url: appConst.base_url + "/admin/items",
+                                    },
+                                    create: {
+                                    url: appConst.base_url + "/admin/items",
                                             data: {_token: appConst.token},
                                             dataType: "json",
                                             type: 'POST',
-                                        },
-                                        parameterMap: function (options, type) {
-                                            if (type !== "read" && options.models) {
-                                                options._token = appConst.token;
-                                                options.pid = appConst.promotion_id;
-                                                return options;
-                                            }
-
-
-
-                                        }
                                     },
+                                    parameterMap: function (options, type) {
+                                    if (type !== "read" && options.models) {
+                                    options._token = appConst.token;
+                                    options.pid = appConst.promotion_id;
+                                    return options;
+                                    }
+
+
+
+                                    }
+                            },
                                     batch: true,
                                     pageSize: 20,
                                     schema: {
-                                        model: {
-                                            id: "id",
+                                    model: {
+                                    id: "id",
                                             fields: {
-                                                id: {editable: false, nullable: true},
-                                                material_id: {type: "string"},
-                                                asin: {type: "string"},
-                                                promotions_startdate: {type: "date", format: "Y-m-d"},
-                                                promotions_enddate: {type: "date", format: "Y-m-d"},
-                                                promotions_budget: {type: "number"},
+                                            id: {editable: false, nullable: true},
+                                                    material_id: {type: "string"},
+                                                    asin: {type: "string"},
+                                                    promotions_startdate: {type: "date", format: "Y-m-d"},
+                                                    promotions_enddate: {type: "date", format: "Y-m-d"},
+                                                    promotions_budget: {type: "number"},
                                             }
-                                        }
                                     }
-                                });
-                                $("#grid").kendoGrid({
-                                    dataSource: dataSource,
+                                    }
+                            });
+                            $("#grid").kendoGrid({
+                            dataSource: dataSource,
                                     navigatable: true,
                                     pageable: false,
                                     height: 550,
@@ -110,28 +110,34 @@
                                     filterable: true,
                                     toolbar: ["create", "save", "cancel"],
                                     columns: [
-                                        {command: "destroy", title: "&nbsp;", width: 100},
-                                        <?php if(env('APP_ENV') == 'local'): ?>
-                                        {field: "id", title: "Item Id", width: 120, sortable: true},
-                                        <?php endif; ?>
-                                        {field: "material_id", title: "Material Id", width: 120, sortable: true},
-                                        {field: "asin", title: "ASIN", width: 120, sortable: true},
-                                        {field: "promotions_startdate", title: "Start date", format: '{0:MM/dd/yyyy}', width: 100, sortable: true},
-                                        {field: "promotions_enddate", title: "End date", format: '{0:MM/dd/yyyy}', width: 100, sortable: true},
-                                        {field: "promotions_budget", title: "Budget", width: 100, sortable: true},
-                                        {field: "promotions_projected_sales", title: "Projected sales", width: 100, sortable: true},
-                                        {field: "promotions_expected_lift", title: "Expected lift", width: 120, sortable: true},
-                                        {field: "funding_per_unit", title: "Funding per unit", width: 120, sortable: true},
-                                        {field: "forecasted_qty", title: "Forecasted qty", width: 120, sortable: true},
-                                        {field: "forecasted_unit_sales", title: "Forecasted unit sales", width: 120, sortable: true},
+                                    {
+                                    command: {
+                                    name: "destroy",
+                                            text: ' ',
+                                    },
+                                            title: "Delete",
+                                            width: 80,
+                                    },
+                                    <?php if (env('APP_ENV') == 'local'): ?>
+                                    {field: "id", title: "Item Id", width: 120, sortable: true},
+                                    <?php endif; ?>
+                                    {field: "material_id", title: "Material Id", width: 120, sortable: true},
+                                    {field: "asin", title: "ASIN", width: 120, sortable: true},
+                                    {field: "promotions_startdate", title: "Start date", format: '{0:MM/dd/yyyy}', width: 100, sortable: true},
+                                    {field: "promotions_enddate", title: "End date", format: '{0:MM/dd/yyyy}', width: 100, sortable: true},
+                                    {field: "promotions_budget", title: "Budget", width: 100, sortable: true},
+                                    {field: "promotions_projected_sales", title: "Projected sales", width: 100, sortable: true},
+                                    {field: "promotions_expected_lift", title: "Expected lift", width: 120, sortable: true},
+                                    {field: "funding_per_unit", title: "Funding per unit", width: 120, sortable: true},
+                                    {field: "forecasted_qty", title: "Forecasted qty", width: 120, sortable: true},
+                                    {field: "forecasted_unit_sales", title: "Forecasted unit sales", width: 120, sortable: true},
                                     ],
                                     editable: true,
-                                });
-                                
-                                $("#pager").kendoPager({
-                                    dataSource: dataSource,
-                                    pageSizes: [10,20,50,100]
-                                });
+                            });
+                            $("#pager").kendoPager({
+                            dataSource: dataSource,
+                                    pageSizes: [10, 20, 50, 100]
+                            });
                             });
                         </script>
 

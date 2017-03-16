@@ -133,7 +133,7 @@ class DBChange {
                 'division' => 'Baby',
                 'status' => 'active',
             ],
-            // Category/Brand level promotion (amazon)
+                // Category/Brand level promotion (amazon)
 //            [
 //                'promotions_name' => 'Sample test category level',
 //                'promotions_description' => 'sample',
@@ -542,6 +542,17 @@ class DBChange {
     function change_16_01_2017() {
         Schema::table('promotions.promotions_master_input', function (Blueprint $table) {
             $table->string('retail_ecommerce')->after('retailer')->nullable();
+        });
+    }
+
+    function options_refresh() {
+        $table_name = 'options';
+        Schema::dropIfExists($table_name);
+        Schema::create($table_name, function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('option_name');
+            $table->text('option_value')->nullable();
+            $table->timestamps();
         });
     }
 

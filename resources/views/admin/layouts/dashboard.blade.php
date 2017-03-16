@@ -63,7 +63,7 @@
     </head>
 
 
-    <body class="nav-md">
+    <body class="nav-sm">
 
         <div class="container body">
 

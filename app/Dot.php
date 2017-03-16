@@ -295,9 +295,8 @@ class Dot {
             $error['status'] = false;
             return $error;
         }
-
-
-        $allow_extension = ['xls', 'xlsx', 'txt', 'bin'];
+        
+        $allow_extension = ['xls', 'xlsx', 'txt', 'bin', 'csv'];
         $extention = $input->file($field)->extension();
 
         if (!in_array($extention, $allow_extension)) {
@@ -305,8 +304,7 @@ class Dot {
             $error['status'] = false;
             return $error;
         }
-
-
+        
         $pathinfo = pathinfo($input->file($field)->getClientOriginalName());
 
         $title = $pathinfo['filename'];

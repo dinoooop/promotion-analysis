@@ -96,16 +96,19 @@ echo App\Temp::lightbox([
                                     width: 55,
                                 },
                                 {
-                                    command: "destroy",
-                                    title: "&nbsp;",
-                                    width: 105,
+                                    command: {
+                                        name: "destroy",
+                                        text: ' ',
+                                    },
+                                    title: "Delete",
+                                    width: 80,
                                 },
                                 {
                                     field: "promotions_name",
                                     title: "Promotions name",
                                     format: "{0:MM/dd/yyyy}",
                                     sortable: true,
-                                    width: 250,
+                                    width: 200,
                                     template: "<a href='" + appConst.base_url + "/admin/promotions/#=id#/edit'>#=promotions_name#</a>"
                                 },
                                 {
@@ -149,22 +152,21 @@ echo App\Temp::lightbox([
                                     width: 80,
                                     template: '<a href="' + appConst.base_url + '/admin/items?pid=#=id#&hsv=1"><i class="fa fa-database" aria-hidden="true"></i></a>'
                                 },
-                                <?php if (isset($display_result_view_button) && $display_result_view_button): ?>
-                                {
-                                    title: "Result",
-                                    template: '<a href="' + appConst.base_url + '/admin/results?pid=#=id#"><i class="fa fa-database" aria-hidden="true"></i></a>',
-                                    width: 60,
-                                },
-                                <?php endif; ?>
+<?php if (isset($display_result_view_button) && $display_result_view_button): ?>
+                                    {
+                                        title: "Result",
+                                        template: '<a href="' + appConst.base_url + '/admin/results?pid=#=id#"><i class="fa fa-database" aria-hidden="true"></i></a>',
+                                        width: 60,
+                                    },
+<?php endif; ?>
 
                             ]
                         }).data("kendoGrid");
-                        
-                        
+
                         $("#pager").kendoPager({
                             dataSource: _dataSource,
-                            pageSizes: [10,20,50,100]
-                          });
+                            pageSizes: [10, 20, 50, 100]
+                        });
 
                         grid.bind("filterMenuInit", function (e) {
                             if (e.field == 'status') {
