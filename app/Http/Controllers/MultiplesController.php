@@ -127,6 +127,8 @@ class MultiplesController extends Controller {
 
         if ($pathinfo_attachment['extension'] != 'csv') {
             $csv_file = $this->import->get_csv_file_path($store_info['file_path']);
+            Log::info("Here is csv");
+            Log::info($csv_file);
             $pathinfo_csv = pathinfo($csv_file);
         } else {
             $csv_file = $store_info['file_path'];

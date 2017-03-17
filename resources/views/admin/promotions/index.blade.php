@@ -80,7 +80,8 @@ echo App\Temp::lightbox([
                             toolbar: ["excel"],
                             excel: {
                                 fileName: "promotion-analysis.xlsx",
-                                filterable: true
+                                filterable: true,
+                                allPages: true
                             },
                             dataSource: _dataSource,
                             filterable: {extra: false},

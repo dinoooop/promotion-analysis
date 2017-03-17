@@ -158,13 +158,23 @@ class Import {
     }
 
     function get_csv_file_path($file_path) {
+        Log::info("Convert xl to csv");
+        Log::info($file_path);
         $return = [];
         $pathinfo = pathinfo($file_path);
 
         $excel = $file_path;
         $csv = storage_path('app/csv/' . $pathinfo['filename'] . '.csv');
-
-        return (self::PY_CONVERT_TO_CSV($excel, $csv) == true) ? $csv : false;
+        Log::info("csv path");
+        Log::info($csv);
+        $return = (self::PY_CONVERT_TO_CSV($excel, $csv) == true) ? $csv : false;
+        if($return){
+            Log::info("Excel converted to csv - success");
+        }else{
+            Log::info("Excel converted to csv - failed");
+        }
+        
+        return $return;
     }
 
     function match_the_column($input, $type) {
@@ -197,10 +207,11 @@ class Import {
     }
 
     public static function PY_CONVERT_TO_CSV($excel, $csv) {
-//        $CSV = public_path('downloads/template-promotions-newell.xlsx');
-//        $output_path = storage_path('app/csv/sample.csv');
+//        $excel = public_path('downloads/template-promotions-newell.xlsx');
+//        $csv = storage_path('app/csv/sample.csv');
         $command = escapeshellcmd("python " . public_path('ext-python/convert-csv.py') . " {$excel} {$csv}");
         $output = shell_exec($command);
+        echo $output;
         return $output;
     }
 

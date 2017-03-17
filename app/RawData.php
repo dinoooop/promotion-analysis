@@ -248,8 +248,6 @@ class RawData {
     }
 
     function test() {
-        $obj = new Spod;
-        $obj->sample_test();
     }
 
 }

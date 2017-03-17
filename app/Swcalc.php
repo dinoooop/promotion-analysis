@@ -137,9 +137,9 @@ class Swcalc extends Model {
     }
 
     function save_records() {
+        
         $records_week = $this->basic_week_data();
-
-
+        
         foreach ($records_week as $key => $record) {
 
             $raw = [];

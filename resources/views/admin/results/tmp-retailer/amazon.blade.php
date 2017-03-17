@@ -53,7 +53,8 @@
         toolbar: ["excel"],
                 excel: {
                 fileName: "promotion-analysis-result.xlsx",
-                        filterable: true
+                        filterable: true,
+                        allPages: true
                 },
                 dataSource: _dataSource,    
                 height: 650,
