@@ -295,7 +295,7 @@ class Dot {
             $error['status'] = false;
             return $error;
         }
-        
+
         $allow_extension = ['xls', 'xlsx', 'txt', 'bin', 'csv'];
         $extention = $input->file($field)->extension();
 
@@ -304,7 +304,7 @@ class Dot {
             $error['status'] = false;
             return $error;
         }
-        
+
         $pathinfo = pathinfo($input->file($field)->getClientOriginalName());
 
         $title = $pathinfo['filename'];
@@ -371,6 +371,23 @@ class Dot {
         } else {
             return isset($stack->$key) ? $stack->$key : null;
         }
+    }
+
+    public static function set_title_kento($records) {
+        
+        $records = array_unique($records);
+        
+        $return = [];
+        foreach ($records as $key => $value) {
+            if (is_null($value)) {
+                continue;
+            }
+            $row = [];
+            $row['title'] = $value;
+            $return[] = $row;
+        }
+        
+        return $return;
     }
 
 }

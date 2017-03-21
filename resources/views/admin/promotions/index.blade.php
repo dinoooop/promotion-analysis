@@ -188,6 +188,50 @@ echo App\Temp::lightbox([
                                             dataValueField: "title"
                                         });
                             }
+
+                            if (e.field == 'retailer') {
+                                e.container.find("div.k-filter-help-text").text("Select an item from the list:");
+                                e.container.find("span.k-dropdown:first").css("display", "none");
+                                // Change the text field to a dropdownlist in the Role filter menu.
+                                e.container.find(".k-textbox:first")
+                                        .removeClass("k-textbox")
+                                        .kendoDropDownList({
+                                            dataSource: new kendo.data.DataSource({
+                                                transport: {
+                                                    read: {
+                                                        url: "<?php echo $kendo_url; ?>?fil=retailer",
+                                                        dataType: 'json',
+                                                        cache: false
+                                                    },
+                                                }
+                                            }),
+
+                                            dataTextField: "title",
+                                            dataValueField: "title"
+                                        });
+                            }
+                            
+                            if (e.field == 'brand') {
+                                e.container.find("div.k-filter-help-text").text("Select an item from the list:");
+                                e.container.find("span.k-dropdown:first").css("display", "none");
+                                // Change the text field to a dropdownlist in the Role filter menu.
+                                e.container.find(".k-textbox:first")
+                                        .removeClass("k-textbox")
+                                        .kendoDropDownList({
+                                            dataSource: new kendo.data.DataSource({
+                                                transport: {
+                                                    read: {
+                                                        url: "<?php echo $kendo_url; ?>?fil=brand",
+                                                        dataType: 'json',
+                                                        cache: false
+                                                    },
+                                                }
+                                            }),
+
+                                            dataTextField: "title",
+                                            dataValueField: "title"
+                                        });
+                            }
                         });
 
 

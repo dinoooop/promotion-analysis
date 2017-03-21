@@ -52,11 +52,11 @@ class PromotionsController extends Controller {
             $data['page_heading'] = 'Promotion Overview';
             $data['kendo_url'] = url('kendo/promotions');
         }
-        
+
         $form = $this->gform->set_form(AppForms::show_hide_column());
         $form['hide_submit_button'] = true;
         $data['form_show_hide_column'] = $this->formHtmlJq->create_form($form);
-        
+
         return View::make('admin.promotions.index', $data);
     }
 
@@ -65,9 +65,25 @@ class PromotionsController extends Controller {
 
         $query = Promotion::orderBy('id', 'desc');
         if (isset($input['re']) && $input['re'] == 1) {
+            // Get result records
             $query->where('status', 'completed');
             $records = $query->get()->toArray();
+        } elseif (isset($input['fil']) && $input['fil'] == 'retailer') {
+            
+            // Column dropdownlist retailer
+            $records = $query->pluck('retailer')->toArray();
+            $records = Dot::set_title_kento($records);
+            return response()->json($records);
+            
+        } elseif (isset($input['fil']) && $input['fil'] == 'brand') {
+            
+            // Column dropdownlist brand
+            $records = $query->pluck('brand')->toArray();
+            $records = Dot::set_title_kento($records);
+            return response()->json($records);
+            
         } else {
+            // Get all records
             $records = $query->get()->toArray();
         }
 
@@ -78,6 +94,7 @@ class PromotionsController extends Controller {
     }
 
     /**
+     * 
      * Show the form for creating a new resource.
      *
      * @return Response
@@ -101,7 +118,7 @@ class PromotionsController extends Controller {
      */
     public function store() {
         $input = Input::all();
-        
+
         $status = Promotion::status($input);
 
         if ($status['status']) {
@@ -109,7 +126,7 @@ class PromotionsController extends Controller {
 
             $promotion = Promotion::create($status['input']);
 
-            if(in_array($input['level_of_promotions'], ['Category', 'Brand'])) {
+            if (in_array($input['level_of_promotions'], ['Category', 'Brand'])) {
                 return Redirect()->route('prepare_promotion', ['pid' => $promotion->id]);
             }
 
