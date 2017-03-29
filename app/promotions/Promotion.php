@@ -43,6 +43,7 @@ class Promotion extends Model {
         'division',
         'status'
     ];
+    
     protected $csv = [
         'promotions_name',
         'promotions_description',
