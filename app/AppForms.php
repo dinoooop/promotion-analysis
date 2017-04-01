@@ -217,7 +217,7 @@ class AppForms {
                     'type' => 'boolean_checkbox',
                     'name' => 'annivarsaried',
                     'label_checkbox' => 'YES',
-                    'label' => 'Is this promotion annivarsaried?',
+                    'label' => 'Is this promotion anniversaried?',
                 ),
 //                        array(
 //                            'type' => 'select',
