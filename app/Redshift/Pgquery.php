@@ -216,6 +216,11 @@ class Pgquery {
             });
         }
 
+        $query->join('nwl_pos.dim_retailer_channel as rc', function ($join) {
+            $join->on('ms.retailer_country_id', 'rc.retailer_country_id');
+            $join->on('ms.channel_attribute_id', 'rc.channel_attribute_id');
+        });
+
         if ($promotion->category != '') {
 
             $query->where('m.business_team', $promotion->category);
@@ -226,9 +231,11 @@ class Pgquery {
             $query->where('brand', $promotion->brand);
         }
 
-        if ($promotion->retailer != '') {
+        if ($promotion->retailer_country != '') {
+            $query->where('rc.country', $promotion->retailer_country);
+        }
 
-            $query->join('nwl_pos.dim_retailer_channel as rc', 'ms.retailer_country_id', 'rc.retailer_country_id');
+        if ($promotion->retailer != '') {
             $query->where('rc.retailer', $promotion->retailer);
         }
 
@@ -265,7 +272,6 @@ class Pgquery {
 
         $query->select($select);
         $query->distinct('ms.date_day');
-
 
         return $query->get();
     }

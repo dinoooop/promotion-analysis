@@ -72,7 +72,7 @@ class Stock {
 
 
             case 'retailer_country':
-                $country = ['US', 'Canada', 'UK', 'Spain', 'Germany', 'India', 'France'];
+                $country = ['United States', 'Canada', 'UK', 'Spain', 'Germany', 'India', 'France'];
                 return array_combine($country, $country);
                 break;
 

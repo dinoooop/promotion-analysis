@@ -96,7 +96,7 @@ class AppForms {
                     'name' => 'retailer_country',
                     'label' => 'Retailer Country',
                     'options' => Stock::get('retailer_country'),
-                    'default' => 'US'
+                    'default' => 'United States'
                 ),
                 array(
                     'type' => 'select',
